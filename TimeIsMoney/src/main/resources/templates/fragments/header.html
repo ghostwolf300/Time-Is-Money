@@ -4,17 +4,15 @@
     	<div class="header" id="info">
     		<h2>Time Is Money</h2>
     	</div>
-    	<div class="header" id="user">
-    		<div th:if="${#httpServletRequest.remoteUser}!=null">
-		    	<div class="header" id="username" >
-		    		<span  th:inline="text">Logged in: [[${#httpServletRequest.remoteUser}]]</span>
-		    	</div>
-		    	<div class="header" id="logout">
-		    		<form th:action="@{/logout}" method="post">
-		    			<input type="submit" value="Logout"/>
-		    		</form>
-		    	</div>
-	    	</div>
+    	<div th:if="${#httpServletRequest.remoteUser}!=null" class="header" id="user">
+		    <div class="header" id="username" >
+		    	<span  th:inline="text">Logged in: [[${#httpServletRequest.remoteUser}]]</span>
+		    </div>
+		    <div class="header" id="logout">
+		    	<form th:action="@{/logout}" method="post">
+		    		<input type="submit" value="Logout"/>
+		    	</form>
+		    </div>
     	</div>
     </div>
 </html>

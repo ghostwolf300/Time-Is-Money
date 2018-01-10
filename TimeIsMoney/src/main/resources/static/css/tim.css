@@ -6,6 +6,8 @@ html, body{
 	margin:0;	
 }
 
+/*-----Login------*/
+
 .centered-wrapper{
 	position:relative;
 	text-align:center;
@@ -64,6 +66,48 @@ html, body{
 	float: right;
 }
 
+/*-----End Login-----*/
+/* ---- Header ----- */
 
+div#container.header{
+	width:100%;
+	height:60px;
+	margin:auto;
+	background: yellow;
+	border: 2px solid black;
+}
 
+div#info.header{
+	width:75%;
+	height:100%;
+	float: left;
+}
+
+div#user.header{
+	width:25%;
+	height:100%;
+	float:left;
+	display:table;
+	
+}
+
+div#username.header{
+	width:50%;
+	height:100%;
+	float:left;
+	display:table-cell;
+	vertical-align:middle;
+	background: red;
+}
+
+div#logout.header{
+	width:50%;
+	height:100%;
+	float:left;
+	display:table-cell;
+	vertical-align:middle;
+	background: blue;
+}
+
+/*----End Header-----*/
 
