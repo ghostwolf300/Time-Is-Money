@@ -5,11 +5,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/scheduleplanner")
 public class SchedulePlannerController {
 	
-	@RequestMapping("/")
+	private static final String VIEW_NAME="Schedule Planner";
+	
+	@RequestMapping("/scheduleplanner")
 	public String myWorkTime(Model m) {
+		m.addAttribute("viewName", VIEW_NAME);
 		return "scheduleplanner";
 	}
 	

@@ -3,13 +3,16 @@ package com.tim.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/userrecord")
 public class UserRecordController {
 	
-	@RequestMapping("/")
+	private static final String VIEW_NAME="User Record";
+	
+	@RequestMapping("/userrecord")
 	public String myWorkTime(Model m) {
+		m.addAttribute("viewName", VIEW_NAME);
 		return "userrecord";
 	}
 }
