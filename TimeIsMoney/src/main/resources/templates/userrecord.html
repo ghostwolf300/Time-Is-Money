@@ -5,6 +5,28 @@
       layout:decorator="layouts/default">
 
 <div layout:fragment="content">
-	<h2>User Record</h2>
+	<div id="search">
+		<form th:action="@{/userrecord/search}" method="get">
+			<label for="freesearch">Search for:</label><input id="freesearch" type="text"/>
+			<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
+			<input type="submit" value="Search"/>
+		</form>
+	</div>
+	<div id="searchresults">
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>44000123</td>
+					<td>Rönttönen, Jorma</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
 </html>
