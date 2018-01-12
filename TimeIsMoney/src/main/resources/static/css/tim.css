@@ -74,7 +74,7 @@ div#container.header{
 	height:60px;
 	margin-top:2px;
 	margin-left:2px;
-	background: yellow;
+	background: light gray;
 	border: 2px solid black;
 }
 
@@ -97,14 +97,14 @@ div#username.header{
 	width:50%;
 	height:100%;
 	float:left;
-	background: red;
+	background: light grey;
 }
 
 div#logout.header{
 	width:50%;
 	height:100%;
 	float:left;
-	background: blue;
+	background: light grey;
 }
 
 div#bar.header{

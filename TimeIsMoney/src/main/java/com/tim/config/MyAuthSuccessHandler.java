@@ -33,7 +33,7 @@ public class MyAuthSuccessHandler implements AuthenticationSuccessHandler {
 	}
 	
 	protected String determineTargetUrl(Authentication auth){
-		return "/test";
+		return "/myworktime";
 	}
 	
 	protected void clearAuthenticationAttributes(HttpServletRequest request) {

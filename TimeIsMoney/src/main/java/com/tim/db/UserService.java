@@ -6,6 +6,6 @@ import com.tim.entities.User;
 public interface UserService {
 	
 	public Iterable<User> findAll();
-	public User findByUserName(String userName);
+	public User findByUsername(String username);
 	
 }

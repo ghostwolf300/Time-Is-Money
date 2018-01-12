@@ -28,5 +28,76 @@
 			</tbody>
 		</table>
 	</div>
+	<div id="userrecord">
+		<h2>Personal</h2>
+		<div id="personal">
+			<div>
+				<label for="personalStartDate">Start:</label><input id="personalStartDate" type="date"/>
+				<label for="personalEndDate">End:</label><input id="personalEndDate" type="date"/>
+			</div>
+			<div>
+				<div>
+					<label for="firstName">First name:</label><input id="firstName" type="text"/>
+					<label for="middleName">Middle name:</label><input id="middleName" type="text"/>
+					<label for="lastName">Last name:</label><input id="lastName" type="text"/>
+				</div>
+				<div>
+					<label for="birthDate">Birth date:</label><input id="birthDate" type="date"/>
+				</div>
+				<div>
+					<label for="phone">Phone:</label><input id="phone" type="text"/>
+					<label for="email">Email:</label><input id="email" type="text"/>
+				</div>
+			</div>
+		</div>
+		<div id="contract">
+			<h2>Contract</h2>
+			<div>
+				<label for="contractStartDate">Start:</label><input id="contractStartDate" type="date"/>
+				<label for="contractEndDate">End:</label><input id="contractEndDate" type="date"/>
+			</div>
+			<div>
+				<label for="contractType">Contract type:</label>
+				<select id="contractType">
+					<option value="1">FT Retail Employee</option>
+					<option value="2">PT Retail Employee</option>
+					<option value="3">FT Logistics Employee</option>
+					<option value="4">PT Logistics Employee</option>
+					<option value="5">Office Employee</option>
+				</select>
+				<label for="minHours">Min hours:</label><input id="minHours" type="number"/>
+				<label for="maxHours">Max hours:</label><input id="maxHours" type="number"/>
+			</div>
+		</div>
+		<div id="credentials">
+			<h2>Credentials</h2>
+			<div>
+				<label for="id">ID:</label>
+				<label for="secondaryId">Secondary ID:</label><input id="secondaryId" type="text"/>
+			</div>
+			<div>
+				<label for="userName">Username:</label><input id="userName" type="text"/>
+				<label for="password">Password:</label><input id="password" type="password"/>
+				<label for="enabled">Enabled</label><input id="enabled" type="checkbox"/>
+			</div>
+		</div>
+		<div id="roles">
+			<h2>Roles</h2>
+			<table>
+				<tr>
+					<td><label for="roleAdmin">Admin</label></td><td><input id="roleAdmin" type="checkbox"/></td>
+				</tr>
+				<tr>
+					<td><label for="roleManager">Manager</label></td><td><input id="roleManager" type="checkbox"/></td>
+				</tr>
+				<tr>
+					<td><label for="roleCoWorker">Co-worker</label></td><td><input id="roleCoWorker" type="checkbox"/></td>
+				</tr>
+				<tr>
+					<td><label for="roleShiftPlanner">Shift Planner</label></td><td><input id="roleShiftPlanner" type="checkbox"/></td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
 </html>

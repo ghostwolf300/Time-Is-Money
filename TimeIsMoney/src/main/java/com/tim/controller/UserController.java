@@ -25,7 +25,7 @@ public class UserController {
 	@RequestMapping("/{userName}")
 	public User getSingleUser(@PathVariable String userName) {
 		System.out.println("find user: "+userName);
-		User u=userService.findByUserName(userName);
+		User u=userService.findByUsername(userName);
 		return u;
 	}
 
