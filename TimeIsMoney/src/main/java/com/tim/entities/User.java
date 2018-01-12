@@ -14,6 +14,11 @@ import javax.persistence.Table;
 @Table(name="user")
 public class User implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@Column(name="id",table="user")
 	private int id=-1;
@@ -21,13 +26,11 @@ public class User implements Serializable {
 	private String username=null;
 	@Column(name="password",table="user")
 	private String password=null;
-	//Map user_personal...
-	@Column(name="first_name",table="user")
-	private String firstName=null;
-	@Column(name="last_name",table="user")
-	private String lastName=null;
 	@Column(name="enabled",table="user")
 	private boolean enabled=false;
+	
+	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
+	private Set<UserPersonal> userPersonalSet;
 	
 	@OneToMany(mappedBy="changedBy",cascade=CascadeType.ALL)
 	private Set<UserPersonal> userPersonalChangedSet;
@@ -45,22 +48,6 @@ public class User implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	public boolean isEnabled() {

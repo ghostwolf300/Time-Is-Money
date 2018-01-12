@@ -13,11 +13,16 @@ import javax.persistence.Table;
 @Entity
 @Table(name="user_role")
 public class UserRole implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@Column(name="user_id")
 	private int userId=-1;
 	@Id
-	@Column(name="user_role")
+	@Column(name="role_id")
 	private int roleId=-1;
 	
 	@ManyToOne(fetch=FetchType.LAZY)

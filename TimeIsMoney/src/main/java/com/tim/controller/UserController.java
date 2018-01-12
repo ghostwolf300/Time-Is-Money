@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tim.db.UserService;
+import com.tim.db.IUserService;
 import com.tim.entities.User;
 
 @RestController
@@ -15,7 +15,7 @@ import com.tim.entities.User;
 public class UserController {
 	
 	@Autowired
-	private UserService userService;
+	private IUserService userService;
 	
 	@RequestMapping("/")
 	public Iterable<User> getAllUsers(){

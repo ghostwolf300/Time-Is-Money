@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -16,12 +17,22 @@ import javax.persistence.Table;
 @Table(name="user_personal")
 public class UserPersonal implements Serializable {
 	
-	@Id
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
+	/*@Id
 	@Column(name="user_id")
 	private int userId=-1;
 	@Id
 	@Column(name="start_date")
-	private Date startDate=null;
+	private Date startDate=null;*/
+	
+	@EmbeddedId
+	private UserPersonalKey userPersonalKey=null;
+	
 	@Column(name="end_date")
 	private Date endDate=null;
 	@Column(name="first_name")
@@ -36,17 +47,30 @@ public class UserPersonal implements Serializable {
 	private String phone=null;
 	@Column(name="email")
 	private String email=null;
+	@Column(name="change_ts")
+	private Timestamp changeTs=null;
+	
+	@ManyToOne
+	@JoinColumn(name="user_id", nullable=false,insertable=false,updatable=false)
+	private User user=null;
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="changed_by", nullable=true)
 	private User changedBy=null;
-	@Column(name="change_ts")
-	private Timestamp changeTs=null;
 	
 	public UserPersonal() {
 		
 	}
 
-	public int getUserId() {
+	public UserPersonalKey getUserPersonalKey() {
+		return userPersonalKey;
+	}
+
+	public void setUserPersonalKey(UserPersonalKey userPersonalId) {
+		this.userPersonalKey = userPersonalId;
+	}
+
+	/*public int getUserId() {
 		return userId;
 	}
 
@@ -60,7 +84,7 @@ public class UserPersonal implements Serializable {
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
-	}
+	}*/
 
 	public Date getEndDate() {
 		return endDate;
@@ -132,6 +156,14 @@ public class UserPersonal implements Serializable {
 
 	public void setChangeTs(Timestamp changeTs) {
 		this.changeTs = changeTs;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 }
