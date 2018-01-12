@@ -30,19 +30,24 @@ public class UserRecordController {
 	
 	@RequestMapping("/userrecord")
 	public String myWorkTime(Model m) {
-		User u=userService.findByUsername("visus");
-		//System.out.println("User: "+u.getFirstName()+" "+u.getLastName());
+		/*User u=userService.findByUsername("visus");
+		System.out.println("User: "+u.getFirstName()+" "+u.getLastName());
 		for(UserRole urole : u.getUserRolesSet()) {
 			System.out.println(urole.getRole().getRoleName());
-		}
+		}*/
 		Calendar c=Calendar.getInstance();
 		c.set(2018, 0, 1);
 		Date d=new Date(c.getTimeInMillis());
-		UserPersonalKey key=new UserPersonalKey(7,d);
-		System.out.println(key);
-		UserPersonal uP=userPersonalService.findByUserPersonalKey(key);
-		//UserPersonal uP=userPersonalService.findByUserIdAndStartDate(7, d);
-		System.out.println("Name: "+uP.getFirstName()+" "+uP.getLastName());
+		//UserPersonalKey key=new UserPersonalKey(7,d);
+		//System.out.println(key);
+		//UserPersonal uP=userPersonalService.findByUserPersonalKey(key);
+		//System.out.println("Name: "+uP.getFirstName()+" "+uP.getLastName());
+		User u=userService.findByUserPersonalSetLastName("Susi");
+		System.out.println("found user: "+u.getUsername());
+		u=userService.findCurrentRecord("visus");
+		for(UserPersonal uP : u.getUserPersonalSet()) {
+			System.out.println("found: "+uP.getFirstName()+" "+uP.getLastName());
+		}
 		m.addAttribute("viewName", VIEW_NAME);
 		return "userrecord";
 	}

@@ -7,11 +7,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="user")
+@NamedQuery(
+name="User.findCurrentRecord",
+query="SELECT u from User u INNER JOIN UserPersonal u.userPersonalSet up where u.username=:username and up.endDate is null"
+)
 public class User implements Serializable {
 	
 	/**
@@ -72,6 +77,14 @@ public class User implements Serializable {
 
 	public void setUserRolesSet(Set<UserRole> userRolesSet) {
 		this.userRolesSet = userRolesSet;
+	}
+
+	public Set<UserPersonal> getUserPersonalSet() {
+		return userPersonalSet;
+	}
+
+	public void setUserPersonalSet(Set<UserPersonal> userPersonalSet) {
+		this.userPersonalSet = userPersonalSet;
 	}
 	
 	

@@ -21,4 +21,14 @@ public class UserService implements IUserService {
 		return userRepository.findByUsername(username);
 	}
 
+	@Override
+	public User findByUserPersonalSetLastName(String lastName) {
+		return userRepository.findByUserPersonalSetLastName(lastName);
+	}
+
+	@Override
+	public User findCurrentRecord(String username) {
+		return userRepository.findCurrentRecord(username);
+	}
+
 }
