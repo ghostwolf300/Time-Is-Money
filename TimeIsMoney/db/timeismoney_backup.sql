@@ -74,7 +74,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(32) NOT NULL,
   `password` varchar(32) NOT NULL,
-  `secondary_id` int(11) DEFAULT NULL,
+  `secondary_id` varchar(10) DEFAULT NULL,
   `enabled` tinyint(1) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `change_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -193,4 +193,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-12 10:43:50
+-- Dump completed on 2018-01-12 16:15:17
