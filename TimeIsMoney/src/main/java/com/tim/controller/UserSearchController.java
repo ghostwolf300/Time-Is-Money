@@ -1,11 +1,13 @@
 package com.tim.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tim.db.IUserService;
+import com.tim.db.user.UserService;
 import com.tim.entities.User;
 
 @RestController
@@ -13,7 +15,7 @@ import com.tim.entities.User;
 public class UserSearchController {
 	
 	@Autowired
-	private IUserService userService;
+	private UserService userService;
 	
 	@RequestMapping("/")
 	public Iterable<User> getAllUsers(){
@@ -21,11 +23,16 @@ public class UserSearchController {
 		return userService.findAll();
 	}
 	
-	@RequestMapping("/{userName}")
-	public User getSingleUser(@PathVariable String userName) {
-		System.out.println("find user: "+userName);
-		User u=userService.findByUsername(userName);
-		return u;
+	@RequestMapping("/{username}")
+	public ResponseEntity<User> getSingleUser(@PathVariable String username) {
+		User u=null;
+		if(username!=null) {
+			u=userService.findByUsername(username);
+		}
+		System.out.println("test: "+u.getUsername());
+		return new ResponseEntity<User>(u,HttpStatus.OK);
+		//return null;
+		
 	}
 	
 }

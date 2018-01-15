@@ -1,4 +1,4 @@
-package com.tim.db;
+package com.tim.db.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.tim.entities.User;
 
 @Service("userService")
-public class UserService implements IUserService {
+public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -18,7 +18,12 @@ public class UserService implements IUserService {
 
 	@Override
 	public User findByUsername(String username) {
-		return userRepository.findByUsername(username);
+		System.out.println("trying to find: "+username);
+		User u=userRepository.findByUsernameAndEnabled(username,true);
+		if(u!=null) {
+			System.out.println("found: "+u.getUsername());
+		}
+		return u;
 	}
 
 	@Override
@@ -27,8 +32,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public User findCurrentRecord(String username) {
-		return userRepository.findCurrentRecord(username);
+	public User currentRecord(String username) {
+		return userRepository.myQuery(username);
 	}
 
 }

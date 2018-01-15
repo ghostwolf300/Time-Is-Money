@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="user_personal")
 public class UserPersonal implements Serializable {
@@ -21,14 +23,6 @@ public class UserPersonal implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
-	/*@Id
-	@Column(name="user_id")
-	private int userId=-1;
-	@Id
-	@Column(name="start_date")
-	private Date startDate=null;*/
 	
 	@EmbeddedId
 	private UserPersonalKey userPersonalKey=null;
@@ -52,10 +46,12 @@ public class UserPersonal implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="user_id", nullable=false,insertable=false,updatable=false)
+	@JsonBackReference
 	private User user=null;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="changed_by", nullable=true)
+	@JsonBackReference
 	private User changedBy=null;
 	
 	public UserPersonal() {
@@ -69,22 +65,6 @@ public class UserPersonal implements Serializable {
 	public void setUserPersonalKey(UserPersonalKey userPersonalId) {
 		this.userPersonalKey = userPersonalId;
 	}
-
-	/*public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}*/
 
 	public Date getEndDate() {
 		return endDate;

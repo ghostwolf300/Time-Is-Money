@@ -3,14 +3,11 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layouts/default">
-
 <div layout:fragment="content">
 	<div id="search">
-		<form th:action="@{/userrecord/search}" method="get">
-			<label for="freesearch">Search for:</label><input id="freesearch" type="text"/>
-			<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
-			<input type="submit" value="Search"/>
-		</form>
+		<label for="freesearch">Search for:</label><input id="freesearch" type="text"/>
+		<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
+		<input type="button" value="Search" th:onclick="'searchUsers()'"/>
 	</div>
 	<div id="searchresults">
 		<table>

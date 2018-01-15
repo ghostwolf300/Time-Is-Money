@@ -2,21 +2,20 @@ package com.tim.entities;
 
 import java.io.Serializable;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+
+
 @Entity
 @Table(name="user")
-@NamedQuery(
-name="User.findCurrentRecord",
-query="SELECT u from User u INNER JOIN UserPersonal u.userPersonalSet up where u.username=:username and up.endDate is null"
-)
 public class User implements Serializable {
 	
 	/**
@@ -35,12 +34,18 @@ public class User implements Serializable {
 	private boolean enabled=false;
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
+	//@JsonIgnore
+	@JsonManagedReference
 	private Set<UserPersonal> userPersonalSet;
 	
 	@OneToMany(mappedBy="changedBy",cascade=CascadeType.ALL)
+	//@JsonIgnore
+	@JsonManagedReference
 	private Set<UserPersonal> userPersonalChangedSet;
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
+	//@JsonIgnore
+	@JsonManagedReference
 	private Set<UserRole> userRolesSet;
 	
 	public User() {

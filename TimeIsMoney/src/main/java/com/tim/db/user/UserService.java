@@ -1,13 +1,12 @@
-package com.tim.db;
-
+package com.tim.db.user;
 
 import com.tim.entities.User;
 
-public interface IUserService {
+public interface UserService {
 	
 	public Iterable<User> findAll();
 	public User findByUsername(String username);
 	public User findByUserPersonalSetLastName(String lastName);
-	public User findCurrentRecord(String username);
+	public User currentRecord(String username);
 	
 }
