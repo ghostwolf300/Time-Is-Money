@@ -9,18 +9,21 @@
 		<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
 		<input type="button" value="Search" th:onclick="'searchUsers()'"/>
 	</div>
-	<div id="searchresults">
-		<table>
-			<thead>
+	<div>
+		<table id="searchResults">
+			<thead id="searchResults-thead">
 				<tr>
 					<th>ID</th>
+					<th>Username</th>
 					<th>Name</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id="searchResults-tbody">
 				<tr>
 					<td>44000123</td>
+					<td>gdaga</td>
 					<td>Rönttönen, Jorma</td>
+					<td><input th:onclick="'displayUser()'" type="button" value="Show..."/></td>
 				</tr>
 			</tbody>
 		</table>

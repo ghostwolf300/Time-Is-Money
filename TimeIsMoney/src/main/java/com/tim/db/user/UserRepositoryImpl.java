@@ -1,5 +1,7 @@
 package com.tim.db.user;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -20,6 +22,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		query.setParameter("username", username);
 		User u=(User)query.getSingleResult();
 		return u;
+	}
+
+	@Override
+	public List<User> currentRecords() {
+		String queryString="SELECT u FROM User u INNER JOIN u.userPersonalSet up WHERE up.endDate IS NULL ORDER BY up.lastName";
+		Query query=em.createQuery(queryString);
+		@SuppressWarnings("unchecked")
+		List<User> users=query.getResultList();
+		return users;
 	}
 
 }

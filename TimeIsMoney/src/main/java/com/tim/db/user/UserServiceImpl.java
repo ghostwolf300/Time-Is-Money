@@ -1,5 +1,7 @@
 package com.tim.db.user;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,7 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	
 	@Override
-	public Iterable<User> findAll() {
+	public List<User> findAll() {
 		return userRepository.findAll();
 	}
 
@@ -34,6 +36,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User currentRecord(String username) {
 		return userRepository.myQuery(username);
+	}
+
+	@Override
+	public List<User> currentRecords() {
+		return userRepository.currentRecords();
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.tim.db;
+package com.tim.db.userpersonal;
 
 import java.sql.Date;
 
@@ -8,7 +8,7 @@ import com.tim.entities.UserPersonalKey;
 public interface UserPersonalService {
 	
 	public UserPersonal findByUserPersonalKey(UserPersonalKey key);
-	//public UserPersonal findByUserIdAndStartDate(int userId,Date startDate);
+	public UserPersonal findByUserIdAndStartDate(int userId,Date startDate);
 	public UserPersonal findLatest(int userId);
 	
 }

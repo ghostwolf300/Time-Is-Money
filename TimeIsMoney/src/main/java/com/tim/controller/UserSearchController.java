@@ -1,5 +1,7 @@
 package com.tim.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.db.user.UserService;
 import com.tim.entities.User;
+import com.tim.entities.UserPersonal;
 
 @RestController
 @RequestMapping("/userrecord/search")
@@ -18,9 +21,13 @@ public class UserSearchController {
 	private UserService userService;
 	
 	@RequestMapping("/")
-	public Iterable<User> getAllUsers(){
+	public ResponseEntity<List<User>> getAllUsers(){
 		System.out.println("finding all users");
-		return userService.findAll();
+		List<User> users=userService.currentRecords();
+		if(users!=null) {
+			System.out.println("user count: "+users.size());
+		}
+		return new ResponseEntity<List<User>>(users,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/{username}")
@@ -29,9 +36,8 @@ public class UserSearchController {
 		if(username!=null) {
 			u=userService.findByUsername(username);
 		}
-		System.out.println("test: "+u.getUsername());
+		//System.out.println("test: "+u.getUsername());
 		return new ResponseEntity<User>(u,HttpStatus.OK);
-		//return null;
 		
 	}
 	

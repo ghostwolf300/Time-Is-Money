@@ -1,4 +1,4 @@
-package com.tim.db;
+package com.tim.db.userpersonal;
 
 import java.sql.Date;
 
@@ -19,10 +19,11 @@ public class UserPersonalServiceImpl implements UserPersonalService {
 		return userPersonalRepository.findByUserPersonalKey(key);
 	}
 
-	/*@Override
+	@Override
 	public UserPersonal findByUserIdAndStartDate(int userId, Date startDate) {
-		return userPersonalRepository.findByUserIdAndStartDate(userId, startDate);
-	}*/
+		UserPersonalKey key=new UserPersonalKey(userId,startDate);
+		return userPersonalRepository.findByUserPersonalKey(key);
+	}
 
 	@Override
 	public UserPersonal findLatest(int userId) {
