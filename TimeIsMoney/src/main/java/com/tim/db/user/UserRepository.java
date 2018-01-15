@@ -15,7 +15,7 @@ import com.tim.entities.User;
 public interface UserRepository extends JpaRepository<User,Long>, UserRepositoryCustom{
 	
 	public User findByUsername(String username);
-	public User findByUserPersonalSetLastName(String lastName);
+	public User findByPersonalRecordsLastName(String lastName);
 	public User findByUsernameAndEnabled(String username,boolean enabled);
 
 }

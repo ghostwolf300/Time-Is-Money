@@ -1,6 +1,7 @@
 package com.tim.entities;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,13 +10,20 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 
 @Entity
 @Table(name="user")
+@JsonIdentityInfo(
+		generator=ObjectIdGenerators.PropertyGenerator.class,
+		property="id"
+)
 public class User implements Serializable {
 	
 	/**
@@ -34,19 +42,16 @@ public class User implements Serializable {
 	private boolean enabled=false;
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
-	//@JsonIgnore
-	@JsonManagedReference
-	private Set<UserPersonal> userPersonalSet;
+	//@JsonBackReference
+	private List<UserPersonal> personalRecords;
 	
 	@OneToMany(mappedBy="changedBy",cascade=CascadeType.ALL)
-	//@JsonIgnore
-	@JsonManagedReference
-	private Set<UserPersonal> userPersonalChangedSet;
+	//@JsonBackReference
+	private List<UserPersonal> personalRecordsChanged;
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
-	//@JsonIgnore
-	@JsonManagedReference
-	private Set<UserRole> userRolesSet;
+	//@JsonBackReference
+	private List<UserRole> userRoles;
 	
 	public User() {
 		
@@ -76,28 +81,28 @@ public class User implements Serializable {
 		this.enabled = enabled;
 	}
 
-	public Set<UserPersonal> getUserPersonalChangedSet() {
-		return userPersonalChangedSet;
+	public List<UserPersonal> getPersonalRecordsChanged() {
+		return personalRecordsChanged;
 	}
 
-	public void setUserPersonalChangedSet(Set<UserPersonal> userPersonalChangedSet) {
-		this.userPersonalChangedSet = userPersonalChangedSet;
+	public void setPersonalRecordsChanged(List<UserPersonal> personalRecordsChanged) {
+		this.personalRecordsChanged = personalRecordsChanged;
 	}
 
-	public Set<UserRole> getUserRolesSet() {
-		return userRolesSet;
+	public List<UserRole> getUserRoles() {
+		return userRoles;
 	}
 
-	public void setUserRolesSet(Set<UserRole> userRolesSet) {
-		this.userRolesSet = userRolesSet;
+	public void setUserRoles(List<UserRole> userRoles) {
+		this.userRoles = userRoles;
 	}
 
-	public Set<UserPersonal> getUserPersonalSet() {
-		return userPersonalSet;
+	public List<UserPersonal> getPersonalRecords() {
+		return personalRecords;
 	}
 
-	public void setUserPersonalSet(Set<UserPersonal> userPersonalSet) {
-		this.userPersonalSet = userPersonalSet;
+	public void setPersonalRecords(List<UserPersonal> personalRecords) {
+		this.personalRecords = personalRecords;
 	}
 	
 	

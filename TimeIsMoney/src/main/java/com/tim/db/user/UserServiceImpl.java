@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findByUserPersonalSetLastName(String lastName) {
-		return userRepository.findByUserPersonalSetLastName(lastName);
+		return userRepository.findByPersonalRecordsLastName(lastName);
 	}
 
 	@Override

@@ -28,10 +28,12 @@ function displayResults(users){
 	var trHtml='';
 	$('#searchResults-tbody').empty();
 	$.each(users, function(i,user){
+		records=user.personalRecords;
+		rec=records[Object.keys(records)[0]];
 		trHtml+='<tr>\
 		<td>'+user.id+'</td>\
 		<td>'+user.username+'</td>\
-		<td>'+user.userPersonalSet[0].lastName+', '+user.userPersonalSet[0].firstName+'</td>\
+		<td>'+rec.lastName+', '+rec.firstName+'</td>\
 		<td><input type="button" value="Show..." onclick="showUser('+user.id+')"/></td>\
 		</tr>'
 	});
@@ -46,6 +48,18 @@ function showPersonalDetails(userId){
 	var url='/userrecord/show/'+userId+'/personaldetails';
 	$.getJSON(url,function(userDetails){
 		console.log(userDetails);
+		$('#personalStartDate').val(userDetails.startDate);
+		$('#personalEndDate').val(userDetails.endDate);
+		$('#firstName').val(userDetails.firstName);
+		$('#middleName').val(userDetails.middleName);
+		$('#lastName').val(userDetails.lastName);
+		$('#birthDate').val(userDetails.birthDate);
+		$('#phone').val(userDetails.phone);
+		$('#email').val(userDetails.email);
+		$('#userName').val(userDetails.user.username);
+		$('#password').val(userDetails.user.password);
+		$('#enabled').attr("checked").val(userDetails.user.enabled);
+		
 	});
 }
 

@@ -14,9 +14,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="user_personal")
+@JsonIdentityInfo(
+		generator=ObjectIdGenerators.PropertyGenerator.class,
+		property="userPersonalKey"
+)
 public class UserPersonal implements Serializable {
 	
 	/**
@@ -46,12 +54,12 @@ public class UserPersonal implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="user_id", nullable=false,insertable=false,updatable=false)
-	@JsonBackReference
+	//@JsonManagedReference
 	private User user=null;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="changed_by", nullable=true)
-	@JsonBackReference
+	//@JsonManagedReference
 	private User changedBy=null;
 	
 	public UserPersonal() {

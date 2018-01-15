@@ -36,7 +36,7 @@ public class UserRestController {
 			e.printStackTrace();
 		}
 		UserPersonal up=userPersonalService.findByUserIdAndStartDate(userId, d);
-		System.out.println("We found: "+up.getFirstName());
+		System.out.println("We found: "+up.getUser().getUsername());
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
