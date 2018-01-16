@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.db.user.UserService;
+import com.tim.db.userpersonal.UserPersonalService;
 import com.tim.entities.User;
 import com.tim.entities.UserPersonal;
 
@@ -20,14 +21,14 @@ public class UserSearchController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired 
+	private UserPersonalService upService;
+	
 	@RequestMapping("/")
-	public ResponseEntity<List<User>> getAllUsers(){
+	public ResponseEntity<List<UserPersonal>> getAllUsers(){
 		System.out.println("finding all users");
-		List<User> users=userService.currentRecords();
-		if(users!=null) {
-			System.out.println("user count: "+users.size());
-		}
-		return new ResponseEntity<List<User>>(users,HttpStatus.OK);
+		List<UserPersonal> users=upService.findAll();
+		return new ResponseEntity<List<UserPersonal>>(users,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/{username}")

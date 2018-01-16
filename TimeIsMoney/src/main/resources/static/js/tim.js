@@ -27,14 +27,12 @@ function findAll(){
 function displayResults(users){
 	var trHtml='';
 	$('#searchResults-tbody').empty();
-	$.each(users, function(i,user){
-		records=user.personalRecords;
-		rec=records[Object.keys(records)[0]];
+	$.each(users, function(i,up){
 		trHtml+='<tr>\
-		<td>'+user.id+'</td>\
-		<td>'+user.username+'</td>\
-		<td>'+rec.lastName+', '+rec.firstName+'</td>\
-		<td><input type="button" value="Show..." onclick="showUser('+user.id+')"/></td>\
+		<td>'+up.userPersonalKey.userId+'</td>\
+		<td>'+up.user.username+'</td>\
+		<td>'+up.lastName+', '+up.firstName+'</td>\
+		<td><input type="button" value="Show..." onclick="showUser('+up.userPersonalKey.userId+')"/></td>\
 		</tr>'
 	});
 	$('#searchResults-tbody').append(trHtml);
@@ -58,7 +56,7 @@ function showPersonalDetails(userId){
 		$('#email').val(userDetails.email);
 		$('#userName').val(userDetails.user.username);
 		$('#password').val(userDetails.user.password);
-		$('#enabled').attr("checked").val(userDetails.user.enabled);
+		$('#enabled').prop("checked",userDetails.user.enabled);
 		
 	});
 }

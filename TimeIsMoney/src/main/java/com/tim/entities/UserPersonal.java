@@ -21,10 +21,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="user_personal")
-@JsonIdentityInfo(
+/*@JsonIdentityInfo(
 		generator=ObjectIdGenerators.PropertyGenerator.class,
 		property="userPersonalKey"
-)
+)*/
 public class UserPersonal implements Serializable {
 	
 	/**
@@ -33,34 +33,34 @@ public class UserPersonal implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	private UserPersonalKey userPersonalKey=null;
+	private UserPersonalKey userPersonalKey;
 	
 	@Column(name="end_date")
-	private Date endDate=null;
+	private Date endDate;
 	@Column(name="first_name")
-	private String firstName=null;
+	private String firstName;
 	@Column(name="last_name")
-	private String lastName=null;
+	private String lastName;
 	@Column(name="middle_name")
-	private String middleName=null;
+	private String middleName;
 	@Column(name="birth_date")
-	private Date birthDate=null;
+	private Date birthDate;
 	@Column(name="phone")
-	private String phone=null;
+	private String phone;
 	@Column(name="email")
-	private String email=null;
+	private String email;
 	@Column(name="change_ts")
-	private Timestamp changeTs=null;
+	private Timestamp changeTs;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id", nullable=false,insertable=false,updatable=false)
-	//@JsonManagedReference
-	private User user=null;
+	//@JsonBackReference
+	private User user;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="changed_by", nullable=true)
-	//@JsonManagedReference
-	private User changedBy=null;
+	//@JsonBackReference
+	private User changedBy;
 	
 	public UserPersonal() {
 		

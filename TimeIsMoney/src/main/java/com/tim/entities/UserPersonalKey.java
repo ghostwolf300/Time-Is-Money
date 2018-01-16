@@ -19,10 +19,10 @@ public class UserPersonalKey implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name="user_id")
-	private int userId=-1;
+	private int userId;
 
 	@Column(name="start_date")
-	private Date startDate=null;
+	private Date startDate;
 	
 	public UserPersonalKey() {
 		

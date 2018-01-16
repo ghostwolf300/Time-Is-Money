@@ -22,17 +22,17 @@ public class UserRole implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	private UserRoleKey userRoleKey=null;
+	private UserRoleKey userRoleKey;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="user_id", nullable=false, insertable=false, updatable=false)
 	@JsonBackReference
-	private User user=null;
+	private User user;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="role_id", nullable=false, insertable=false, updatable=false)
 	@JsonBackReference
-	private Role role=null;
+	private Role role;
 	
 	public UserRole() {
 		

@@ -14,9 +14,9 @@ public class UserRoleKey implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name="user_id")
-	private int userId=-1;
+	private int userId;
 	@Column(name="role_id")
-	private int roleId=-1;
+	private int roleId;
 	
 	public UserRoleKey() {
 		

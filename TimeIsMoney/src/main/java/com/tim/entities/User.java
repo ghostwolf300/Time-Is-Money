@@ -20,10 +20,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="user")
-@JsonIdentityInfo(
+/*@JsonIdentityInfo(
 		generator=ObjectIdGenerators.PropertyGenerator.class,
 		property="id"
-)
+)*/
 public class User implements Serializable {
 	
 	/**
@@ -33,24 +33,24 @@ public class User implements Serializable {
 	
 	@Id
 	@Column(name="id",table="user")
-	private int id=-1;
+	private int id;
 	@Column(name="username",table="user")
-	private String username=null;
+	private String username;
 	@Column(name="password",table="user")
-	private String password=null;
+	private String password;
 	@Column(name="enabled",table="user")
-	private boolean enabled=false;
+	private boolean enabled;
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
-	//@JsonBackReference
+	@JsonBackReference
 	private List<UserPersonal> personalRecords;
 	
 	@OneToMany(mappedBy="changedBy",cascade=CascadeType.ALL)
-	//@JsonBackReference
+	@JsonBackReference
 	private List<UserPersonal> personalRecordsChanged;
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
-	//@JsonBackReference
+	@JsonBackReference
 	private List<UserRole> userRoles;
 	
 	public User() {

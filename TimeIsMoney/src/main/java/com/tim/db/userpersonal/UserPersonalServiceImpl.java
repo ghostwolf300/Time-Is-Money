@@ -1,6 +1,7 @@
 package com.tim.db.userpersonal;
 
 import java.sql.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,17 +13,22 @@ import com.tim.entities.UserPersonalKey;
 public class UserPersonalServiceImpl implements UserPersonalService {
 	
 	@Autowired
-	private UserPersonalRepository userPersonalRepository;
+	private UserPersonalRepository upRepo;
+	
+	@Override
+	public List<UserPersonal> findAll() {
+		return upRepo.findByEndDate(null);
+	}
 	
 	@Override
 	public UserPersonal findByUserPersonalKey(UserPersonalKey key) {
-		return userPersonalRepository.findByUserPersonalKey(key);
+		return upRepo.findByUserPersonalKey(key);
 	}
 
 	@Override
 	public UserPersonal findByUserIdAndStartDate(int userId, Date startDate) {
 		UserPersonalKey key=new UserPersonalKey(userId,startDate);
-		return userPersonalRepository.findByUserPersonalKey(key);
+		return upRepo.findByUserPersonalKey(key);
 	}
 
 	@Override
@@ -30,6 +36,8 @@ public class UserPersonalServiceImpl implements UserPersonalService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 
 }
