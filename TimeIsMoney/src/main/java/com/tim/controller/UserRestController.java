@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.entities.Role;
+import com.tim.entities.User;
+import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
 import com.tim.service.UserPersonalService;
@@ -45,14 +47,29 @@ public class UserRestController {
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/roledetails")
-	public ResponseEntity<List<Role>> getRoleDetails(@PathVariable int userId){
-		System.out.println("retrieving role details...");
-		List<Role> roles=userService.findRolesByUserId(userId);
-		for(Role r : roles) {
-			System.out.println("has role "+r.getRoleName());
+	@RequestMapping("/contractdetails")
+	public ResponseEntity<UserContract> getContractDetails(@PathVariable int userId){
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		Date d=null;
+		try {
+			d = new Date(sdf.parse("2018-01-01").getTime());
+		} 
+		catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return new ResponseEntity<List<Role>>(roles,HttpStatus.OK);
+		UserContract uc=userService.findContractByKeyDate(userId, d);
+		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
+	}
+	
+	@RequestMapping("/roledetails")
+	public ResponseEntity<List<UserRole>> getRoleDetails(@PathVariable int userId){
+		System.out.println("retrieving role details...");
+		List<UserRole> roles=userService.findRolesByUserId(userId);
+		for(UserRole r : roles) {
+			System.out.println("has role "+r.getRole().getRoleName());
+		}
+		return new ResponseEntity<List<UserRole>>(roles,HttpStatus.OK);
 	}
 
 }

@@ -40,9 +40,26 @@ function displayResults(users){
 
 function showUser(userId){
 	showPersonalDetails(userId);
+	showContractDetails(userId);
+	showRolesDetails(userId);
 }
 
 function showPersonalDetails(userId){
+	
+	$('#personalStartDate').val(null);
+	$('#personalEndDate').val(null);
+	$('#firstName').val(null);
+	$('#middleName').val(null);
+	$('#lastName').val(null);
+	$('#birthDate').val(null);
+	$('#phone').val(null);
+	$('#email').val(null);
+	$('#id').val(null);
+	$('#secondaryId').val(null);
+	$('#uname').val(null);
+	$('#pword').val(null);
+	$('#enabled').prop("checked",false);
+	
 	var url='/userrecord/show/'+userId+'/personaldetails';
 	$.getJSON(url,function(ud){
 		console.log(ud);
@@ -63,9 +80,21 @@ function showPersonalDetails(userId){
 }
 
 function showContractDetails(userId){
+	
+	$('#contractStartDate').val(null);
+	$('#contractEndDate').val(null);
+	$('#contractType').val(null);
+	$('#minHours').val(null);
+	$('#maxHours').val(null);
+	
 	var url='/userrecord/show/'+userId+'/contractdetails';
-	$.getJSON(url,function(contractDetails){
-		console.log(contractDetails);
+	$.getJSON(url,function(cd){
+		console.log(cd);
+		$('#contractStartDate').val(cd.userContractKey.startDate);
+		$('#contractEndDate').val(cd.endDate);
+		$('#contractType').val(cd.contractType.id);
+		$('#minHours').val(cd.minHours);
+		$('#maxHours').val(cd.maxHours);
 	});
 }
 
@@ -77,8 +106,29 @@ function showCredentialsDetails(userId){
 }
 
 function showRolesDetails(userId){
-	var url='/userrecord/show/'+userId+'/rolessdetails';
-	$.getJSON(url,function(rolesDetails){
-		console.log(rolesDetails);
+	var url='/userrecord/show/'+userId+'/roledetails';
+	$.getJSON(url,function(roles){
+		console.log(roles);
+		$('#roles').find('input[type="checkbox"]').each(function(){
+			var cb=$(this);
+			cb.prop('checked',false);
+		});
+		
+		$.each(roles, function(i,r){
+			switch(r.role.id){
+				case 1:
+					$('#roleAdmin').prop('checked',true);
+					break;
+				case 2:
+					$('#roleManager').prop('checked',true);
+					break;
+				case 3:
+					$('#roleCoWorker').prop('checked',true);
+					break;
+				case 4:
+					$('#roleShiftPlanner').prop('checked',true);
+					break;
+			}
+		});
 	});
 }

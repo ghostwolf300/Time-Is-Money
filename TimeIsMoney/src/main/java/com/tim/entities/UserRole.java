@@ -12,9 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="user_role")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserRole implements Serializable {
 	/**
 	 * 
@@ -26,12 +28,10 @@ public class UserRole implements Serializable {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="user_id", nullable=false, insertable=false, updatable=false)
-	@JsonBackReference
 	private User user;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="role_id", nullable=false, insertable=false, updatable=false)
-	@JsonBackReference
 	private Role role;
 	
 	public UserRole() {

@@ -15,16 +15,14 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="user_personal")
-/*@JsonIdentityInfo(
-		generator=ObjectIdGenerators.PropertyGenerator.class,
-		property="userPersonalKey"
-)*/
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserPersonal implements Serializable {
 	
 	/**

@@ -1,14 +1,19 @@
 package com.tim.service;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tim.db.user.UserRepository;
+import com.tim.db.usercontract.UserContractRepository;
 import com.tim.db.userrole.UserRoleRepository;
 import com.tim.entities.Role;
 import com.tim.entities.User;
+import com.tim.entities.UserContract;
+import com.tim.entities.UserPersonal;
+import com.tim.entities.UserRole;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -17,6 +22,8 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	@Autowired
 	private UserRoleRepository userRoleRepository;
+	@Autowired
+	private UserContractRepository userContractRepository;
 	
 	@Override
 	public List<User> findAll() {
@@ -49,8 +56,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Role> findRolesByUserId(int userId) {
+	public List<UserRole> findRolesByUserId(int userId) {
 		return userRoleRepository.findByUserId(userId);
 	}
+	
+	@Override
+	public UserPersonal findPersonalByKeyDate(int userId, Date date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserContract findContractByKeyDate(int userId, Date date) {
+		return userContractRepository.findByUserIdAndKeyDate(userId, date);
+	}
+
+	
 
 }
