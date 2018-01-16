@@ -41,6 +41,7 @@ function displayResults(users){
 function showUser(userId){
 	showPersonalDetails(userId);
 	showContractDetails(userId);
+	showCredentialsDetails(userId);
 	showRolesDetails(userId);
 }
 
@@ -54,11 +55,8 @@ function showPersonalDetails(userId){
 	$('#birthDate').val(null);
 	$('#phone').val(null);
 	$('#email').val(null);
-	$('#id').val(null);
-	$('#secondaryId').val(null);
-	$('#uname').val(null);
-	$('#pword').val(null);
-	$('#enabled').prop("checked",false);
+	$('#personalChangedTs').empty();
+	$('#personalChangedBy').empty();
 	
 	var url='/userrecord/show/'+userId+'/personaldetails';
 	$.getJSON(url,function(ud){
@@ -71,11 +69,9 @@ function showPersonalDetails(userId){
 		$('#birthDate').val(ud.birthDate);
 		$('#phone').val(ud.phone);
 		$('#email').val(ud.email);
-		$('#id').val(ud.userPersonalKey.userId);
-		$('#secondaryId').val(ud.user.secondaryId);
-		$('#uname').val(ud.user.username);
-		$('#pword').val(ud.user.password);
-		$('#enabled').prop("checked",ud.user.enabled);
+		var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy hh:mm');
+		$('#personalChangedTs').append(ts);
+		$('#personalChangedBy').append(ud.changedBy.username);
 	});
 }
 
@@ -86,6 +82,8 @@ function showContractDetails(userId){
 	$('#contractType').val(null);
 	$('#minHours').val(null);
 	$('#maxHours').val(null);
+	$('#contractChangedTs').empty();
+	$('#contractChangedBy').empty();
 	
 	var url='/userrecord/show/'+userId+'/contractdetails';
 	$.getJSON(url,function(cd){
@@ -95,13 +93,33 @@ function showContractDetails(userId){
 		$('#contractType').val(cd.contractType.id);
 		$('#minHours').val(cd.minHours);
 		$('#maxHours').val(cd.maxHours);
+		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
+		$('#contractChangedTs').append(ts);
+		$('#contractChangedBy').append(cd.changedBy.username);
 	});
 }
 
 function showCredentialsDetails(userId){
+	
+	$('#id').val(null);
+	$('#secondaryId').val(null);
+	$('#uname').val(null);
+	$('#pword').val(null);
+	$('#enabled').prop("checked",false);
+	$('#credentialsChangedTs').empty();
+	$('#credentialsChangedBy').empty();
+	
 	var url='/userrecord/show/'+userId+'/credentialsdetails';
-	$.getJSON(url,function(credentialsDetails){
-		console.log(credentialsDetails);
+	$.getJSON(url,function(cd){
+		console.log(cd);
+		$('#id').val(cd.id);
+		$('#secondaryId').val(cd.secondaryId);
+		$('#uname').val(cd.username);
+		$('#pword').val(cd.password);
+		$('#enabled').prop("checked",cd.enabled);
+		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
+		$('#credentialsChangedTs').append(ts);
+		$('#credentialsChangedBy').append(cd.changedBy.username);
 	});
 }
 

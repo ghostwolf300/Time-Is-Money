@@ -14,6 +14,7 @@ public interface UserService {
 	public List<User> findAll();
 	public User findByUsername(String username);
 	public User findByUserPersonalSetLastName(String lastName);
+	public User findByUserId(int id);
 	public User currentRecord(String username);
 	public List<User> currentRecords();
 	public List<UserRole> findRolesByUserId(int userId);

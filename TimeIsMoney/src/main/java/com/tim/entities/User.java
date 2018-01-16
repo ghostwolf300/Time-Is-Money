@@ -1,6 +1,7 @@
 package com.tim.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -38,6 +39,8 @@ public class User implements Serializable {
 	private String password;
 	@Column(name="enabled",table="user")
 	private boolean enabled;
+	@Column(name="changeTs")
+	private Timestamp changeTs;
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
 	@JsonBackReference
@@ -101,6 +104,14 @@ public class User implements Serializable {
 
 	public void setPersonalRecords(List<UserPersonal> personalRecords) {
 		this.personalRecords = personalRecords;
+	}
+
+	public Timestamp getChangeTs() {
+		return changeTs;
+	}
+
+	public void setChangeTs(Timestamp changeTs) {
+		this.changeTs = changeTs;
 	}
 	
 	

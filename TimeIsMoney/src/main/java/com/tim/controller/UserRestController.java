@@ -62,6 +62,12 @@ public class UserRestController {
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
 	}
 	
+	@RequestMapping("/credentialsdetails")
+	public ResponseEntity<User> getCredentialsDetails(@PathVariable int userId){
+		User u=userService.findByUserId(userId);
+		return new ResponseEntity<User>(u,HttpStatus.OK);
+	}
+	
 	@RequestMapping("/roledetails")
 	public ResponseEntity<List<UserRole>> getRoleDetails(@PathVariable int userId){
 		System.out.println("retrieving role details...");

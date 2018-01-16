@@ -71,6 +71,11 @@ public class UserServiceImpl implements UserService {
 		return userContractRepository.findByUserIdAndKeyDate(userId, date);
 	}
 
+	@Override
+	public User findByUserId(int id) {
+		return userRepository.findById(id);
+	}
+
 	
 
 }
