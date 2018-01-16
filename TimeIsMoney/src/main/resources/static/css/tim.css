@@ -116,6 +116,54 @@ div#bar.header{
 }
 
 /*----End Header-----*/
+/*----User Record----*/
+
+div#userrecord{
+	width:100%;
+	margin-top:6px;
+	margin-left:10px;
+	margin-right:10px;
+}
+
+div#personal{
+	width:100%;
+	border: 1px solid black;	
+}
+div#contract{
+	width:100%;
+	border: 1px solid black;
+}
+div#credentialsAndRoles{
+	width:100%;
+	border: 1px solid black;
+}
+
+/*----End User Record----*/
+/*----Record Control----*/
+div#recordControls_top{
+	width: 100%;
+	height: 36px;
+	background: lightgrey;
+}
+
+div#recordControls_top_left{
+	float: left;
+	margin-left: 10px;
+}
+
+div#recordControls_top_right{
+	float: right;
+	margin-right: 10px;
+}
+
+div#recordControls_bottom{
+	width: 100%;
+	height: 36px;
+}
+
+/*----End Record Control---*/
+
+
 
 /* Style The Dropdown Button */
 .dropbtn {

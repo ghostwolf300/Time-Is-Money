@@ -29,11 +29,19 @@
 		</table>
 	</div>
 	<div id="userrecord">
-		<h2>Personal</h2>
 		<div id="personal">
-			<div>
-				<label for="personalStartDate">Start:</label><input id="personalStartDate" type="date"/>
-				<label for="personalEndDate">End:</label><input id="personalEndDate" type="date"/>
+			<h2>Personal</h2>
+			<div id="recordControls_top">
+				<div id="recordControls_top_left">
+					<label for="personalStartDate">Start:</label><input id="personalStartDate" type="date"/>
+					<label for="personalEndDate">End:</label><input id="personalEndDate" type="date"/>
+					<input id="prevPersonalDetail" type="button" value="Prev"/>
+					<input id="nextPersonalDetail" type="button" value="Next"/>
+					<input id="newPersonalDetail" type="button" value="New"/>
+				</div>
+				<div id="recordControls_top_right">
+					<input id="delPersonalDetail" type="button" value="Delete"/>
+				</div>
 			</div>
 			<div>
 				<div>
@@ -49,12 +57,25 @@
 					<label for="email">Email:</label><input id="email" type="text"/>
 				</div>
 			</div>
+			<div id="recordControls_bottom">
+				<input id="savePersonalDetails" type="button" value="Save"/>
+			</div>
 		</div>
 		<div id="contract">
 			<h2>Contract</h2>
 			<div>
-				<label for="contractStartDate">Start:</label><input id="contractStartDate" type="date"/>
-				<label for="contractEndDate">End:</label><input id="contractEndDate" type="date"/>
+				<div id="recordControls_top">
+					<div id="recordControls_top_left">
+						<label for="contractStartDate">Start:</label><input id="contractStartDate" type="date"/>
+						<label for="contractEndDate">End:</label><input id="contractEndDate" type="date"/>
+						<input id="prevContractDetail" type="button" value="Prev"/>
+						<input id="nextContractDetail" type="button" value="Next"/>
+						<input id="newContractDetail" type="button" value="New"/>
+					</div>
+					<div id="recordControls_top_right">
+						<input id="delPersonalDetail" type="button" value="Delete"/>
+					</div>
+				</div>
 			</div>
 			<div>
 				<label for="contractType">Contract type:</label>
@@ -68,35 +89,43 @@
 				<label for="minHours">Min hours:</label><input id="minHours" type="number"/>
 				<label for="maxHours">Max hours:</label><input id="maxHours" type="number"/>
 			</div>
-		</div>
-		<div id="credentials">
-			<h2>Credentials</h2>
-			<div>
-				<label for="id">ID:</label>
-				<label for="secondaryId">Secondary ID:</label><input id="secondaryId" type="text"/>
-			</div>
-			<div>
-				<label for="username">Username:</label><input id="username" type="text"/>
-				<label for="password">Password:</label><input id="password" type="password"/>
-				<label for="enabled">Enabled</label><input id="enabled" type="checkbox"/>
+			<div id="recordControls_bottom">
+				<input id="saveContractDetails" type="button" value="Save"/>
 			</div>
 		</div>
-		<div id="roles">
-			<h2>Roles</h2>
-			<table>
-				<tr>
-					<td><label for="roleAdmin">Admin</label></td><td><input id="roleAdmin" type="checkbox"/></td>
-				</tr>
-				<tr>
-					<td><label for="roleManager">Manager</label></td><td><input id="roleManager" type="checkbox"/></td>
-				</tr>
-				<tr>
-					<td><label for="roleCoWorker">Co-worker</label></td><td><input id="roleCoWorker" type="checkbox"/></td>
-				</tr>
-				<tr>
-					<td><label for="roleShiftPlanner">Shift Planner</label></td><td><input id="roleShiftPlanner" type="checkbox"/></td>
-				</tr>
-			</table>
+		<div id="credentialsAndRoles">
+			<div id="credentials">
+				<h2>Credentials</h2>
+				<div>
+					<label for="id">ID:</label><input id="id" type="text" disabled="true"/>
+					<label for="secondaryId">Secondary ID:</label><input id="secondaryId" type="text"/>
+				</div>
+				<div>
+					<label for="uname">Username:</label><input id="uname" type="text"/>
+					<label for="pword">Password:</label><input id="pword" type="password"/>
+					<label for="enabled">Enabled</label><input id="enabled" type="checkbox"/>
+				</div>
+			</div>
+			<div id="roles">
+				<h2>Roles</h2>
+				<table>
+					<tr>
+						<td><label for="roleAdmin">Admin</label></td><td><input id="roleAdmin" type="checkbox"/></td>
+					</tr>
+					<tr>
+						<td><label for="roleManager">Manager</label></td><td><input id="roleManager" type="checkbox"/></td>
+					</tr>
+					<tr>
+						<td><label for="roleCoWorker">Co-worker</label></td><td><input id="roleCoWorker" type="checkbox"/></td>
+					</tr>
+					<tr>
+						<td><label for="roleShiftPlanner">Shift Planner</label></td><td><input id="roleShiftPlanner" type="checkbox"/></td>
+					</tr>
+				</table>
+			</div>
+			<div id="recordControls_bottom">
+				<input id="saveCredentialsDetails" type="button" value="Save"/>
+			</div>
 		</div>
 	</div>
 </div>

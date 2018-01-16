@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tim.db.user.UserService;
 import com.tim.entities.User;
+import com.tim.service.UserService;
 
 @RestController
 @RequestMapping("/users")

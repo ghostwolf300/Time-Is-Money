@@ -54,12 +54,10 @@ public class UserPersonal implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="user_id", nullable=false,insertable=false,updatable=false)
-	//@JsonBackReference
 	private User user;
 	
 	@ManyToOne
 	@JoinColumn(name="changed_by", nullable=true)
-	//@JsonBackReference
 	private User changedBy;
 	
 	public UserPersonal() {

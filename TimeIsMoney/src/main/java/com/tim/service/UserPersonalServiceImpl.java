@@ -1,4 +1,4 @@
-package com.tim.db.userpersonal;
+package com.tim.service;
 
 import java.sql.Date;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tim.db.userpersonal.UserPersonalRepository;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserPersonalKey;
 

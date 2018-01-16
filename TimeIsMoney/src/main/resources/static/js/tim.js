@@ -44,20 +44,21 @@ function showUser(userId){
 
 function showPersonalDetails(userId){
 	var url='/userrecord/show/'+userId+'/personaldetails';
-	$.getJSON(url,function(userDetails){
-		console.log(userDetails);
-		$('#personalStartDate').val(userDetails.startDate);
-		$('#personalEndDate').val(userDetails.endDate);
-		$('#firstName').val(userDetails.firstName);
-		$('#middleName').val(userDetails.middleName);
-		$('#lastName').val(userDetails.lastName);
-		$('#birthDate').val(userDetails.birthDate);
-		$('#phone').val(userDetails.phone);
-		$('#email').val(userDetails.email);
-		$('#userName').val(userDetails.user.username);
-		$('#password').val(userDetails.user.password);
-		$('#enabled').prop("checked",userDetails.user.enabled);
-		
+	$.getJSON(url,function(ud){
+		console.log(ud);
+		$('#personalStartDate').val(ud.userPersonalKey.startDate);
+		$('#personalEndDate').val(ud.endDate);
+		$('#firstName').val(ud.firstName);
+		$('#middleName').val(ud.middleName);
+		$('#lastName').val(ud.lastName);
+		$('#birthDate').val(ud.birthDate);
+		$('#phone').val(ud.phone);
+		$('#email').val(ud.email);
+		$('#id').val(ud.userPersonalKey.userId);
+		$('#secondaryId').val(ud.user.secondaryId);
+		$('#uname').val(ud.user.username);
+		$('#pword').val(ud.user.password);
+		$('#enabled').prop("checked",ud.user.enabled);
 	});
 }
 

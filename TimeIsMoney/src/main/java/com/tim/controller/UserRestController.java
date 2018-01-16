@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tim.db.userpersonal.UserPersonalService;
+import com.tim.entities.Role;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
+import com.tim.service.UserPersonalService;
+import com.tim.service.UserService;
 
 @RestController
 @RequestMapping("/userrecord/show/{userId}")
@@ -22,6 +24,9 @@ public class UserRestController {
 	
 	@Autowired
 	private UserPersonalService userPersonalService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping("/personaldetails")
 	public ResponseEntity<UserPersonal> getPersonalDetails(@PathVariable int userId){
@@ -41,9 +46,13 @@ public class UserRestController {
 	}
 	
 	@RequestMapping("/roledetails")
-	public ResponseEntity<List<UserRole>> getRoleDetails(){
+	public ResponseEntity<List<Role>> getRoleDetails(@PathVariable int userId){
 		System.out.println("retrieving role details...");
-		return null;
+		List<Role> roles=userService.findRolesByUserId(userId);
+		for(Role r : roles) {
+			System.out.println("has role "+r.getRoleName());
+		}
+		return new ResponseEntity<List<Role>>(roles,HttpStatus.OK);
 	}
 
 }

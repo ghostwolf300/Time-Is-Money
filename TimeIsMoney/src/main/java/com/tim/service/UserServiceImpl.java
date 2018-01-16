@@ -1,10 +1,13 @@
-package com.tim.db.user;
+package com.tim.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tim.db.user.UserRepository;
+import com.tim.db.userrole.UserRoleRepository;
+import com.tim.entities.Role;
 import com.tim.entities.User;
 
 @Service("userService")
@@ -12,6 +15,8 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserRoleRepository userRoleRepository;
 	
 	@Override
 	public List<User> findAll() {
@@ -41,6 +46,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> currentRecords() {
 		return userRepository.currentRecords();
+	}
+
+	@Override
+	public List<Role> findRolesByUserId(int userId) {
+		return userRoleRepository.findByUserId(userId);
 	}
 
 }
