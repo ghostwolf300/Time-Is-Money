@@ -32,7 +32,6 @@ public class UserPersonal implements Serializable {
 	
 	@EmbeddedId
 	private UserPersonalKey userPersonalKey;
-	
 	@Column(name="end_date")
 	private Date endDate;
 	@Column(name="first_name")
@@ -47,16 +46,17 @@ public class UserPersonal implements Serializable {
 	private String phone;
 	@Column(name="email")
 	private String email;
+	/*@ManyToOne
+	@JoinColumn(name="changed_by", nullable=false)
+	private User changedBy;*/
+	@Column(name="changed_by")
+	private int changedBy;
 	@Column(name="change_ts")
 	private Timestamp changeTs;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id", nullable=false,insertable=false,updatable=false)
 	private User user;
-	
-	@ManyToOne
-	@JoinColumn(name="changed_by", nullable=true)
-	private User changedBy;
 	
 	public UserPersonal() {
 		
@@ -126,13 +126,13 @@ public class UserPersonal implements Serializable {
 		this.email = email;
 	}
 
-	public User getChangedBy() {
+	/*public User getChangedBy() {
 		return changedBy;
 	}
 
 	public void setChangedBy(User changedBy) {
 		this.changedBy = changedBy;
-	}
+	}*/
 
 	public Timestamp getChangeTs() {
 		return changeTs;
@@ -148,6 +148,14 @@ public class UserPersonal implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public int getChangedBy() {
+		return changedBy;
+	}
+
+	public void setChangedBy(int changedBy) {
+		this.changedBy = changedBy;
 	}
 	
 }

@@ -40,6 +40,68 @@ INSERT INTO `contract_type` VALUES (1,'FT Retail Employee'),(2,'PT Retail Employ
 UNLOCK TABLES;
 
 --
+-- Table structure for table `cost_center`
+--
+
+DROP TABLE IF EXISTS `cost_center`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cost_center` (
+  `id` int(11) NOT NULL,
+  `secondary_id` varchar(32) DEFAULT NULL,
+  `name` varchar(32) NOT NULL,
+  `enabled` tinyint(1) DEFAULT '1',
+  `changed_by` int(11) DEFAULT NULL,
+  `change_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_cost_center_changed_by` (`changed_by`),
+  CONSTRAINT `fk_cost_center_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cost_center`
+--
+
+LOCK TABLES `cost_center` WRITE;
+/*!40000 ALTER TABLE `cost_center` DISABLE KEYS */;
+INSERT INTO `cost_center` VALUES (1,'0371001','Sales',1,2,'2018-01-17 09:07:39'),(2,'0371234','Projects',1,2,'2018-01-17 09:07:39'),(3,'4225555','Logistics',1,2,'2018-01-17 09:07:39'),(4,'0086542','Restaurant',1,2,'2018-01-17 09:07:39'),(5,'0376379','Management',1,2,'2018-01-17 09:07:46');
+/*!40000 ALTER TABLE `cost_center` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `org_unit`
+--
+
+DROP TABLE IF EXISTS `org_unit`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `org_unit` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `cost_center_id` int(11) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `changed_by` int(11) DEFAULT NULL,
+  `change_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_org_unit_cost_center_id` (`cost_center_id`),
+  KEY `fk_org_unit_changed_by` (`changed_by`),
+  CONSTRAINT `fk_org_unit_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `fk_org_unit_cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `org_unit`
+--
+
+LOCK TABLES `org_unit` WRITE;
+/*!40000 ALTER TABLE `org_unit` DISABLE KEYS */;
+INSERT INTO `org_unit` VALUES (1,'Company',NULL,NULL,2,'2018-01-17 09:17:36'),(2,'Store 001',NULL,1,2,'2018-01-17 09:22:59'),(3,'Store 002',NULL,1,2,'2018-01-17 09:22:59'),(4,'Store 003',NULL,1,2,'2018-01-17 09:22:59'),(5,'Store 004',NULL,1,2,'2018-01-17 09:22:59'),(6,'Store 005',NULL,1,2,'2018-01-17 09:23:02'),(7,'Sales',1,2,2,'2018-01-17 09:32:07'),(8,'Projects',2,2,2,'2018-01-17 09:32:07'),(9,'Logistics',3,2,2,'2018-01-17 09:32:07'),(10,'Restaurant',4,2,2,'2018-01-17 09:32:07'),(11,'Management',5,2,2,'2018-01-17 09:32:07'),(12,'Sales',1,3,2,'2018-01-17 09:32:07'),(13,'Projects',2,3,2,'2018-01-17 09:32:07'),(14,'Logistics',3,3,2,'2018-01-17 09:32:07'),(15,'Restaurant',4,3,2,'2018-01-17 09:32:07'),(16,'Management',5,3,2,'2018-01-17 09:32:07'),(17,'Sales',1,4,2,'2018-01-17 09:32:07'),(18,'Projects',2,4,2,'2018-01-17 09:32:07'),(19,'Logistics',3,4,2,'2018-01-17 09:32:07'),(20,'Restaurant',4,4,2,'2018-01-17 09:32:07'),(21,'Management',5,4,2,'2018-01-17 09:32:07'),(22,'Sales',1,5,2,'2018-01-17 09:32:07'),(23,'Projects',2,5,2,'2018-01-17 09:32:07'),(24,'Logistics',3,5,2,'2018-01-17 09:32:07'),(25,'Restaurant',4,5,2,'2018-01-17 09:32:07'),(26,'Management',5,5,2,'2018-01-17 09:32:09'),(27,'Department 01',1,7,2,'2018-01-17 09:36:48'),(28,'Department 02',1,7,2,'2018-01-17 09:36:48'),(29,'Department 03',1,7,2,'2018-01-17 09:36:48'),(30,'Department 01',3,9,2,'2018-01-17 09:36:48'),(31,'Department 02',3,9,2,'2018-01-17 09:36:48'),(32,'Department 03',3,9,2,'2018-01-17 09:36:49'),(33,'Sub-department 01',3,31,2,'2018-01-17 09:37:44'),(34,'Sub-department 02',3,31,2,'2018-01-17 09:37:46');
+/*!40000 ALTER TABLE `org_unit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `role`
 --
 
@@ -92,6 +154,38 @@ LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES (2,'admin','123456',NULL,1,2,'2018-01-12 07:47:26'),(3,'tester1','123456',NULL,1,2,'2018-01-12 07:49:39'),(4,'tester2','123456',NULL,1,2,'2018-01-12 07:49:39'),(5,'tester3','123456',NULL,1,2,'2018-01-12 07:49:39'),(6,'tester4','123456',NULL,1,2,'2018-01-12 07:49:41'),(7,'visus','123456',NULL,1,2,'2018-01-12 07:50:42');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_assignment`
+--
+
+DROP TABLE IF EXISTS `user_assignment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_assignment` (
+  `user_id` int(11) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  `org_unit_id` int(11) NOT NULL,
+  `changed_by` int(11) DEFAULT NULL,
+  `change_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`,`start_date`),
+  KEY `fk_user_assignment_changed_by` (`changed_by`),
+  KEY `fk_user_assignment_org_unit_id` (`org_unit_id`),
+  CONSTRAINT `fk_user_assignment_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `fk_user_assignment_org_unit_id` FOREIGN KEY (`org_unit_id`) REFERENCES `org_unit` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_assignment`
+--
+
+LOCK TABLES `user_assignment` WRITE;
+/*!40000 ALTER TABLE `user_assignment` DISABLE KEYS */;
+INSERT INTO `user_assignment` VALUES (3,'2018-01-01',NULL,27,2,'2018-01-17 09:48:41'),(4,'2018-01-01',NULL,28,2,'2018-01-17 09:48:41'),(5,'2018-01-01',NULL,30,2,'2018-01-17 09:48:41'),(6,'2018-01-01',NULL,33,2,'2018-01-17 09:48:41'),(7,'2018-01-01',NULL,34,2,'2018-01-17 09:48:43');
+/*!40000 ALTER TABLE `user_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -193,4 +287,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-16 16:02:08
+-- Dump completed on 2018-01-17 15:51:12

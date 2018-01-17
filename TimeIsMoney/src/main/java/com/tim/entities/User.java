@@ -8,7 +8,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -16,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
@@ -23,6 +27,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="user")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User implements Serializable {
 	
 	/**
@@ -42,7 +47,16 @@ public class User implements Serializable {
 	@Column(name="changeTs")
 	private Timestamp changeTs;
 	
-	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
+	@ManyToOne
+	@JoinColumn(name="changed_by", nullable=false)
+	@JsonManagedReference
+	private User changedBy;
+	
+	@OneToMany(mappedBy="changedBy")
+	@JsonBackReference
+	private List<User> userRecordsChanged;
+	
+	/*@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
 	@JsonBackReference
 	private List<UserPersonal> personalRecords;
 	
@@ -52,12 +66,12 @@ public class User implements Serializable {
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
 	@JsonBackReference
-	private List<UserRole> userRoles;
+	private List<UserRole> userRoles;*/
 	
 	public User() {
 		
 	}
-
+	
 	public int getId() {
 		return id;
 	}
@@ -82,7 +96,7 @@ public class User implements Serializable {
 		this.enabled = enabled;
 	}
 
-	public List<UserPersonal> getPersonalRecordsChanged() {
+	/*public List<UserPersonal> getPersonalRecordsChanged() {
 		return personalRecordsChanged;
 	}
 
@@ -104,7 +118,7 @@ public class User implements Serializable {
 
 	public void setPersonalRecords(List<UserPersonal> personalRecords) {
 		this.personalRecords = personalRecords;
-	}
+	}*/
 
 	public Timestamp getChangeTs() {
 		return changeTs;
@@ -112,6 +126,30 @@ public class User implements Serializable {
 
 	public void setChangeTs(Timestamp changeTs) {
 		this.changeTs = changeTs;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public User getChangedBy() {
+		return changedBy;
+	}
+
+	public void setChangedBy(User changedBy) {
+		this.changedBy = changedBy;
+	}
+
+	public List<User> getUserRecordsChanged() {
+		return userRecordsChanged;
+	}
+
+	public void setUserRecordsChanged(List<User> userRecordsChanged) {
+		this.userRecordsChanged = userRecordsChanged;
 	}
 	
 	

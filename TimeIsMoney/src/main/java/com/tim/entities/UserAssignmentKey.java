@@ -2,34 +2,29 @@ package com.tim.entities;
 
 import java.io.Serializable;
 import java.sql.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-/**
- * @author ghost
- *
- */
+
 @Embeddable
-public class UserPersonalKey implements Serializable {
+public class UserAssignmentKey implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
 	@Column(name="user_id")
 	private int userId;
 	@Column(name="start_date")
 	private Date startDate;
 	
-	public UserPersonalKey() {
+	public UserAssignmentKey() {
 		
 	}
-	
-	public UserPersonalKey(int userId,Date startDate) {
-		this.userId=userId;
-		this.startDate=startDate;
+
+	public UserAssignmentKey(int userId, Date startDate) {
+		this.userId = userId;
+		this.startDate = startDate;
 	}
 
 	public int getUserId() {
@@ -47,5 +42,7 @@ public class UserPersonalKey implements Serializable {
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
+	
+	
 
 }

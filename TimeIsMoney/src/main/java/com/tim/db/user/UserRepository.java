@@ -16,7 +16,6 @@ public interface UserRepository extends JpaRepository<User,Integer>, UserReposit
 	
 	public User findById(int id);
 	public User findByUsername(String username);
-	public User findByPersonalRecordsLastName(String lastName);
 	public User findByUsernameAndEnabled(String username,boolean enabled);
 
 }

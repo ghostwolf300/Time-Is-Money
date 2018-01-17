@@ -40,6 +40,10 @@ public class UserContract implements Serializable {
 	@Column(name="change_ts")
 	private Timestamp changeTs;
 	
+	@ManyToOne
+	@JoinColumn(name="user_id", nullable=false,insertable=false,updatable=false)
+	private User user;
+	
 	public UserContract() {
 		
 	}
@@ -98,6 +102,14 @@ public class UserContract implements Serializable {
 
 	public void setChangeTs(Timestamp changeTs) {
 		this.changeTs = changeTs;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	

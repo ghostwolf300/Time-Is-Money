@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tim.db.user.UserRepository;
+import com.tim.db.userassignment.UserAssignmentRepository;
 import com.tim.db.usercontract.UserContractRepository;
 import com.tim.db.userrole.UserRoleRepository;
 import com.tim.entities.Role;
 import com.tim.entities.User;
+import com.tim.entities.UserAssignment;
 import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
@@ -24,6 +26,8 @@ public class UserServiceImpl implements UserService {
 	private UserRoleRepository userRoleRepository;
 	@Autowired
 	private UserContractRepository userContractRepository;
+	@Autowired
+	private UserAssignmentRepository userAssignmentRepository;
 	
 	@Override
 	public List<User> findAll() {
@@ -41,13 +45,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findByUserPersonalSetLastName(String lastName) {
-		return userRepository.findByPersonalRecordsLastName(lastName);
-	}
-
-	@Override
 	public User currentRecord(String username) {
 		return userRepository.myQuery(username);
+	}
+	
+	@Override
+	public User findByUserId(int id) {
+		return userRepository.findById(id);
 	}
 
 	@Override
@@ -72,8 +76,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findByUserId(int id) {
-		return userRepository.findById(id);
+	public UserAssignment findAssignmentByKeyDate(int userId, Date date) {
+		return userAssignmentRepository.findByUserIdAndKeyDate(userId, date);
 	}
 
 	

@@ -41,6 +41,7 @@ function displayResults(users){
 function showUser(userId){
 	showPersonalDetails(userId);
 	showContractDetails(userId);
+	showAssignmentDetails(userId);
 	showCredentialsDetails(userId);
 	showRolesDetails(userId);
 }
@@ -71,7 +72,7 @@ function showPersonalDetails(userId){
 		$('#email').val(ud.email);
 		var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy hh:mm');
 		$('#personalChangedTs').append(ts);
-		$('#personalChangedBy').append(ud.changedBy.username);
+		$('#personalChangedBy').append(getUser(ud.changedBy).username);
 	});
 }
 
@@ -96,6 +97,13 @@ function showContractDetails(userId){
 		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
 		$('#contractChangedTs').append(ts);
 		$('#contractChangedBy').append(cd.changedBy.username);
+	});
+}
+
+function showAssignmentDetails(userId){
+	var url='/userrecord/show/'+userId+'/assignmentdetails';
+	$.getJSON(url,function(ad){
+		console.log(ad);
 	});
 }
 
@@ -149,4 +157,12 @@ function showRolesDetails(userId){
 			}
 		});
 	});
+}
+
+function getUser(userId){
+	var url='/userrecord/show/'+userId+'/credentialsdetails';
+	$.getJSON(url,function(u){
+		console.log(u);
+	});
+	return u;
 }

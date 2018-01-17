@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.entities.Role;
 import com.tim.entities.User;
+import com.tim.entities.UserAssignment;
 import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
@@ -43,7 +44,6 @@ public class UserRestController {
 			e.printStackTrace();
 		}
 		UserPersonal up=userPersonalService.findByUserIdAndStartDate(userId, d);
-		System.out.println("We found: "+up.getUser().getUsername());
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
@@ -65,6 +65,7 @@ public class UserRestController {
 	@RequestMapping("/credentialsdetails")
 	public ResponseEntity<User> getCredentialsDetails(@PathVariable int userId){
 		User u=userService.findByUserId(userId);
+		System.out.println("found: "+u.getUsername());
 		return new ResponseEntity<User>(u,HttpStatus.OK);
 	}
 	
@@ -76,6 +77,22 @@ public class UserRestController {
 			System.out.println("has role "+r.getRole().getRoleName());
 		}
 		return new ResponseEntity<List<UserRole>>(roles,HttpStatus.OK);
+	}
+	
+	@RequestMapping("/assignmentdetails")
+	public ResponseEntity<UserAssignment> getAssignmentDetails(@PathVariable int userId){
+		System.out.println("retrieving assignment info...");
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		Date d=null;
+		try {
+			d = new Date(sdf.parse("2018-01-01").getTime());
+		} 
+		catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		UserAssignment ua=userService.findAssignmentByKeyDate(userId, d);
+		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 
 }
