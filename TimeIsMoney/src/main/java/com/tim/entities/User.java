@@ -46,11 +46,13 @@ public class User implements Serializable {
 	private boolean enabled;
 	@Column(name="changeTs")
 	private Timestamp changeTs;
+	@Column(name="changed_by")
+	private int changedBy;
 	
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name="changed_by", nullable=false)
 	@JsonManagedReference
-	private User changedBy;
+	private User changedBy;*/
 	
 	@OneToMany(mappedBy="changedBy")
 	@JsonBackReference
@@ -136,13 +138,13 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public User getChangedBy() {
+	/*public User getChangedBy() {
 		return changedBy;
 	}
 
 	public void setChangedBy(User changedBy) {
 		this.changedBy = changedBy;
-	}
+	}*/
 
 	public List<User> getUserRecordsChanged() {
 		return userRecordsChanged;
@@ -150,6 +152,14 @@ public class User implements Serializable {
 
 	public void setUserRecordsChanged(List<User> userRecordsChanged) {
 		this.userRecordsChanged = userRecordsChanged;
+	}
+
+	public int getChangedBy() {
+		return changedBy;
+	}
+
+	public void setChangedBy(int changedBy) {
+		this.changedBy = changedBy;
 	}
 	
 	

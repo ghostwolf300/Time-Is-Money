@@ -34,9 +34,11 @@ public class UserContract implements Serializable {
 	private double maxHours;
 	@Column(name="min_hours")
 	private double minHours;
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name="changed_by", nullable=false)
-	private User changedBy;
+	private User changedBy;*/
+	@Column(name="changed_by")
+	private int changedBy;
 	@Column(name="change_ts")
 	private Timestamp changeTs;
 	
@@ -88,13 +90,13 @@ public class UserContract implements Serializable {
 		this.minHours = minHours;
 	}
 
-	public User getChangedBy() {
+	/*public User getChangedBy() {
 		return changedBy;
 	}
 
 	public void setChangedBy(User changedBy) {
 		this.changedBy = changedBy;
-	}
+	}*/
 
 	public Timestamp getChangeTs() {
 		return changeTs;
@@ -110,6 +112,14 @@ public class UserContract implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public int getChangedBy() {
+		return changedBy;
+	}
+
+	public void setChangedBy(int changedBy) {
+		this.changedBy = changedBy;
 	}
 	
 	

@@ -36,14 +36,16 @@ public class UserAssignment implements Serializable {
 	private Date endDate;
 	@Column(name="change_ts")
 	private Timestamp changeTs;
+	@Column(name="changedBy")
+	private int changedBy;
 	
 	@ManyToOne
 	@JoinColumn(name="org_unit_id", nullable=false)
 	private OrgUnit orgUnit;
 	
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name="changed_by", nullable=false)
-	private User changedBy;
+	private User changedBy;*/
 	
 	public UserAssignment() {
 		
@@ -81,12 +83,20 @@ public class UserAssignment implements Serializable {
 		this.changeTs = changeTs;
 	}
 
-	public User getChangedBy() {
+	public int getChangedBy() {
+		return changedBy;
+	}
+
+	public void setChangedBy(int changedBy) {
+		this.changedBy = changedBy;
+	}
+
+	/*public User getChangedBy() {
 		return changedBy;
 	}
 
 	public void setChangedBy(User changedBy) {
 		this.changedBy = changedBy;
-	}
+	}*/
 
 }

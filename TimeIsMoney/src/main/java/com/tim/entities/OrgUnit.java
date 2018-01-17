@@ -33,6 +33,8 @@ public class OrgUnit implements Serializable {
 	private String name;
 	@Column(name="change_ts")
 	private Timestamp changeTs;
+	@Column(name="changed_by")
+	private int changedBy;
 	
 	@ManyToOne
 	@JoinColumn(name="cost_center_id", nullable=false)
@@ -43,9 +45,9 @@ public class OrgUnit implements Serializable {
 	@JsonIgnore
 	private OrgUnit parent;
 	
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name="changed_by", nullable=false)
-	private User changedBy;
+	private User changedBy;*/
 	
 	public OrgUnit() {
 		
@@ -91,13 +93,21 @@ public class OrgUnit implements Serializable {
 		this.changeTs = changeTs;
 	}
 
-	public User getChangedBy() {
+	public int getChangedBy() {
+		return changedBy;
+	}
+
+	public void setChangedBy(int changedBy) {
+		this.changedBy = changedBy;
+	}
+
+	/*public User getChangedBy() {
 		return changedBy;
 	}
 
 	public void setChangedBy(User changedBy) {
 		this.changedBy = changedBy;
-	}
+	}*/
 	
 
 }

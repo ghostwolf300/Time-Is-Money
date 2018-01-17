@@ -57,9 +57,9 @@ function showPersonalDetails(userId){
 	$('#phone').val(null);
 	$('#email').val(null);
 	$('#personalChangedTs').empty();
-	$('#personalChangedBy').empty();
 	
 	var url='/userrecord/show/'+userId+'/personaldetails';
+	
 	$.getJSON(url,function(ud){
 		console.log(ud);
 		$('#personalStartDate').val(ud.userPersonalKey.startDate);
@@ -72,8 +72,11 @@ function showPersonalDetails(userId){
 		$('#email').val(ud.email);
 		var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy hh:mm');
 		$('#personalChangedTs').append(ts);
-		$('#personalChangedBy').append(getUser(ud.changedBy).username);
+		
+	}).done(function(ud){
+		addUsernameToElement(ud.changedBy,'#personalChangedBy');
 	});
+
 }
 
 function showContractDetails(userId){
@@ -84,7 +87,6 @@ function showContractDetails(userId){
 	$('#minHours').val(null);
 	$('#maxHours').val(null);
 	$('#contractChangedTs').empty();
-	$('#contractChangedBy').empty();
 	
 	var url='/userrecord/show/'+userId+'/contractdetails';
 	$.getJSON(url,function(cd){
@@ -96,7 +98,8 @@ function showContractDetails(userId){
 		$('#maxHours').val(cd.maxHours);
 		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
 		$('#contractChangedTs').append(ts);
-		$('#contractChangedBy').append(cd.changedBy.username);
+	}).done(function(cd){
+		addUsernameToElement(cd.changedBy,'#contractChangedBy');
 	});
 }
 
@@ -115,7 +118,6 @@ function showCredentialsDetails(userId){
 	$('#pword').val(null);
 	$('#enabled').prop("checked",false);
 	$('#credentialsChangedTs').empty();
-	$('#credentialsChangedBy').empty();
 	
 	var url='/userrecord/show/'+userId+'/credentialsdetails';
 	$.getJSON(url,function(cd){
@@ -127,7 +129,8 @@ function showCredentialsDetails(userId){
 		$('#enabled').prop("checked",cd.enabled);
 		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
 		$('#credentialsChangedTs').append(ts);
-		$('#credentialsChangedBy').append(cd.changedBy.username);
+	}).done(function(cd){
+		addUsernameToElement(cd.changedBy,'#credentialsChangedBy');
 	});
 }
 
@@ -159,10 +162,12 @@ function showRolesDetails(userId){
 	});
 }
 
-function getUser(userId){
+function addUsernameToElement(userId,elementId){
+	
 	var url='/userrecord/show/'+userId+'/credentialsdetails';
+	$(elementId).empty();
 	$.getJSON(url,function(u){
-		console.log(u);
+		$(elementId).append(u.username);
 	});
-	return u;
+	
 }
