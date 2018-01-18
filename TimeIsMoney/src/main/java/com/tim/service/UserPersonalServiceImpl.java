@@ -38,7 +38,11 @@ public class UserPersonalServiceImpl implements UserPersonalService {
 		return null;
 	}
 
-	
+	@Override
+	public UserPersonal findByUserIdAndKeyDate(int userId, Date date) {
+		UserPersonal up=upRepo.findByUserIdAndKeyDate(userId, date);
+		return up;
+	}
 
 
 }

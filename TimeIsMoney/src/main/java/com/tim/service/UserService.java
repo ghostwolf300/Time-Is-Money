@@ -18,7 +18,11 @@ public interface UserService {
 	public User currentRecord(String username);
 	public List<User> currentRecords();
 	public List<UserRole> findRolesByUserId(int userId);
+	
 	public UserPersonal findPersonalByKeyDate(int userId,Date date);
+	public UserPersonal findNextPersonal(int userId,Date date);
+	public UserPersonal findPreviousPersonal(int userId,Date date);
+	
 	public UserContract findContractByKeyDate(int userId,Date date);
 	public UserAssignment findAssignmentByKeyDate(int userId,Date date);
 	

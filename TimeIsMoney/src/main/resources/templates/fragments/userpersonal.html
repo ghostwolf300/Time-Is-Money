@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
+<div class="userrecord_fragment" th:fragment="userpersonal">
+	<h2>Personal</h2>
+	<div id="recordControls_top">
+		<div id="recordControls_top_left">
+			<label for="personalStartDate">Start:</label><input	id="personalStartDate" type="date" /> 
+			<label for="personalEndDate">End:</label><input	id="personalEndDate" type="date" />
+			<span id="personalDetailRecord">(1/1)</span> 
+			<input id="prevPersonalDetail" type="button" value="Prev" th:onclick="'previousPersonalRecord()'"/> 
+			<input id="nextPersonalDetail" type="button" value="Next" th:onclick="'nextPersonalRecord()'"/> 
+			<input id="newPersonalDetail" type="button" value="New" />
+		</div>
+		<div id="recordControls_top_right">
+			<input id="delPersonalDetail" type="button" value="Delete" />
+		</div>
+	</div>
+	<div>
+		<div>
+			<label for="firstName">First name:</label><input id="firstName" type="text" /> 
+			<label for="middleName">Middle name:</label><input id="middleName" type="text" /> 
+			<label for="lastName">Last name:</label><input id="lastName" type="text" />
+		</div>
+		<div>
+			<label for="birthDate">Birth date:</label><input id="birthDate" type="date" />
+		</div>
+		<div>
+			<label for="phone">Phone:</label><input id="phone" type="text" /> 
+			<label for="email">Email:</label><input id="email" type="text" />
+		</div>
+	</div>
+	<div id="recordControls_bottom">
+		<div id="recordControls_bottom_left">
+			<input id="savePersonalDetails" type="button" value="Save" />
+		</div>
+		<div id="recordControls_bottom_right">
+			<p>Changed: <span id="personalChangedTs"></span> by: <span id="personalChangedBy"></span></p>
+		</div>
+	</div>
+</div>
+</html>

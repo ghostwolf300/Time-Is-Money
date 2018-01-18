@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Table(name="user_assignment")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userAssignmentKey")
-public class UserAssignment implements Serializable {
+public class UserAssignment extends DateEffectiveRecord implements Serializable {
 	
 	/**
 	 * 

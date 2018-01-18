@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.entities.Role;
@@ -26,73 +27,61 @@ import com.tim.service.UserService;
 public class UserRestController {
 	
 	@Autowired
-	private UserPersonalService userPersonalService;
-	
-	@Autowired
 	private UserService userService;
 	
 	@RequestMapping("/personaldetails")
 	public ResponseEntity<UserPersonal> getPersonalDetails(@PathVariable int userId){
-		System.out.println("retrieving personal details...");
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-		Date d=null;
-		try {
-			d = new Date(sdf.parse("2018-01-01").getTime());
-		} 
-		catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		UserPersonal up=userPersonalService.findByUserIdAndStartDate(userId, d);
+		UserPersonal up=userService.findPersonalByKeyDate(userId, getDateObject("2018-01-01"));
+		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
+	}
+	
+	@RequestMapping("/personaldetails/next")
+	public ResponseEntity<UserPersonal> getNextPersonalDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
+		UserPersonal up=userService.findNextPersonal(userId, date);
+		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
+	}
+	
+	@RequestMapping("/personaldetails/prev")
+	public ResponseEntity<UserPersonal> getPreviousPersonalDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
+		UserPersonal up=userService.findPreviousPersonal(userId, date);
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/contractdetails")
 	public ResponseEntity<UserContract> getContractDetails(@PathVariable int userId){
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-		Date d=null;
-		try {
-			d = new Date(sdf.parse("2018-01-01").getTime());
-		} 
-		catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		UserContract uc=userService.findContractByKeyDate(userId, d);
+		UserContract uc=userService.findContractByKeyDate(userId, getDateObject("2018-01-01"));
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/credentialsdetails")
 	public ResponseEntity<User> getCredentialsDetails(@PathVariable int userId){
 		User u=userService.findByUserId(userId);
-		System.out.println("found: "+u.getUsername());
 		return new ResponseEntity<User>(u,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/roledetails")
 	public ResponseEntity<List<UserRole>> getRoleDetails(@PathVariable int userId){
-		System.out.println("retrieving role details...");
 		List<UserRole> roles=userService.findRolesByUserId(userId);
-		for(UserRole r : roles) {
-			System.out.println("has role "+r.getRole().getRoleName());
-		}
 		return new ResponseEntity<List<UserRole>>(roles,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/assignmentdetails")
 	public ResponseEntity<UserAssignment> getAssignmentDetails(@PathVariable int userId){
-		System.out.println("retrieving assignment info...");
+		UserAssignment ua=userService.findAssignmentByKeyDate(userId, getDateObject("2018-01-01"));
+		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
+	}
+	
+	private Date getDateObject(String dateString) {
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 		Date d=null;
 		try {
-			d = new Date(sdf.parse("2018-01-01").getTime());
+			d = new Date(sdf.parse(dateString).getTime());
 		} 
 		catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		UserAssignment ua=userService.findAssignmentByKeyDate(userId, d);
-		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
+		return d;
 	}
 
 }

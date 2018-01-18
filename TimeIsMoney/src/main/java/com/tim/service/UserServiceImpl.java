@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.tim.db.user.UserRepository;
 import com.tim.db.userassignment.UserAssignmentRepository;
 import com.tim.db.usercontract.UserContractRepository;
+import com.tim.db.userpersonal.UserPersonalRepository;
 import com.tim.db.userrole.UserRoleRepository;
 import com.tim.entities.Role;
 import com.tim.entities.User;
@@ -22,6 +23,8 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserPersonalRepository userPersonalRepository;
 	@Autowired
 	private UserRoleRepository userRoleRepository;
 	@Autowired
@@ -66,20 +69,75 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public UserPersonal findPersonalByKeyDate(int userId, Date date) {
-		// TODO Auto-generated method stub
-		return null;
+		UserPersonal up=userPersonalRepository.findByUserIdAndKeyDate(userId, date);
+		addRecordIdentifierTo(up);
+		return up;
+	}
+	
+	@Override
+	public UserPersonal findNextPersonal(int userId, Date date) {
+		UserPersonal up=userPersonalRepository.findNextRecord(userId, date);
+		this.addRecordIdentifierTo(up);
+		return up;
+	}
+
+	@Override
+	public UserPersonal findPreviousPersonal(int userId, Date date) {
+		UserPersonal up=userPersonalRepository.findPreviousRecord(userId, date);
+		this.addRecordIdentifierTo(up);
+		return up;
 	}
 
 	@Override
 	public UserContract findContractByKeyDate(int userId, Date date) {
-		return userContractRepository.findByUserIdAndKeyDate(userId, date);
+		UserContract uc=userContractRepository.findByUserIdAndKeyDate(userId, date);
+		addRecordIdentifierTo(uc);
+		return uc;
 	}
 
 	@Override
 	public UserAssignment findAssignmentByKeyDate(int userId, Date date) {
-		return userAssignmentRepository.findByUserIdAndKeyDate(userId, date);
+		UserAssignment ua=userAssignmentRepository.findByUserIdAndKeyDate(userId, date);
+		addRecordIdentifierTo(ua);
+		return ua;
 	}
-
+	
+	private void addRecordIdentifierTo(UserPersonal up) {
+		int recBefore=userPersonalRepository.getRecordCountBeforeDate(up.getUserPersonalKey().getUserId(), up.getUserPersonalKey().getStartDate());
+		int recAfter=userPersonalRepository.getRecordCountAfterDate(up.getUserPersonalKey().getUserId(), up.getUserPersonalKey().getStartDate());
+		int totalCount=recBefore+recAfter+1;
+		int currentRec=-1;
+		currentRec=totalCount-recAfter;
+		up.setRecordsAfter(recAfter);
+		up.setRecordsBefore(recBefore);
+		up.setTotalRecords(totalCount);
+		up.setCurrentRecord(currentRec);
+	}
+	
+	private void addRecordIdentifierTo(UserContract uc) {
+		int recBefore=userContractRepository.getRecordCountBeforeDate(uc.getUserContractKey().getUserId(), uc.getUserContractKey().getStartDate());
+		int recAfter=userContractRepository.getRecordCountAfterDate(uc.getUserContractKey().getUserId(), uc.getUserContractKey().getStartDate());
+		int totalCount=recBefore+recAfter+1;
+		int currentRec=-1;
+		currentRec=totalCount-recAfter;
+		uc.setRecordsAfter(recAfter);
+		uc.setRecordsBefore(recBefore);
+		uc.setTotalRecords(totalCount);
+		uc.setCurrentRecord(currentRec);
+	}
+	
+	private void addRecordIdentifierTo(UserAssignment ua) {
+		int recBefore=userAssignmentRepository.getRecordCountBeforeDate(ua.getUserAssignmentKey().getUserId(), ua.getUserAssignmentKey().getStartDate());
+		int recAfter=userAssignmentRepository.getRecordCountAfterDate(ua.getUserAssignmentKey().getUserId(), ua.getUserAssignmentKey().getStartDate());
+		int totalCount=recBefore+recAfter+1;
+		int currentRec=-1;
+		currentRec=totalCount-recAfter;
+		ua.setRecordsAfter(recAfter);
+		ua.setRecordsBefore(recBefore);
+		ua.setTotalRecords(totalCount);
+		ua.setCurrentRecord(currentRec);
+		
+	}
 	
 
 }

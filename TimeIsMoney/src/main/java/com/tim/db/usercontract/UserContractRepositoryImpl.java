@@ -6,8 +6,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import com.tim.entities.UserContract;
+import com.tim.entities.UserPersonal;
 
 public class UserContractRepositoryImpl implements UserContractRepositoryCustom {
 	
@@ -31,6 +35,64 @@ public class UserContractRepositoryImpl implements UserContractRepositoryCustom 
 			//No results found
 		}
 		return uc;
+	}
+
+	@Override
+	public int getRecordCountBeforeDate(int userId, Date date) {
+		
+		CriteriaBuilder cb=em.getCriteriaBuilder();
+		
+		CriteriaQuery<Long> cq=cb.createQuery(Long.class);
+		Root<UserContract> uc=cq.from(UserContract.class);
+		
+		cq.select(cb.count(uc));
+		cq.where(
+				cb.equal(uc.get("userContractKey").get("userId"), userId),
+				cb.lessThan(uc.get("userContractKey").get("startDate"),date)
+		);
+		
+		return em.createQuery(cq).getSingleResult().intValue();
+	}
+
+	@Override
+	public int getRecordCountAfterDate(int userId, Date date) {
+		
+		CriteriaBuilder cb=em.getCriteriaBuilder();
+		
+		CriteriaQuery<Long> cq=cb.createQuery(Long.class);
+		Root<UserContract> uc=cq.from(UserContract.class);
+		
+		cq.select(cb.count(uc));
+		cq.where(
+				cb.equal(uc.get("userContractKey").get("userId"), userId),
+				cb.greaterThan(uc.get("userContractKey").get("startDate"),date)
+		);
+		
+		return em.createQuery(cq).getSingleResult().intValue();
+	}
+
+	@Override
+	public UserContract findNextRecord(int userId, Date keyDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserContract findPreviousRecord(int userId, Date keyDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserContract findFirstRecord(int userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserContract findLastRecord(int userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

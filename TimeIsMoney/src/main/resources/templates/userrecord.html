@@ -29,7 +29,14 @@
 		</table>
 	</div>
 	<div id="userrecord">
-		<div id="personal">
+		<div th:replace="fragments/loading :: loading">Loading gif test...</div>
+		<div th:replace="fragments/userpersonal :: userpersonal">Personal (replace)</div>
+		<div th:replace="fragments/usercontract :: usercontract">Contract (replace)</div>
+		<div th:replace="fragments/userassignment :: userassignment">Assignment (replace)</div>
+		<div th:replace="fragments/usercredentials :: usercredentials">Credentials (replace)</div>
+	</div>
+</div>
+<!--	<div id="personal">
 			<h2>Personal</h2>
 			<div id="recordControls_top">
 				<div id="recordControls_top_left">
@@ -78,7 +85,7 @@
 						<input id="newContractDetail" type="button" value="New"/>
 					</div>
 					<div id="recordControls_top_right">
-						<input id="delPersonalDetail" type="button" value="Delete"/>
+						<input id="delContractDetail" type="button" value="Delete"/>
 					</div>
 				</div>
 			</div>
@@ -100,6 +107,34 @@
 				</div>
 				<div id="recordControls_bottom_right">
 					<p>Changed: <span id="contractChangedTs"></span> by: <span id="contractChangedBy"></span></p>
+				</div>
+			</div>
+		</div>
+		<div id="assignmnent">
+			<h2>Assignment</h2>
+			<div>
+				<div id="recordControls_top">
+					<div id="recordControls_top_left">
+						<label for="assignmentStartDate">Start:</label><input id="assignmentStartDate" type="date"/>
+						<label for="assignmentEndDate">End:</label><input id="assignmentEndDate" type="date"/>
+						<input id="prevAssignmentDetail" type="button" value="Prev"/>
+						<input id="nextAssignmentDetail" type="button" value="Next"/>
+						<input id="newAssignmentDetail" type="button" value="New"/>
+					</div>
+					<div id="recordControls_top_right">
+						<input id="delAssignmentDetail" type="button" value="Delete"/>
+					</div>
+				</div>
+			</div>
+			<div>
+				
+			</div>
+			<div id="recordControls_bottom">
+				<div id="recordControls_bottom_left">
+					<input id="saveAssignmentDetails" type="button" value="Save"/>
+				</div>
+				<div id="recordControls_bottom_right">
+					<p>Changed: <span id="assignmentChangedTs"></span> by: <span id="assignmentChangedBy"></span></p>
 				</div>
 			</div>
 		</div>
@@ -143,5 +178,5 @@
 			</div>
 		</div>
 	</div>
-</div>
+	</div>-->
 </html>

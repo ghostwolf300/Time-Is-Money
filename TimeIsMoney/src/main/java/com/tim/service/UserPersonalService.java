@@ -11,6 +11,7 @@ public interface UserPersonalService {
 	public List<UserPersonal> findAll();
 	public UserPersonal findByUserPersonalKey(UserPersonalKey key);
 	public UserPersonal findByUserIdAndStartDate(int userId,Date startDate);
+	public UserPersonal findByUserIdAndKeyDate(int userId,Date date);
 	public UserPersonal findLatest(int userId);
 	
 }

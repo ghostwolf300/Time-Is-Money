@@ -125,6 +125,11 @@ div#userrecord{
 	padding-right:2%;
 }
 
+.userrecord_fragment{
+	width:100%;
+	border: 1px solid black;	
+}
+
 div#personal{
 	width:100%;
 	border: 1px solid black;	
