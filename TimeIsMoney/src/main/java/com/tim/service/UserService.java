@@ -24,6 +24,11 @@ public interface UserService {
 	public UserPersonal findPreviousPersonal(int userId,Date date);
 	
 	public UserContract findContractByKeyDate(int userId,Date date);
+	public UserContract findNextContract(int userId, Date date);
+	public UserContract findPreviousContract(int userId, Date date);
+	
 	public UserAssignment findAssignmentByKeyDate(int userId,Date date);
+	public UserAssignment findNextAssignment(int userId,Date date);
+	public UserAssignment findPreviousAssignment(int userId, Date date);
 	
 }

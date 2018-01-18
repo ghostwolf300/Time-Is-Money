@@ -2,6 +2,13 @@
  * 
  */
 
+$(document).ready(function(){
+	$.ajaxSetup({
+        headers:
+        { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+    });
+});
+
 function searchUsers(){
 	//var username=$('#freesearch').val();
 	//findUserByUsername(username);
@@ -68,6 +75,7 @@ function showPersonalDetails(userId){
 		
 		$('#nextPersonalDetail').prop('disabled',false);
 		$('#prevPersonalDetail').prop('disabled',false);
+		
 		if(ud.currentRecord==ud.totalRecords && ud.totalRecords==1){
 			$('#nextPersonalDetail').prop('disabled',true);
 			$('#prevPersonalDetail').prop('disabled',true);
@@ -166,6 +174,34 @@ function previousPersonalRecord(){
 	});
 }
 
+function savePersonalRecord(){
+	
+	var pd=new Object();
+	pd.userId=$('#id').val();
+	pd.startDate=$('#personalStartDate').val();
+	pd.endDate=$('#personalEndDate').val();
+	pd.firstName=$('#firstName').val();
+	pd.middleName=$('#middleName').val();
+	pd.lastName=$('#lastName').val();
+	pd.birthDate=$('#birthDate').val();
+	pd.phone=$('#phone').val();
+	pd.email=$('#email').val();
+	
+	var url='/userrecord/show/'+pd.userId+'/personaldetails/save';
+	data=JSON.stringify(pd);
+	console.log(data);
+	
+	$.post(url,function(data){
+		//success
+	}).done(function(rv){
+		console.log(rv);
+	}).fail(function(){
+		//failed!!!
+		alert("ERROR: Couldn't save personal details.");
+	});
+	
+}
+
 function clearPersonalDetails(){
 	$('#personalStartDate').val(null);
 	$('#personalEndDate').val(null);
@@ -195,13 +231,7 @@ function populatePersonalDetails(ud){
 
 function showContractDetails(userId){
 	
-	$('#contractStartDate').val(null);
-	$('#contractEndDate').val(null);
-	$('#contractType').val(null);
-	$('#minHours').val(null);
-	$('#maxHours').val(null);
-	$('#contractChangedTs').empty();
-	$('#contractDetailRecord').empty();
+	clearContractDetails();
 	
 	var url='/userrecord/show/'+userId+'/contractdetails';
 	$.getJSON(url,function(cd){
@@ -214,21 +244,125 @@ function showContractDetails(userId){
 		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
 		$('#contractChangedTs').append(ts);
 		$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
+		
+		$('#nextContractDetail').prop('disabled',false);
+		$('#prevContractDetail').prop('disabled',false);
+		
+		if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
+			$('#nextContractDetail').prop('disabled',true);
+			$('#prevContractDetail').prop('disabled',true);
+		}
+		else if(cd.currentRecord==cd.totalRecords){
+			$('#nextContractDetail').prop('disabled',true);
+		}
+		else if(cd.currentRecord==1){
+			$('#prevContractDetail').prop('disabled',true);
+		}
+		
 	}).done(function(cd){
 		addUsernameToElement(cd.changedBy,'#contractChangedBy');
 	});
 }
 
+function nextContractRecord(){
+	var startDate=$('#contractStartDate').val();
+	var userId=$('#id').val();
+	var url='/userrecord/show/'+userId+'/contractdetails/next?keyDate='+startDate;
+	
+	clearContractDetails();
+	
+	$.getJSON(url,function(cd){
+		//console.log(cd);
+		$('#contractStartDate').val(cd.userContractKey.startDate);
+		$('#contractEndDate').val(cd.endDate);
+		$('#contractType').val(cd.contractType.id);
+		$('#minHours').val(cd.minHours);
+		$('#maxHours').val(cd.maxHours);
+		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
+		$('#contractChangedTs').append(ts);
+		$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
+		
+		$('#nextContractDetail').prop('disabled',false);
+		$('#prevContractDetail').prop('disabled',false);
+		
+		if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
+			$('#nextContractDetail').prop('disabled',true);
+			$('#prevContractDetail').prop('disabled',true);
+		}
+		else if(cd.currentRecord==cd.totalRecords){
+			$('#nextContractDetail').prop('disabled',true);
+		}
+		else if(cd.currentRecord==1){
+			$('#prevContractDetail').prop('disabled',true);
+		}
+		
+	}).done(function(cd){
+		addUsernameToElement(cd.changedBy,'#contractChangedBy');
+	});
+}
+
+function previousContractRecord(){
+	var startDate=$('#contractStartDate').val();
+	var userId=$('#id').val();
+	var url='/userrecord/show/'+userId+'/contractdetails/prev?keyDate='+startDate;
+	
+	clearContractDetails();
+	
+	$.getJSON(url,function(cd){
+		//console.log(cd);
+		$('#contractStartDate').val(cd.userContractKey.startDate);
+		$('#contractEndDate').val(cd.endDate);
+		$('#contractType').val(cd.contractType.id);
+		$('#minHours').val(cd.minHours);
+		$('#maxHours').val(cd.maxHours);
+		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
+		$('#contractChangedTs').append(ts);
+		$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
+		
+		$('#nextContractDetail').prop('disabled',false);
+		$('#prevContractDetail').prop('disabled',false);
+		
+		if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
+			$('#nextContractDetail').prop('disabled',true);
+			$('#prevContractDetail').prop('disabled',true);
+		}
+		else if(cd.currentRecord==cd.totalRecords){
+			$('#nextContractDetail').prop('disabled',true);
+		}
+		else if(cd.currentRecord==1){
+			$('#prevContractDetail').prop('disabled',true);
+		}
+		
+	}).done(function(cd){
+		addUsernameToElement(cd.changedBy,'#contractChangedBy');
+	});
+	
+}
+
+function clearContractDetails(){
+	$('#contractStartDate').val(null);
+	$('#contractEndDate').val(null);
+	$('#contractType').val(null);
+	$('#minHours').val(null);
+	$('#maxHours').val(null);
+	$('#contractChangedTs').empty();
+	$('#contractDetailRecord').empty();
+}
+
+function populateContractDetails(cd){
+	$('#contractStartDate').val(cd.userContractKey.startDate);
+	$('#contractEndDate').val(cd.endDate);
+	$('#contractType').val(cd.contractType.id);
+	$('#minHours').val(cd.minHours);
+	$('#maxHours').val(cd.maxHours);
+	var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
+	$('#contractChangedTs').append(ts);
+	$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
+}
+
 function showAssignmentDetails(userId){
 	
-	$('#assignmentStartDate').val(null);
-	$('#assignmentEndDate').val(null);
-	$('#orgUnitId').val(null);
-	$('#orgUnitName').val(null);
-	$('#costCenterId').val(null);
-	$('#costCenterName').val(null);
-	$('#assignmentChangedTs').empty();
-	$('#assignmentDetailRecord').empty();
+	clearAssignmentDetails();
 	
 	var url='/userrecord/show/'+userId+'/assignmentdetails';
 	$.getJSON(url,function(ad){
@@ -242,9 +376,124 @@ function showAssignmentDetails(userId){
 		var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
 		$('#assignmentChangedTs').append(ts);
 		$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
+		
+		$('#nextAssignmentDetail').prop('disabled',false);
+		$('#prevAssignmentDetail').prop('disabled',false);
+		
+		if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
+			$('#nextAssignmentDetail').prop('disabled',true);
+			$('#prevAssignmentDetail').prop('disabled',true);
+		}
+		else if(ad.currentRecord==ad.totalRecords){
+			$('#nextAssignmentDetail').prop('disabled',true);
+		}
+		else if(ad.currentRecord==1){
+			$('#prevAssignmentDetail').prop('disabled',true);
+		}
+		
 	}).done(function(ad){
 		addUsernameToElement(ad.changedBy,'#assignmentChangedBy')
 	});
+}
+
+function nextAssignmentRecord(){
+	var startDate=$('#assignmentStartDate').val();
+	var userId=$('#id').val();
+	var url='/userrecord/show/'+userId+'/assignmentdetails/next?keyDate='+startDate;
+	
+	clearAssignmentDetails();
+	
+	$.getJSON(url,function(ad){
+		//console.log(ad);
+		$('#assignmentStartDate').val(ad.userAssignmentKey.startDate);
+		$('#assignmentEndDate').val(ad.endDate);
+		$('#orgUnitId').val(ad.orgUnit.id);
+		$('#orgUnitName').val(ad.orgUnit.name);
+		$('#costCenterId').val(ad.orgUnit.costCenter.id);
+		$('#costCenterName').val(ad.orgUnit.costCenter.name);
+		var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
+		$('#assignmentChangedTs').append(ts);
+		$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
+		
+		$('#nextAssignmentDetail').prop('disabled',false);
+		$('#prevAssignmentDetail').prop('disabled',false);
+		
+		if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
+			$('#nextAssignmentDetail').prop('disabled',true);
+			$('#prevAssignmentDetail').prop('disabled',true);
+		}
+		else if(ad.currentRecord==ad.totalRecords){
+			$('#nextAssignmentDetail').prop('disabled',true);
+		}
+		else if(ad.currentRecord==1){
+			$('#prevAssignmentDetail').prop('disabled',true);
+		}
+		
+	}).done(function(ad){
+		addUsernameToElement(ad.changedBy,'#assignmentChangedBy')
+	});
+}
+
+function previousAssignmentRecord(){
+	var startDate=$('#assignmentStartDate').val();
+	var userId=$('#id').val();
+	var url='/userrecord/show/'+userId+'/assignmentdetails/prev?keyDate='+startDate;
+	
+	clearAssignmentDetails();
+	
+	$.getJSON(url,function(ad){
+		//console.log(ad);
+		$('#assignmentStartDate').val(ad.userAssignmentKey.startDate);
+		$('#assignmentEndDate').val(ad.endDate);
+		$('#orgUnitId').val(ad.orgUnit.id);
+		$('#orgUnitName').val(ad.orgUnit.name);
+		$('#costCenterId').val(ad.orgUnit.costCenter.id);
+		$('#costCenterName').val(ad.orgUnit.costCenter.name);
+		var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
+		$('#assignmentChangedTs').append(ts);
+		$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
+		
+		$('#nextAssignmentDetail').prop('disabled',false);
+		$('#prevAssignmentDetail').prop('disabled',false);
+		
+		if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
+			$('#nextAssignmentDetail').prop('disabled',true);
+			$('#prevAssignmentDetail').prop('disabled',true);
+		}
+		else if(ad.currentRecord==ad.totalRecords){
+			$('#nextAssignmentDetail').prop('disabled',true);
+		}
+		else if(ad.currentRecord==1){
+			$('#prevAssignmentDetail').prop('disabled',true);
+		}
+		
+	}).done(function(ad){
+		addUsernameToElement(ad.changedBy,'#assignmentChangedBy')
+	});
+	
+}
+
+function clearAssignmentDetails(){
+	$('#assignmentStartDate').val(null);
+	$('#assignmentEndDate').val(null);
+	$('#orgUnitId').val(null);
+	$('#orgUnitName').val(null);
+	$('#costCenterId').val(null);
+	$('#costCenterName').val(null);
+	$('#assignmentChangedTs').empty();
+	$('#assignmentDetailRecord').empty();
+} 
+
+function populateAssignmentDetails(ad){
+	$('#assignmentStartDate').val(ad.userAssignmentKey.startDate);
+	$('#assignmentEndDate').val(ad.endDate);
+	$('#orgUnitId').val(ad.orgUnit.id);
+	$('#orgUnitName').val(ad.orgUnit.name);
+	$('#costCenterId').val(ad.orgUnit.costCenter.id);
+	$('#costCenterName').val(ad.orgUnit.costCenter.name);
+	var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
+	$('#assignmentChangedTs').append(ts);
+	$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
 }
 
 function showCredentialsDetails(userId){

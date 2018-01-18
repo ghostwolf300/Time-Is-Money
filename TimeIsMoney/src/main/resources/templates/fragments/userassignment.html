@@ -8,8 +8,8 @@
 				<label for="assignmentStartDate">Start:</label><input id="assignmentStartDate" type="date" /> 
 				<label for="assignmentEndDate">End:</label><input id="assignmentEndDate" type="date" /> 
 				<span id="assignmentDetailRecord">(1/1)</span> 
-				<input id="prevAssignmentDetail" type="button" value="Prev" /> 
-				<input id="nextAssignmentDetail" type="button" value="Next" /> 
+				<input id="prevAssignmentDetail" type="button" value="Prev" th:onclick="'previousAssignmentRecord()'" /> 
+				<input id="nextAssignmentDetail" type="button" value="Next" th:onclick="'nextAssignmentRecord()'"/> 
 				<input id="newAssignmentDetail" type="button" value="New" />
 			</div>
 			<div id="recordControls_top_right">

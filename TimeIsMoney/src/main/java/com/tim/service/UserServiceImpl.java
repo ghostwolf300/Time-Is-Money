@@ -94,10 +94,38 @@ public class UserServiceImpl implements UserService {
 		addRecordIdentifierTo(uc);
 		return uc;
 	}
+	
+	@Override
+	public UserContract findNextContract(int userId, Date date) {
+		UserContract uc=userContractRepository.findNextRecord(userId, date);
+		addRecordIdentifierTo(uc);
+		return uc;
+	}
+
+	@Override
+	public UserContract findPreviousContract(int userId, Date date) {
+		UserContract uc=userContractRepository.findPreviousRecord(userId, date);
+		addRecordIdentifierTo(uc);
+		return uc;
+	}
 
 	@Override
 	public UserAssignment findAssignmentByKeyDate(int userId, Date date) {
 		UserAssignment ua=userAssignmentRepository.findByUserIdAndKeyDate(userId, date);
+		addRecordIdentifierTo(ua);
+		return ua;
+	}
+	
+	@Override
+	public UserAssignment findNextAssignment(int userId, Date date) {
+		UserAssignment ua=userAssignmentRepository.findNextRecord(userId, date);
+		addRecordIdentifierTo(ua);
+		return ua;
+	}
+
+	@Override
+	public UserAssignment findPreviousAssignment(int userId, Date date) {
+		UserAssignment ua=userAssignmentRepository.findPreviousRecord(userId, date);
 		addRecordIdentifierTo(ua);
 		return ua;
 	}

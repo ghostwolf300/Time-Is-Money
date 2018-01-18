@@ -73,14 +73,45 @@ public class UserContractRepositoryImpl implements UserContractRepositoryCustom 
 
 	@Override
 	public UserContract findNextRecord(int userId, Date keyDate) {
-		// TODO Auto-generated method stub
-		return null;
+		CriteriaBuilder builder=em.getCriteriaBuilder();
+		CriteriaQuery<UserContract> query=builder.createQuery(UserContract.class);
+		Root<UserContract> root=query.from(UserContract.class);
+		query.select(root).distinct(true).orderBy(builder.asc(root.get("userContractKey").get("startDate")));
+		query.where(
+				builder.equal(root.get("userContractKey").get("userId"), userId),
+				builder.greaterThan(root.get("userContractKey").get("startDate"), keyDate)
+		);
+		
+		UserContract uc=null;
+		try {
+			uc=em.createQuery(query).setMaxResults(1).getSingleResult();
+		}
+		catch(NoResultException nre) {
+			//No results
+		}
+		return uc;
 	}
 
 	@Override
 	public UserContract findPreviousRecord(int userId, Date keyDate) {
-		// TODO Auto-generated method stub
-		return null;
+		CriteriaBuilder builder=em.getCriteriaBuilder();
+		CriteriaQuery<UserContract> query=builder.createQuery(UserContract.class);
+		Root<UserContract> root=query.from(UserContract.class);
+		query.select(root).distinct(true).orderBy(builder.desc(root.get("userContractKey").get("startDate")));
+		
+		query.where(
+				builder.equal(root.get("userContractKey").get("userId"), userId),
+				builder.lessThan(root.get("userContractKey").get("startDate"), keyDate)
+		);
+		
+		UserContract uc=null;
+		try {
+			uc=em.createQuery(query).setMaxResults(1).getSingleResult();
+		}
+		catch(NoResultException nre) {
+			//No results
+		}
+		return uc;
 	}
 
 	@Override

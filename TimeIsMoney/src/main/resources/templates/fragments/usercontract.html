@@ -8,8 +8,8 @@
 				<label for="contractStartDate">Start:</label><input id="contractStartDate" type="date" /> 
 				<label for="contractEndDate">End:</label><input id="contractEndDate" type="date" />
 				<span id="contractDetailRecord">(1/1)</span>  
-				<input id="prevContractDetail" type="button" value="Prev" />
-				<input id="nextContractDetail" type="button" value="Next" /> 
+				<input id="prevContractDetail" type="button" value="Prev" th:onclick="'previousContractRecord()'" />
+				<input id="nextContractDetail" type="button" value="Next" th:onclick="'nextContractRecord()'" /> 
 				<input id="newContractDetail" type="button" value="New" />
 			</div>
 			<div id="recordControls_top_right">
