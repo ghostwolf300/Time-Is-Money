@@ -12,5 +12,8 @@ public interface UserPersonalRepositoryCustom extends DateEffectiveRepository<Us
 	public UserPersonal findLastRecord(int userId);
 	public int getRecordCountBeforeDate(int userId,Date date);
 	public int getRecordCountAfterDate(int userId,Date date);*/
+	
+	public UserPersonal save(UserPersonal userPersonal);
+	
 
 }

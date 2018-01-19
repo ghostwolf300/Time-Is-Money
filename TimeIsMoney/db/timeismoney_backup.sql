@@ -251,7 +251,7 @@ CREATE TABLE `user_personal` (
 
 LOCK TABLES `user_personal` WRITE;
 /*!40000 ALTER TABLE `user_personal` DISABLE KEYS */;
-INSERT INTO `user_personal` VALUES (2,'2018-01-01',NULL,'Sheev','Palpatine',NULL,'1945-05-06',NULL,NULL,2,'2018-01-12 08:39:41'),(3,'2018-01-01',NULL,'Bill','Clinton',NULL,'1951-06-14',NULL,NULL,2,'2018-01-12 08:39:41'),(4,'2018-01-01',NULL,'Vladimir','Putin',NULL,'1968-09-02',NULL,NULL,2,'2018-01-12 08:39:41'),(5,'2018-01-01',NULL,'Tarja','Halonen',NULL,'1979-03-20',NULL,NULL,2,'2018-01-12 08:39:41'),(6,'2018-01-01',NULL,'Tony','Blair',NULL,'1995-07-10',NULL,NULL,2,'2018-01-12 08:39:41'),(7,'2017-10-01','2017-12-31','Ville','Susi',NULL,'1981-07-13','123456789','myemail@company.com',2,'2018-01-18 10:08:05'),(7,'2018-01-01','2018-01-31','Ville','Susi',NULL,'1981-07-13',NULL,NULL,2,'2018-01-18 10:11:12'),(7,'2018-02-01',NULL,'Ville','Susi',NULL,'1981-07-13','+358 555 111 20','myemail@company.com',2,'2018-01-18 10:09:09');
+INSERT INTO `user_personal` VALUES (2,'2018-01-01',NULL,'Sheev','Palpatine',NULL,'1945-05-06',NULL,NULL,2,'2018-01-12 08:39:41'),(3,'2018-01-01',NULL,'Bill','Clinton',NULL,'1951-06-14',NULL,NULL,2,'2018-01-12 08:39:41'),(4,'2018-01-01',NULL,'Vladimir','Putin',NULL,'1968-09-02',NULL,NULL,2,'2018-01-12 08:39:41'),(5,'2018-01-01',NULL,'Tarja','Halonen',NULL,'1979-03-20',NULL,NULL,2,'2018-01-12 08:39:41'),(6,'2018-01-01',NULL,'Tony','Blair',NULL,'1995-07-10',NULL,NULL,2,'2018-01-12 08:39:41'),(7,'2017-10-01','2017-12-31','Ville','Susi',NULL,'1981-07-13','123456789','myemail@company.com',2,'2018-01-18 10:08:05'),(7,'2018-01-01','2018-01-31','Ville','Susi','Juhani','1981-07-13','666 666 666','hotmale@microhard.com',7,'2018-01-19 09:37:51'),(7,'2018-02-01','2018-02-28','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-01-18 10:09:09'),(7,'2018-03-01','2018-04-09','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-01-19 13:32:06'),(7,'2018-04-10',NULL,'Ville','Susi','Superfly','1981-07-13','555 222 333','new rec',7,'2018-01-19 13:55:00');
 /*!40000 ALTER TABLE `user_personal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -342,4 +342,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-18 22:20:12
+-- Dump completed on 2018-01-19 15:59:00

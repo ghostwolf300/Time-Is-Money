@@ -87,6 +87,11 @@ public class UserServiceImpl implements UserService {
 		this.addRecordIdentifierTo(up);
 		return up;
 	}
+	
+	@Override
+	public UserPersonal savePersonalData(UserPersonal userPersonal) {
+		return userPersonalRepository.save(userPersonal);
+	}
 
 	@Override
 	public UserContract findContractByKeyDate(int userId, Date date) {
@@ -166,6 +171,5 @@ public class UserServiceImpl implements UserService {
 		ua.setCurrentRecord(currentRec);
 		
 	}
-	
 
 }

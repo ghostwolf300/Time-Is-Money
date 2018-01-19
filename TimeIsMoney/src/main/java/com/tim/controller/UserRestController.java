@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tim.component.TIMSessionInfo;
 import com.tim.entities.Role;
 import com.tim.entities.User;
 import com.tim.entities.UserAssignment;
@@ -30,6 +31,9 @@ public class UserRestController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private TIMSessionInfo sessionInfo;
 	
 	@RequestMapping("/personaldetails")
 	public ResponseEntity<UserPersonal> getPersonalDetails(@PathVariable int userId){
@@ -50,9 +54,11 @@ public class UserRestController {
 	}
 	
 	@RequestMapping(value="/personaldetails/save", method=RequestMethod.POST)
-	public ResponseEntity<UserPersonal> savePersonalDetals(@PathVariable int userId, @RequestBody UserPersonal personalDetail){
-		System.out.println("sent JSON, first name: "+personalDetail.getFirstName());
-		return null;
+	public ResponseEntity<UserPersonal> savePersonalDetails(@PathVariable int userId, @RequestBody UserPersonal personalDetail){
+		System.out.println("sent JSON userId: "+personalDetail.getUserPersonalKey().getUserId());
+		personalDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
+		userService.savePersonalData(personalDetail);
+		return new ResponseEntity<UserPersonal>(personalDetail,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/contractdetails")

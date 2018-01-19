@@ -4,6 +4,8 @@
     <!--/*  Each token will be replaced by their respective titles in the resulting page. */-->
     <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE"></title>
     <meta charset="utf-8"/>
+   	<meta th:name="_csrf" th:content="${_csrf.token}"/>
+	<meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link th:href="@{/css/tim.css}" rel="stylesheet" media="screen"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js" th:src="@{/webjars/jquery/2.2.4/jquery.min.js}"></script>
 	<script src="https://github.com/phstc/jquery-dateFormat" th:src="@{/webjars/jquery-dateFormat/1.0.2/jquery-dateFormat.min.js}"></script>

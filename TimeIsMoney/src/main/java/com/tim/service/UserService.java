@@ -22,6 +22,7 @@ public interface UserService {
 	public UserPersonal findPersonalByKeyDate(int userId,Date date);
 	public UserPersonal findNextPersonal(int userId,Date date);
 	public UserPersonal findPreviousPersonal(int userId,Date date);
+	public UserPersonal savePersonalData(UserPersonal userPersonal);
 	
 	public UserContract findContractByKeyDate(int userId,Date date);
 	public UserContract findNextContract(int userId, Date date);

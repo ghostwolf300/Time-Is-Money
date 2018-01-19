@@ -27,6 +27,11 @@ public class UserContractKey implements Serializable {
 		this.userId=userId;
 		this.startDate=startDate;
 	}
+	
+	public UserContractKey(UserContractKey ucKey) {
+		this.userId=ucKey.userId;
+		this.startDate=new Date(ucKey.startDate.getTime());
+	}
 
 	public int getUserId() {
 		return userId;

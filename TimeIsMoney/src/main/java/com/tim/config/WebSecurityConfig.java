@@ -42,6 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .logout()
                 .permitAll();
+        //Test json post. CSFR gives 403 error
+        //http.csrf().disable();
     }
 	
 	@Autowired

@@ -31,6 +31,11 @@ public class UserPersonalKey implements Serializable {
 		this.userId=userId;
 		this.startDate=startDate;
 	}
+	
+	public UserPersonalKey(UserPersonalKey upKey) {
+		this.userId=upKey.userId;
+		this.startDate=new Date(upKey.startDate.getTime());
+	}
 
 	public int getUserId() {
 		return userId;

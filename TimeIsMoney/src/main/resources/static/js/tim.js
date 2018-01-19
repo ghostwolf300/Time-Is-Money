@@ -2,12 +2,37 @@
  * 
  */
 
+var csrf_header=$('meta[name="_csrf_header"]').attr('content');
+var csrf_token=$('meta[name="_csrf"]').attr('content');
+
 $(document).ready(function(){
 	$.ajaxSetup({
         headers:
-        { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        { 
+        	'X-CSRF-TOKEN': csrf_token,
+        	'Accept': 'application/json',
+	        'Content-Type': 'application/json'
+        }
     });
 });
+
+
+/*$.ajaxPrefilter(function(options, originalOptions, jqXHR){
+	
+	if (options.type.toLowerCase() === "post") {
+		// initialize `data` to empty string if it does not exist
+		options.data = options.data || "";
+
+		// add leading ampersand if `data` is non-empty
+		options.data += options.data?"&":"";
+
+		// add _token entry
+		options.data += "_token=" + encodeURIComponent(csrf_token);
+		//options['data'] = options['data']+"&_token=" + encodeURIComponent(csrf_token);
+		alert(options.data);
+	}
+	
+});*/
 
 function searchUsers(){
 	//var username=$('#freesearch').val();
@@ -51,6 +76,21 @@ function showUser(userId){
 	showAssignmentDetails(userId);
 	showCredentialsDetails(userId);
 	showRolesDetails(userId);
+}
+
+function newPersonalRecord(){
+	clearPersonalDetails();
+	var today=$.now();
+	$('#personalStartDate').val($.format.date(today, 'yyyy-MM-dd'));
+	$('#personalDetailRecord').append("New");
+}
+
+function newContractRecord(){
+	
+}
+
+function newAssignmentRecord(){
+	
 }
 
 function showPersonalDetails(userId){
@@ -176,29 +216,49 @@ function previousPersonalRecord(){
 
 function savePersonalRecord(){
 	
-	var pd=new Object();
-	pd.userId=$('#id').val();
-	pd.startDate=$('#personalStartDate').val();
-	pd.endDate=$('#personalEndDate').val();
-	pd.firstName=$('#firstName').val();
-	pd.middleName=$('#middleName').val();
-	pd.lastName=$('#lastName').val();
-	pd.birthDate=$('#birthDate').val();
-	pd.phone=$('#phone').val();
-	pd.email=$('#email').val();
+	var pd={
+			userPersonalKey : {
+				userId : $('#id').val(),
+				startDate : $('#personalStartDate').val()
+			},
+			endDate : $('#personalEndDate').val(),
+			firstName : $('#firstName').val(),
+			middleName : $('#middleName').val(),
+			lastName : $('#lastName').val(),
+			birthDate : $('#birthDate').val(),
+			phone : $('#phone').val(),
+			email : $('#email').val()
+	}
 	
-	var url='/userrecord/show/'+pd.userId+'/personaldetails/save';
+	console.log(pd);
+	
+	var url='/userrecord/show/'+pd.userPersonalKey.userId+'/personaldetails/save';
+	
 	data=JSON.stringify(pd);
-	console.log(data);
 	
-	$.post(url,function(data){
+	$.ajax({
+		url : url,
+		method : "POST",
+		data : data,
+		datatype: "json"
+	}).success(function(data){
+		//console.log(data);
+	}).done(function(data){
+		//console.log(data);
+	}).fail(function(){
+		alert("ERROR: Couldn't save personal details.");
+	}).always(function(){
+		
+	});
+	
+	/*$.post(url,function(data){
 		//success
 	}).done(function(rv){
-		console.log(rv);
+		console.log("Works!");
 	}).fail(function(){
 		//failed!!!
 		alert("ERROR: Couldn't save personal details.");
-	});
+	});*/
 	
 }
 

@@ -63,6 +63,25 @@ public class UserPersonal extends DateEffectiveRecord implements Serializable {
 	public UserPersonal() {
 		
 	}
+	
+	public UserPersonal(UserPersonal up) {
+		this.userPersonalKey=new UserPersonalKey(up.userPersonalKey);
+		if(up.endDate!=null) {
+			this.endDate=new Date(up.endDate.getTime());
+		}
+		this.firstName=new String(up.firstName);
+		this.lastName=new String(up.lastName);
+		this.middleName=new String(up.middleName);
+		if(up.birthDate!=null) {
+			this.birthDate=new Date(up.birthDate.getTime());
+		}
+		this.phone=new String(up.phone);
+		this.email=new String(up.email);
+		this.changedBy=up.changedBy;
+		if(up.changeTs!=null) {
+			this.changeTs=new Timestamp(up.changeTs.getTime());
+		}
+	}
 
 	public UserPersonalKey getUserPersonalKey() {
 		return userPersonalKey;

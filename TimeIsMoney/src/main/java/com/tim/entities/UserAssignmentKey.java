@@ -26,6 +26,11 @@ public class UserAssignmentKey implements Serializable {
 		this.userId = userId;
 		this.startDate = startDate;
 	}
+	
+	public UserAssignmentKey(UserAssignmentKey uaKey) {
+		this.userId=uaKey.userId;
+		this.startDate=new Date(uaKey.startDate.getTime());
+	}
 
 	public int getUserId() {
 		return userId;
