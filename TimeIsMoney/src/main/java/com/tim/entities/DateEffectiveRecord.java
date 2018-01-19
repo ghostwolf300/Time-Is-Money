@@ -1,10 +1,21 @@
 package com.tim.entities;
 
+import java.sql.Date;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-public abstract class DateEffectiveRecord {
+@MappedSuperclass
+public abstract class DateEffectiveRecord<T> {
+	
+	@EmbeddedId
+	protected DateEffectiveKey key;
+	@Column(name="end_date")
+	protected Date endDate;
 	
 	@Transient
 	@JsonInclude
@@ -54,5 +65,23 @@ public abstract class DateEffectiveRecord {
 	public void setTotalRecords(int totalRecords) {
 		this.totalRecords = totalRecords;
 	}
+
+	public DateEffectiveKey getKey() {
+		return key;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public void setKey(DateEffectiveKey key) {
+		this.key = key;
+	}
+	
+	abstract public void copy(T rec);
 	
 }

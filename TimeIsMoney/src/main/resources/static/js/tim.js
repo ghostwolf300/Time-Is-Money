@@ -61,10 +61,10 @@ function displayResults(users){
 	$('#searchResults-tbody').empty();
 	$.each(users, function(i,up){
 		trHtml+='<tr>\
-		<td>'+up.userPersonalKey.userId+'</td>\
+		<td>'+up.key.userId+'</td>\
 		<td>'+up.user.username+'</td>\
 		<td>'+up.lastName+', '+up.firstName+'</td>\
-		<td><input type="button" value="Show..." onclick="showUser('+up.userPersonalKey.userId+')"/></td>\
+		<td><input type="button" value="Show..." onclick="showUser('+up.key.userId+')"/></td>\
 		</tr>'
 	});
 	$('#searchResults-tbody').append(trHtml);
@@ -101,7 +101,7 @@ function showPersonalDetails(userId){
 	
 	$.getJSON(url,function(ud){
 		//console.log(ud);
-		$('#personalStartDate').val(ud.userPersonalKey.startDate);
+		$('#personalStartDate').val(ud.key.startDate);
 		$('#personalEndDate').val(ud.endDate);
 		$('#firstName').val(ud.firstName);
 		$('#middleName').val(ud.middleName);
@@ -144,7 +144,7 @@ function nextPersonalRecord(){
 	
 	$.getJSON(url,function(ud){
 		console.log(ud);
-		$('#personalStartDate').val(ud.userPersonalKey.startDate);
+		$('#personalStartDate').val(ud.key.startDate);
 		$('#personalEndDate').val(ud.endDate);
 		$('#firstName').val(ud.firstName);
 		$('#middleName').val(ud.middleName);
@@ -185,7 +185,7 @@ function previousPersonalRecord(){
 	
 	$.getJSON(url,function(ud){
 		console.log(ud);
-		$('#personalStartDate').val(ud.userPersonalKey.startDate);
+		$('#personalStartDate').val(ud.key.startDate);
 		$('#personalEndDate').val(ud.endDate);
 		$('#firstName').val(ud.firstName);
 		$('#middleName').val(ud.middleName);
@@ -217,7 +217,7 @@ function previousPersonalRecord(){
 function savePersonalRecord(){
 	
 	var pd={
-			userPersonalKey : {
+			key : {
 				userId : $('#id').val(),
 				startDate : $('#personalStartDate').val()
 			},
@@ -232,7 +232,7 @@ function savePersonalRecord(){
 	
 	console.log(pd);
 	
-	var url='/userrecord/show/'+pd.userPersonalKey.userId+'/personaldetails/save';
+	var url='/userrecord/show/'+pd.key.userId+'/personaldetails/save';
 	
 	data=JSON.stringify(pd);
 	
@@ -276,7 +276,7 @@ function clearPersonalDetails(){
 }
 
 function populatePersonalDetails(ud){
-	$('#personalStartDate').val(ud.userPersonalKey.startDate);
+	$('#personalStartDate').val(ud.key.startDate);
 	$('#personalEndDate').val(ud.endDate);
 	$('#firstName').val(ud.firstName);
 	$('#middleName').val(ud.middleName);
@@ -296,7 +296,7 @@ function showContractDetails(userId){
 	var url='/userrecord/show/'+userId+'/contractdetails';
 	$.getJSON(url,function(cd){
 		//console.log(cd);
-		$('#contractStartDate').val(cd.userContractKey.startDate);
+		$('#contractStartDate').val(cd.key.startDate);
 		$('#contractEndDate').val(cd.endDate);
 		$('#contractType').val(cd.contractType.id);
 		$('#minHours').val(cd.minHours);
@@ -333,7 +333,7 @@ function nextContractRecord(){
 	
 	$.getJSON(url,function(cd){
 		//console.log(cd);
-		$('#contractStartDate').val(cd.userContractKey.startDate);
+		$('#contractStartDate').val(cd.key.startDate);
 		$('#contractEndDate').val(cd.endDate);
 		$('#contractType').val(cd.contractType.id);
 		$('#minHours').val(cd.minHours);
@@ -370,7 +370,7 @@ function previousContractRecord(){
 	
 	$.getJSON(url,function(cd){
 		//console.log(cd);
-		$('#contractStartDate').val(cd.userContractKey.startDate);
+		$('#contractStartDate').val(cd.key.startDate);
 		$('#contractEndDate').val(cd.endDate);
 		$('#contractType').val(cd.contractType.id);
 		$('#minHours').val(cd.minHours);
@@ -410,7 +410,7 @@ function clearContractDetails(){
 }
 
 function populateContractDetails(cd){
-	$('#contractStartDate').val(cd.userContractKey.startDate);
+	$('#contractStartDate').val(cd.key.startDate);
 	$('#contractEndDate').val(cd.endDate);
 	$('#contractType').val(cd.contractType.id);
 	$('#minHours').val(cd.minHours);
@@ -427,7 +427,7 @@ function showAssignmentDetails(userId){
 	var url='/userrecord/show/'+userId+'/assignmentdetails';
 	$.getJSON(url,function(ad){
 		//console.log(ad);
-		$('#assignmentStartDate').val(ad.userAssignmentKey.startDate);
+		$('#assignmentStartDate').val(ad.key.startDate);
 		$('#assignmentEndDate').val(ad.endDate);
 		$('#orgUnitId').val(ad.orgUnit.id);
 		$('#orgUnitName').val(ad.orgUnit.name);
@@ -465,7 +465,7 @@ function nextAssignmentRecord(){
 	
 	$.getJSON(url,function(ad){
 		//console.log(ad);
-		$('#assignmentStartDate').val(ad.userAssignmentKey.startDate);
+		$('#assignmentStartDate').val(ad.key.startDate);
 		$('#assignmentEndDate').val(ad.endDate);
 		$('#orgUnitId').val(ad.orgUnit.id);
 		$('#orgUnitName').val(ad.orgUnit.name);
@@ -503,7 +503,7 @@ function previousAssignmentRecord(){
 	
 	$.getJSON(url,function(ad){
 		//console.log(ad);
-		$('#assignmentStartDate').val(ad.userAssignmentKey.startDate);
+		$('#assignmentStartDate').val(ad.key.startDate);
 		$('#assignmentEndDate').val(ad.endDate);
 		$('#orgUnitId').val(ad.orgUnit.id);
 		$('#orgUnitName').val(ad.orgUnit.name);
@@ -545,7 +545,7 @@ function clearAssignmentDetails(){
 } 
 
 function populateAssignmentDetails(ad){
-	$('#assignmentStartDate').val(ad.userAssignmentKey.startDate);
+	$('#assignmentStartDate').val(ad.key.startDate);
 	$('#assignmentEndDate').val(ad.endDate);
 	$('#orgUnitId').val(ad.orgUnit.id);
 	$('#orgUnitName').val(ad.orgUnit.name);

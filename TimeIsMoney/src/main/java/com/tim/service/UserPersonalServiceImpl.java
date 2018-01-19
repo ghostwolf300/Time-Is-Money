@@ -23,13 +23,13 @@ public class UserPersonalServiceImpl implements UserPersonalService {
 	
 	@Override
 	public UserPersonal findByUserPersonalKey(UserPersonalKey key) {
-		return upRepo.findByUserPersonalKey(key);
+		return upRepo.findByKey(key);
 	}
 
 	@Override
 	public UserPersonal findByUserIdAndStartDate(int userId, Date startDate) {
 		UserPersonalKey key=new UserPersonalKey(userId,startDate);
-		return upRepo.findByUserPersonalKey(key);
+		return upRepo.findByKey(key);
 	}
 
 	@Override

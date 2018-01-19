@@ -52,6 +52,16 @@ public class OrgUnit implements Serializable {
 	public OrgUnit() {
 		
 	}
+	
+	public OrgUnit(OrgUnit orgUnit) {
+		this.id=orgUnit.id;
+		this.name=new String(orgUnit.name);
+		this.costCenter=new CostCenter(orgUnit.costCenter);
+		this.parent=new OrgUnit(orgUnit.parent);
+		this.changedBy=orgUnit.changedBy;
+		this.changeTs=new Timestamp(orgUnit.getChangeTs().getTime());
+		
+	}
 
 	public int getId() {
 		return id;

@@ -25,17 +25,13 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="user_personal")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class UserPersonal extends DateEffectiveRecord implements Serializable {
+public class UserPersonal extends DateEffectiveRecord<UserPersonal> implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@EmbeddedId
-	private UserPersonalKey userPersonalKey;
-	@Column(name="end_date")
-	private Date endDate;
 	@Column(name="first_name")
 	private String firstName;
 	@Column(name="last_name")
@@ -48,9 +44,6 @@ public class UserPersonal extends DateEffectiveRecord implements Serializable {
 	private String phone;
 	@Column(name="email")
 	private String email;
-	/*@ManyToOne
-	@JoinColumn(name="changed_by", nullable=false)
-	private User changedBy;*/
 	@Column(name="changed_by")
 	private int changedBy;
 	@Column(name="change_ts")
@@ -65,7 +58,7 @@ public class UserPersonal extends DateEffectiveRecord implements Serializable {
 	}
 	
 	public UserPersonal(UserPersonal up) {
-		this.userPersonalKey=new UserPersonalKey(up.userPersonalKey);
+		this.key=new DateEffectiveKey(up.key);
 		if(up.endDate!=null) {
 			this.endDate=new Date(up.endDate.getTime());
 		}
@@ -81,22 +74,6 @@ public class UserPersonal extends DateEffectiveRecord implements Serializable {
 		if(up.changeTs!=null) {
 			this.changeTs=new Timestamp(up.changeTs.getTime());
 		}
-	}
-
-	public UserPersonalKey getUserPersonalKey() {
-		return userPersonalKey;
-	}
-
-	public void setUserPersonalKey(UserPersonalKey userPersonalId) {
-		this.userPersonalKey = userPersonalId;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
 	}
 
 	public String getFirstName() {
@@ -177,6 +154,22 @@ public class UserPersonal extends DateEffectiveRecord implements Serializable {
 
 	public void setChangedBy(int changedBy) {
 		this.changedBy = changedBy;
+	}
+
+	@Override
+	public void copy(UserPersonal rec) {
+		
+		this.key=new DateEffectiveKey(rec.getKey());
+		this.endDate=new Date(rec.getEndDate().getTime());
+		this.firstName=new String(rec.getFirstName());
+		this.middleName=new String(rec.getMiddleName());
+		this.lastName=new String(rec.getLastName());
+		this.birthDate=new Date(rec.getBirthDate().getTime());
+		this.phone=new String(rec.getPhone());
+		this.email=new String(rec.getEmail());
+		this.changedBy=rec.getChangedBy();
+		this.changeTs=new Timestamp(rec.getChangeTs().getTime());
+		
 	}
 	
 }

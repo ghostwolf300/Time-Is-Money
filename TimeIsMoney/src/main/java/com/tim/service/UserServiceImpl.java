@@ -32,6 +32,10 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserAssignmentRepository userAssignmentRepository;
 	
+	public UserServiceImpl() {
+		System.out.println("Initializing user service");
+	}
+	
 	@Override
 	public List<User> findAll() {
 		return userRepository.findAll();
@@ -136,8 +140,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	private void addRecordIdentifierTo(UserPersonal up) {
-		int recBefore=userPersonalRepository.getRecordCountBeforeDate(up.getUserPersonalKey().getUserId(), up.getUserPersonalKey().getStartDate());
-		int recAfter=userPersonalRepository.getRecordCountAfterDate(up.getUserPersonalKey().getUserId(), up.getUserPersonalKey().getStartDate());
+		int recBefore=userPersonalRepository.getRecordCountBeforeDate(up.getKey().getUserId(), up.getKey().getStartDate());
+		int recAfter=userPersonalRepository.getRecordCountAfterDate(up.getKey().getUserId(), up.getKey().getStartDate());
 		int totalCount=recBefore+recAfter+1;
 		int currentRec=-1;
 		currentRec=totalCount-recAfter;
@@ -148,8 +152,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	private void addRecordIdentifierTo(UserContract uc) {
-		int recBefore=userContractRepository.getRecordCountBeforeDate(uc.getUserContractKey().getUserId(), uc.getUserContractKey().getStartDate());
-		int recAfter=userContractRepository.getRecordCountAfterDate(uc.getUserContractKey().getUserId(), uc.getUserContractKey().getStartDate());
+		int recBefore=userContractRepository.getRecordCountBeforeDate(uc.getKey().getUserId(), uc.getKey().getStartDate());
+		int recAfter=userContractRepository.getRecordCountAfterDate(uc.getKey().getUserId(), uc.getKey().getStartDate());
 		int totalCount=recBefore+recAfter+1;
 		int currentRec=-1;
 		currentRec=totalCount-recAfter;
@@ -160,8 +164,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	private void addRecordIdentifierTo(UserAssignment ua) {
-		int recBefore=userAssignmentRepository.getRecordCountBeforeDate(ua.getUserAssignmentKey().getUserId(), ua.getUserAssignmentKey().getStartDate());
-		int recAfter=userAssignmentRepository.getRecordCountAfterDate(ua.getUserAssignmentKey().getUserId(), ua.getUserAssignmentKey().getStartDate());
+		int recBefore=userAssignmentRepository.getRecordCountBeforeDate(ua.getKey().getUserId(), ua.getKey().getStartDate());
+		int recAfter=userAssignmentRepository.getRecordCountAfterDate(ua.getKey().getUserId(), ua.getKey().getStartDate());
 		int totalCount=recBefore+recAfter+1;
 		int currentRec=-1;
 		currentRec=totalCount-recAfter;

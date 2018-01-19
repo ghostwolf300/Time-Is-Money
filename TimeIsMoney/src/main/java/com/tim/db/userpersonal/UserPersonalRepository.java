@@ -12,7 +12,7 @@ import com.tim.entities.UserPersonalKey;
 @Repository
 public interface UserPersonalRepository extends JpaRepository<UserPersonal,UserPersonalKey>, UserPersonalRepositoryCustom{
 	
-	public UserPersonal findByUserPersonalKey(UserPersonalKey key);
+	public UserPersonal findByKey(UserPersonalKey key);
 	public List<UserPersonal> findByEndDate(Date endDate);
 	
 }

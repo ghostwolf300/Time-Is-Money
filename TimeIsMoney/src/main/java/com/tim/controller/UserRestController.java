@@ -55,7 +55,7 @@ public class UserRestController {
 	
 	@RequestMapping(value="/personaldetails/save", method=RequestMethod.POST)
 	public ResponseEntity<UserPersonal> savePersonalDetails(@PathVariable int userId, @RequestBody UserPersonal personalDetail){
-		System.out.println("sent JSON userId: "+personalDetail.getUserPersonalKey().getUserId());
+		System.out.println("sent JSON userId: "+personalDetail.getKey().getUserId());
 		personalDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
 		userService.savePersonalData(personalDetail);
 		return new ResponseEntity<UserPersonal>(personalDetail,HttpStatus.OK);
