@@ -45,6 +45,10 @@ public class UserContract extends DateEffectiveRecord<UserContract> implements S
 	public UserContract() {
 		
 	}
+	
+	public UserContract(UserContract uc) {
+		this.copy(uc);
+	}
 
 	public Date getEndDate() {
 		return endDate;
@@ -117,6 +121,11 @@ public class UserContract extends DateEffectiveRecord<UserContract> implements S
 		
 		this.minHours=rec.minHours;
 		this.maxHours=rec.maxHours;
+		this.changedBy=rec.changedBy;
+		if(rec.changeTs!=null) {
+			this.changeTs=new Timestamp(rec.changeTs.getTime());
+		}
+		
 		
 		
 		

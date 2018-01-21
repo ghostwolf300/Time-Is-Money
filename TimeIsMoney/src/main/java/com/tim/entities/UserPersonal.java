@@ -58,7 +58,8 @@ public class UserPersonal extends DateEffectiveRecord<UserPersonal> implements S
 	}
 	
 	public UserPersonal(UserPersonal up) {
-		this.key=new DateEffectiveKey(up.key);
+		this.copy(up);
+		/*this.key=new DateEffectiveKey(up.key);
 		if(up.endDate!=null) {
 			this.endDate=new Date(up.endDate.getTime());
 		}
@@ -73,7 +74,7 @@ public class UserPersonal extends DateEffectiveRecord<UserPersonal> implements S
 		this.changedBy=up.changedBy;
 		if(up.changeTs!=null) {
 			this.changeTs=new Timestamp(up.changeTs.getTime());
-		}
+		}*/
 	}
 
 	public String getFirstName() {
@@ -168,12 +169,21 @@ public class UserPersonal extends DateEffectiveRecord<UserPersonal> implements S
 		if(rec.birthDate!=null) {
 			this.birthDate=new Date(rec.birthDate.getTime());
 		}
-		
-		this.firstName=new String(rec.getFirstName());
-		this.middleName=new String(rec.getMiddleName());
-		this.lastName=new String(rec.getLastName());
-		this.phone=new String(rec.getPhone());
-		this.email=new String(rec.getEmail());
+		if(rec.firstName!=null) {
+			this.firstName=new String(rec.getFirstName());
+		}
+		if(rec.middleName!=null) {
+			this.middleName=new String(rec.getMiddleName());
+		}
+		if(rec.lastName!=null) {
+			this.lastName=new String(rec.getLastName());
+		}
+		if(rec.phone!=null) {
+			this.phone=new String(rec.getPhone());
+		}
+		if(rec.email!=null) {
+			this.email=new String(rec.getEmail());
+		}
 		this.changedBy=rec.changedBy;
 		if(rec.changeTs!=null) {
 			this.changeTs=new Timestamp(rec.changeTs.getTime());

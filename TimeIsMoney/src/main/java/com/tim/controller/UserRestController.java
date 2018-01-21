@@ -112,6 +112,7 @@ public class UserRestController {
 		assignmentDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
 		assignmentDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
 		UserAssignment ua=userService.saveAssignment(assignmentDetail);
+		System.out.println("RestController CCID: "+ua.getOrgUnit().getCostCenter().getId());
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	

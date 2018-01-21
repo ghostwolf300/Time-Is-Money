@@ -45,10 +45,16 @@ public class CostCenter implements Serializable {
 	
 	public CostCenter(CostCenter cc) {
 		this.id=cc.id;
-		this.secondaryId=new String(cc.secondaryId);
-		this.name=new String(cc.name);
+		if(cc.secondaryId!=null) {
+			this.secondaryId=new String(cc.secondaryId);
+		}
+		if(cc.name!=null) {
+			this.name=new String(cc.name);
+		}
 		this.enabled=cc.enabled;
-		this.changeTs=new Timestamp(cc.changeTs.getTime());
+		if(cc.changeTs!=null) {
+			this.changeTs=new Timestamp(cc.changeTs.getTime());
+		}
 	}
 
 

@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import com.tim.entities.DateEffectiveKey;
 import com.tim.entities.DateEffectiveRecord;
 
 
@@ -60,6 +61,26 @@ public abstract class AbstractDateEffectiveRepository<T extends DateEffectiveRec
 				cb.greaterThan(root.get("key").get("startDate"), startDate)
 		);
 		return em.createQuery(delete).executeUpdate();
+	}
+	
+	public T findByKey(DateEffectiveKey key) {
+		CriteriaBuilder builder=em.getCriteriaBuilder();
+		CriteriaQuery<T> query=builder.createQuery(recClass);
+		Root<T> root=query.from(recClass);
+		query.select(root);
+		query.where(
+				builder.equal(root.get("key").get("userId"), key.getUserId()),
+				builder.equal(root.get("key").get("startDate"), key.getStartDate())
+		);
+		
+		T rec=null;
+		try {
+			rec=em.createQuery(query).getSingleResult();
+		}
+		catch(NoResultException nre) {
+			System.out.println("findByKey: No results!");
+		}
+		return rec;
 	}
 
 	public int getRecordCountBeforeDate(int userId, Date date) {

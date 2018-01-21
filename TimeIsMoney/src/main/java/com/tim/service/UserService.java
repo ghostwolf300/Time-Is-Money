@@ -3,6 +3,7 @@ package com.tim.service;
 import java.sql.Date;
 import java.util.List;
 
+import com.tim.entities.DateEffectiveKey;
 import com.tim.entities.Role;
 import com.tim.entities.User;
 import com.tim.entities.UserAssignment;

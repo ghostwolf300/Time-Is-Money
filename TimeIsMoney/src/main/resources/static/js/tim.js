@@ -418,7 +418,6 @@ function saveContractRecord(){
 			endDate : $('#contractEndDate').val(),
 			contractType : {
 				id : $('#contractType').val(),
-				contractTypeName : 'N/A'
 			},
 			minHours : $('#minHours').val(),
 			maxHours : $('#maxHours').val()
@@ -593,7 +592,6 @@ function saveAssignmentRecord(){
 			endDate : $('#assignmentEndDate').val(),
 			orgUnit : {
 				id : $('#orgUnitId').val(),
-				name : 'N/A'
 			}
 	}
 	
@@ -611,7 +609,7 @@ function saveAssignmentRecord(){
 	}).success(function(ad){
 		//console.log('success: '+data.firstName);
 	}).done(function(ad){
-		//console.log('done: '+data.changedBy);
+		console.log('done: '+JSON.stringify(ad));
 		clearAssignmentDetails();
 		populateAssignmentDetails(ad);
 	}).fail(function(){

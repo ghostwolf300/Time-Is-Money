@@ -38,6 +38,10 @@ public class UserAssignment extends DateEffectiveRecord<UserAssignment> implemen
 	public UserAssignment() {
 		
 	}
+	
+	public UserAssignment(UserAssignment ua) {
+		this.copy(ua);
+	}
 
 	public OrgUnit getOrgUnit() {
 		return orgUnit;
@@ -73,6 +77,10 @@ public class UserAssignment extends DateEffectiveRecord<UserAssignment> implemen
 		}
 		if(rec.orgUnit!=null) {
 			this.orgUnit=new OrgUnit(rec.getOrgUnit());
+		}
+		this.changedBy=rec.changedBy;
+		if(rec.changeTs!=null) {
+			this.changeTs=new Timestamp(rec.changeTs.getTime());
 		}
 		
 	}

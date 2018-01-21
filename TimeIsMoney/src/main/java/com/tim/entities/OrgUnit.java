@@ -55,7 +55,9 @@ public class OrgUnit implements Serializable {
 	
 	public OrgUnit(OrgUnit orgUnit) {
 		this.id=orgUnit.id;
-		this.name=new String(orgUnit.name);
+		if(orgUnit.name!=null) {
+			this.name=new String(orgUnit.name);
+		}
 		if(orgUnit.costCenter!=null) {
 			this.costCenter=new CostCenter(orgUnit.costCenter);
 		}
@@ -66,7 +68,6 @@ public class OrgUnit implements Serializable {
 		if(orgUnit.changeTs!=null) {
 			this.changeTs=new Timestamp(orgUnit.getChangeTs().getTime());
 		}
-		
 	}
 
 	public int getId() {

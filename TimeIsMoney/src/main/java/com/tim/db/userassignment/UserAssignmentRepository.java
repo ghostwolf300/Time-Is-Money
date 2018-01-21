@@ -8,5 +8,5 @@ import com.tim.entities.UserAssignmentKey;
 
 @Repository
 public interface UserAssignmentRepository extends JpaRepository<UserAssignment, UserAssignmentKey>,UserAssignmentRepositoryCustom {
-
+	
 }

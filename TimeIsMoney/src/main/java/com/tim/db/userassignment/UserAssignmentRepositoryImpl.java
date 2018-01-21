@@ -40,4 +40,13 @@ public class UserAssignmentRepositoryImpl extends AbstractDateEffectiveRepositor
 		}
 		return ua;
 	}
+	
+	public UserAssignment save(UserAssignment ua) {
+		UserAssignment saved=super.save(ua);
+		System.out.println("Saved assignment..."+saved.getOrgUnit().getId());
+		UserAssignment rec=super.findByKey(saved.getKey());
+		System.out.println("Complete record CCID: "+rec.getOrgUnit().getCostCenter().getId());
+		return rec;
+	}
+	
 }
