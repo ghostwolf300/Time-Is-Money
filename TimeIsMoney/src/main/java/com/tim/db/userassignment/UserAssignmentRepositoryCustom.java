@@ -5,4 +5,6 @@ import com.tim.entities.UserAssignment;
 
 public interface UserAssignmentRepositoryCustom extends DateEffectiveRepository<UserAssignment> {
 	
+	public UserAssignment save(UserAssignment userAssignment);
+	
 }

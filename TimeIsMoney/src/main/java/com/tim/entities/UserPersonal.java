@@ -159,16 +159,26 @@ public class UserPersonal extends DateEffectiveRecord<UserPersonal> implements S
 	@Override
 	public void copy(UserPersonal rec) {
 		
-		this.key=new DateEffectiveKey(rec.getKey());
-		this.endDate=new Date(rec.getEndDate().getTime());
+		if(rec.key!=null) {
+			this.key=new DateEffectiveKey(rec.key);
+		}
+		if(rec.endDate!=null) {
+			this.endDate=new Date(rec.endDate.getTime());
+		}
+		if(rec.birthDate!=null) {
+			this.birthDate=new Date(rec.birthDate.getTime());
+		}
+		
 		this.firstName=new String(rec.getFirstName());
 		this.middleName=new String(rec.getMiddleName());
 		this.lastName=new String(rec.getLastName());
-		this.birthDate=new Date(rec.getBirthDate().getTime());
 		this.phone=new String(rec.getPhone());
 		this.email=new String(rec.getEmail());
-		this.changedBy=rec.getChangedBy();
-		this.changeTs=new Timestamp(rec.getChangeTs().getTime());
+		this.changedBy=rec.changedBy;
+		if(rec.changeTs!=null) {
+			this.changeTs=new Timestamp(rec.changeTs.getTime());
+		}
+		
 		
 	}
 	

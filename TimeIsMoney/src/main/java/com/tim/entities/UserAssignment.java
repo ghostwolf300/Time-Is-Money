@@ -1,6 +1,7 @@
 package com.tim.entities;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -64,8 +65,15 @@ public class UserAssignment extends DateEffectiveRecord<UserAssignment> implemen
 
 	@Override
 	public void copy(UserAssignment rec) {
-		this.key=new DateEffectiveKey(rec.getKey());
-		this.orgUnit=new OrgUnit(rec.getOrgUnit());
+		if(rec.key!=null) {
+			this.key=new DateEffectiveKey(rec.key);
+		}
+		if(rec.endDate!=null) {
+			this.endDate=new Date(rec.endDate.getTime());
+		}
+		if(rec.orgUnit!=null) {
+			this.orgUnit=new OrgUnit(rec.getOrgUnit());
+		}
 		
 	}
 }

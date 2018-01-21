@@ -104,7 +104,23 @@ public class UserContract extends DateEffectiveRecord<UserContract> implements S
 
 	@Override
 	public void copy(UserContract rec) {
-		// TODO Auto-generated method stub
+		
+		if(rec.key!=null) {
+			this.key=new DateEffectiveKey(rec.key);
+		}
+		if(rec.endDate!=null) {
+			this.endDate=new Date(rec.endDate.getTime());
+		}
+		if(rec.contractType!=null) {
+			this.contractType=new ContractType(rec.contractType);
+		}
+		
+		this.minHours=rec.minHours;
+		this.maxHours=rec.maxHours;
+		
+		
+		
+		
 		
 	}
 	

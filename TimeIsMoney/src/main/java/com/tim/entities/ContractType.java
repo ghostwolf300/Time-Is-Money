@@ -29,6 +29,11 @@ public class ContractType implements Serializable {
 	public ContractType() {
 		
 	}
+	
+	public ContractType(ContractType contractType) {
+		this.id=contractType.id;
+		this.contractTypeName=new String(contractType.contractTypeName);
+	}
 
 	public int getId() {
 		return id;

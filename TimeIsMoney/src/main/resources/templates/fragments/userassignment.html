@@ -10,7 +10,7 @@
 				<span id="assignmentDetailRecord">(1/1)</span> 
 				<input id="prevAssignmentDetail" type="button" value="Prev" th:onclick="'previousAssignmentRecord()'" /> 
 				<input id="nextAssignmentDetail" type="button" value="Next" th:onclick="'nextAssignmentRecord()'"/> 
-				<input id="newAssignmentDetail" type="button" value="New" />
+				<input id="newAssignmentDetail" type="button" value="New" th:onclick="'newAssignmentRecord()'"/>
 			</div>
 			<div id="recordControls_top_right">
 				<input id="delAssignmentDetail" type="button" value="Delete" />
@@ -30,7 +30,7 @@
 	</div>
 	<div id="recordControls_bottom">
 		<div id="recordControls_bottom_left">
-			<input id="saveAssignmentDetails" type="button" value="Save" />
+			<input id="saveAssignmentDetails" type="button" value="Save" th:onclick="'saveAssignmentRecord()'"/>
 		</div>
 		<div id="recordControls_bottom_right">
 			<p>Changed: <span id="assignmentChangedTs"></span> by: <span id="assignmentChangedBy"></span></p>

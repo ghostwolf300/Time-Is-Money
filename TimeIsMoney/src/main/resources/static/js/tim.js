@@ -86,11 +86,17 @@ function newPersonalRecord(){
 }
 
 function newContractRecord(){
-	
+	clearContractDetails();
+	var today=$.now();
+	$('#contractStartDate').val($.format.date(today, 'yyyy-MM-dd'));
+	$('#contractDetailRecord').append("New");
 }
 
 function newAssignmentRecord(){
-	
+	clearAssignmentDetails();
+	var today=$.now();
+	$('#assignmentStartDate').val($.format.date(today, 'yyyy-MM-dd'));
+	$('#assignmentDetailRecord').append("New");
 }
 
 function showPersonalDetails(userId){
@@ -109,7 +115,7 @@ function showPersonalDetails(userId){
 		$('#birthDate').val(ud.birthDate);
 		$('#phone').val(ud.phone);
 		$('#email').val(ud.email);
-		var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy hh:mm');
+		var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy HH:mm');
 		$('#personalChangedTs').append(ts);
 		$('#personalDetailRecord').append(ud.currentRecord+'/'+ud.totalRecords);
 		
@@ -240,11 +246,13 @@ function savePersonalRecord(){
 		url : url,
 		method : "POST",
 		data : data,
-		datatype: "json"
-	}).success(function(data){
-		//console.log(data);
-	}).done(function(data){
-		//console.log(data);
+		dataType : "json"
+	}).success(function(up){
+		//console.log('success: '+data.firstName);
+	}).done(function(up){
+		//console.log('done: '+data.changedBy);
+		clearPersonalDetails();
+		populatePersonalDetails(up);
 	}).fail(function(){
 		alert("ERROR: Couldn't save personal details.");
 	}).always(function(){
@@ -287,6 +295,7 @@ function populatePersonalDetails(ud){
 	var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy hh:mm');
 	$('#personalChangedTs').append(ts);
 	$('#personalDetailRecord').append(ud.currentRecord+'/'+ud.totalRecords);
+	addUsernameToElement(ud.key.userId,'#personalChangedBy');
 }
 
 function showContractDetails(userId){
@@ -399,6 +408,47 @@ function previousContractRecord(){
 	
 }
 
+function saveContractRecord(){
+	
+	var cd={
+			key : {
+				userId : $('#id').val(),
+				startDate : $('#contractStartDate').val()
+			},
+			endDate : $('#contractEndDate').val(),
+			contractType : {
+				id : $('#contractType').val(),
+				contractTypeName : 'N/A'
+			},
+			minHours : $('#minHours').val(),
+			maxHours : $('#maxHours').val()
+	}
+	
+	console.log(cd);
+	
+	var url='/userrecord/show/'+cd.key.userId+'/contractdetails/save';
+	
+	data=JSON.stringify(cd);
+	
+	$.ajax({
+		url : url,
+		method : "POST",
+		data : data,
+		dataType : "json"
+	}).success(function(cd){
+		//console.log('success: '+data.firstName);
+	}).done(function(cd){
+		//console.log('done: '+data.changedBy);
+		clearContractDetails();
+		populateContractDetails(cd);
+	}).fail(function(){
+		alert("ERROR: Couldn't save contract details.");
+	}).always(function(){
+		
+	});
+	
+}
+
 function clearContractDetails(){
 	$('#contractStartDate').val(null);
 	$('#contractEndDate').val(null);
@@ -418,6 +468,7 @@ function populateContractDetails(cd){
 	var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
 	$('#contractChangedTs').append(ts);
 	$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
+	addUsernameToElement(cd.key.userId,'#contractChangedBy');
 }
 
 function showAssignmentDetails(userId){
@@ -533,6 +584,43 @@ function previousAssignmentRecord(){
 	
 }
 
+function saveAssignmentRecord(){
+	var ad={
+			key : {
+				userId : $('#id').val(),
+				startDate : $('#assignmentStartDate').val()
+			},
+			endDate : $('#assignmentEndDate').val(),
+			orgUnit : {
+				id : $('#orgUnitId').val(),
+				name : 'N/A'
+			}
+	}
+	
+	console.log(ad);
+	
+	var url='/userrecord/show/'+ad.key.userId+'/assignmentdetails/save';
+	
+	data=JSON.stringify(ad);
+	
+	$.ajax({
+		url : url,
+		method : "POST",
+		data : data,
+		dataType : "json"
+	}).success(function(ad){
+		//console.log('success: '+data.firstName);
+	}).done(function(ad){
+		//console.log('done: '+data.changedBy);
+		clearAssignmentDetails();
+		populateAssignmentDetails(ad);
+	}).fail(function(){
+		alert("ERROR: Couldn't save assignment details.");
+	}).always(function(){
+		
+	});
+}
+
 function clearAssignmentDetails(){
 	$('#assignmentStartDate').val(null);
 	$('#assignmentEndDate').val(null);
@@ -554,6 +642,7 @@ function populateAssignmentDetails(ad){
 	var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
 	$('#assignmentChangedTs').append(ts);
 	$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
+	addUsernameToElement(ad.key.userId,'#assignmentChangedBy');
 }
 
 function showCredentialsDetails(userId){

@@ -22,14 +22,16 @@ public interface UserService {
 	public UserPersonal findPersonalByKeyDate(int userId,Date date);
 	public UserPersonal findNextPersonal(int userId,Date date);
 	public UserPersonal findPreviousPersonal(int userId,Date date);
-	public UserPersonal savePersonalData(UserPersonal userPersonal);
+	public UserPersonal savePersonal(UserPersonal userPersonal);
 	
 	public UserContract findContractByKeyDate(int userId,Date date);
 	public UserContract findNextContract(int userId, Date date);
 	public UserContract findPreviousContract(int userId, Date date);
+	public UserContract saveContract(UserContract userContract);
 	
 	public UserAssignment findAssignmentByKeyDate(int userId,Date date);
 	public UserAssignment findNextAssignment(int userId,Date date);
 	public UserAssignment findPreviousAssignment(int userId, Date date);
+	public UserAssignment saveAssignment(UserAssignment userAssignment);
 	
 }

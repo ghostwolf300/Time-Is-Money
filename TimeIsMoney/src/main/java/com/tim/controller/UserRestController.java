@@ -1,6 +1,7 @@
 package com.tim.controller;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -57,8 +58,9 @@ public class UserRestController {
 	public ResponseEntity<UserPersonal> savePersonalDetails(@PathVariable int userId, @RequestBody UserPersonal personalDetail){
 		System.out.println("sent JSON userId: "+personalDetail.getKey().getUserId());
 		personalDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
-		userService.savePersonalData(personalDetail);
-		return new ResponseEntity<UserPersonal>(personalDetail,HttpStatus.OK);
+		personalDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
+		UserPersonal up=userService.savePersonal(personalDetail);
+		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/contractdetails")
@@ -79,6 +81,14 @@ public class UserRestController {
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="/contractdetails/save", method=RequestMethod.POST)
+	public ResponseEntity<UserContract> saveContractDetails(@PathVariable int userId, @RequestBody UserContract contractDetail){
+		contractDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
+		contractDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
+		UserContract uc=userService.saveContract(contractDetail);
+		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
+	}
+	
 	@RequestMapping("/assignmentdetails")
 	public ResponseEntity<UserAssignment> getAssignmentDetails(@PathVariable int userId){
 		UserAssignment ua=userService.findAssignmentByKeyDate(userId, getDateObject("2018-01-01"));
@@ -94,6 +104,14 @@ public class UserRestController {
 	@RequestMapping("/assignmentdetails/prev")
 	public ResponseEntity<UserAssignment> getPreviousAssignmentDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserAssignment ua=userService.findPreviousAssignment(userId, date);
+		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/assignmentdetails/save", method=RequestMethod.POST)
+	public ResponseEntity<UserAssignment> saveAssignmentDetails(@PathVariable int userId, @RequestBody UserAssignment assignmentDetail){
+		assignmentDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
+		assignmentDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
+		UserAssignment ua=userService.saveAssignment(assignmentDetail);
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
