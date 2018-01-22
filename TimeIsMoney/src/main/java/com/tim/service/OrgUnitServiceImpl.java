@@ -1,5 +1,6 @@
 package com.tim.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +24,51 @@ public class OrgUnitServiceImpl implements OrgUnitService {
 	@Override
 	public TreeNode<OrgUnit> getOrgTree(int rootId) {
 		OrgUnit rootUnit=orgUnitRepo.findById(rootId);
+		System.out.println("root: "+rootUnit.getId());
 		TreeNode<OrgUnit> rootNode=null;
 		if(rootUnit!=null) {
 			rootNode=new TreeNode<OrgUnit>(rootUnit);
-			findChildren(rootNode);
+			addChildren(rootNode);
 		}
-		System.out.println(rootNode.children.size());
 		return rootNode;
 	}
 	
 	private List<TreeNode<OrgUnit>> findChildren(TreeNode<OrgUnit> parent){
-		List<OrgUnit> children=orgUnitRepo.findByParentId(parent.getData().getParent().getId());
+		
+		List<OrgUnit> children=orgUnitRepo.findByParentId(parent.getData().getId());
+		List<TreeNode<OrgUnit>> childNodes=null;
+		if(children!=null) {
+			System.out.println("Children count: "+children.size());
+		}
+		
 		if(children!=null && children.size()>0) {
+			childNodes=new ArrayList<TreeNode<OrgUnit>>();
 			for(OrgUnit child : children) {
+				System.out.println("parent: "+parent.getData().getId()+" adding child: "+child.getId());
 				TreeNode<OrgUnit> childNode=parent.addChild(child);
+				childNodes.add(childNode);
 				return findChildren(childNode);
 			}
 		}
-		return null;
+		return childNodes;
+	}
+	
+	private List<TreeNode<OrgUnit>> addChildren(TreeNode<OrgUnit> parent) {
+		List<OrgUnit> children=orgUnitRepo.findByParentId(parent.getData().getId());
+		List<TreeNode<OrgUnit>> childNodes=null;
+		if(children!=null && children.size()>0) {
+			childNodes=new ArrayList<TreeNode<OrgUnit>>();
+			for(OrgUnit child : children) {
+				System.out.println("parent: "+parent.getData().getId()+" adding child: "+child.getId());
+				TreeNode<OrgUnit> childNode=parent.addChild(child);
+				childNodes.add(childNode);
+				addChildren(childNode);
+			}
+			return childNodes;
+		}
+		else {
+			return null;
+		}
 	}
 
 }

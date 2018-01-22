@@ -726,6 +726,7 @@ function showOrgTree(){
 		
 	}).done(function(tree,statusText,jqxhr){
 		if(jqxhr.status==200){
+			console.log("TEST");
 			console.log(tree);
 		}
 	});

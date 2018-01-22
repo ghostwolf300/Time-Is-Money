@@ -26,9 +26,10 @@ public class OrgUnitRestController {
 	
 	@RequestMapping("/tree")
 	public ResponseEntity<TreeNode<OrgUnit>> getOrgTree(){
+		System.out.println("OrgUnitRestController");
 		TreeNode<OrgUnit> root=orgUnitService.getOrgTree(1);
 		if(root==null) {
-			new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<TreeNode<OrgUnit>>(root,HttpStatus.OK);
 	}

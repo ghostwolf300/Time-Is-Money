@@ -1,13 +1,23 @@
 package com.tim.util;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TreeNode<T> implements Iterable<TreeNode<T>> {
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+public class TreeNode<T> implements Iterable<TreeNode<T>>,Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public T data;
+	@JsonBackReference
 	public TreeNode<T> parent;
+	@JsonManagedReference
 	public List<TreeNode<T>> children;
 
 	public boolean isRoot() {
