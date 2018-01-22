@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
-<div class="userrecord_fragment" th:fragment="usercontract">
+<div id="usercontract" class="userrecord_fragment" th:fragment="usercontract">
 	<h2>Contract</h2>
 	<div>
 		<div id="recordControls_top">
@@ -17,25 +17,30 @@
 			</div>
 		</div>
 	</div>
-	<div>
-		<label for="contractType">Contract type:</label> <select
-			id="contractType">
-			<option value="1">FT Retail Employee</option>
-			<option value="2">PT Retail Employee</option>
-			<option value="3">FT Logistics Employee</option>
-			<option value="4">PT Logistics Employee</option>
-			<option value="5">Office Employee</option>
-		</select> 
-		<label for="minHours">Min hours:</label><input id="minHours" type="number" /> 
-		<label for="maxHours">Max hours:</label><input id="maxHours" type="number" />
+	<div id="usercontract_record">
+		<div>
+			<label for="contractType">Contract type:</label> <select
+				id="contractType">
+				<option value="1">FT Retail Employee</option>
+				<option value="2">PT Retail Employee</option>
+				<option value="3">FT Logistics Employee</option>
+				<option value="4">PT Logistics Employee</option>
+				<option value="5">Office Employee</option>
+			</select> 
+			<label for="minHours">Min hours:</label><input id="minHours" type="number" /> 
+			<label for="maxHours">Max hours:</label><input id="maxHours" type="number" />
+		</div>
+		<div id="recordControls_bottom">
+			<div id="recordControls_bottom_left">
+				<input id="saveContractDetails" type="button" value="Save" th:onclick="'saveContractRecord()'"/>
+			</div>
+			<div id="recordControls_bottom_right">
+				<p>Changed: <span id="contractChangedTs"></span> by: <span id="contractChangedBy"></span></p>
+			</div>
+		</div>
 	</div>
-	<div id="recordControls_bottom">
-		<div id="recordControls_bottom_left">
-			<input id="saveContractDetails" type="button" value="Save" th:onclick="'saveContractRecord()'"/>
-		</div>
-		<div id="recordControls_bottom_right">
-			<p>Changed: <span id="contractChangedTs"></span> by: <span id="contractChangedBy"></span></p>
-		</div>
+	<div id="usercontract_noRecordFound" hidden="true">
+		<p>No record found!</p>
 	</div>
 </div>
 </html>

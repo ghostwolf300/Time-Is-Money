@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
-<div class="userrecord_fragment" th:fragment="userpersonal">
+<div id="userpersonal" class="userrecord_fragment" th:fragment="userpersonal">
 	<h2>Personal</h2>
 	<div id="recordControls_top">
 		<div id="recordControls_top_left">
@@ -15,27 +15,32 @@
 			<input id="delPersonalDetail" type="button" value="Delete" />
 		</div>
 	</div>
-	<div>
+	<div id="userpersonal_record">
 		<div>
-			<label for="firstName">First name:</label><input id="firstName" type="text" /> 
-			<label for="middleName">Middle name:</label><input id="middleName" type="text" /> 
-			<label for="lastName">Last name:</label><input id="lastName" type="text" />
+			<div>
+				<label for="firstName">First name:</label><input id="firstName" type="text" /> 
+				<label for="middleName">Middle name:</label><input id="middleName" type="text" /> 
+				<label for="lastName">Last name:</label><input id="lastName" type="text" />
+			</div>
+			<div>
+				<label for="birthDate">Birth date:</label><input id="birthDate" type="date" />
+			</div>
+			<div>
+				<label for="phone">Phone:</label><input id="phone" type="text" /> 
+				<label for="email">Email:</label><input id="email" type="text" />
+			</div>
 		</div>
-		<div>
-			<label for="birthDate">Birth date:</label><input id="birthDate" type="date" />
-		</div>
-		<div>
-			<label for="phone">Phone:</label><input id="phone" type="text" /> 
-			<label for="email">Email:</label><input id="email" type="text" />
+		<div id="recordControls_bottom">
+			<div id="recordControls_bottom_left">
+				<input id="savePersonalDetails" type="button" value="Save" th:onclick="'savePersonalRecord()'" />
+			</div>
+			<div id="recordControls_bottom_right">
+				<p>Changed: <span id="personalChangedTs"></span> by: <span id="personalChangedBy"></span></p>
+			</div>
 		</div>
 	</div>
-	<div id="recordControls_bottom">
-		<div id="recordControls_bottom_left">
-			<input id="savePersonalDetails" type="button" value="Save" th:onclick="'savePersonalRecord()'" />
-		</div>
-		<div id="recordControls_bottom_right">
-			<p>Changed: <span id="personalChangedTs"></span> by: <span id="personalChangedBy"></span></p>
-		</div>
+	<div id="userpersonal_noRecordFound" hidden="true">
+		<p>No record found!</p>
 	</div>
 </div>
 </html>

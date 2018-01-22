@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="org_unit")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class OrgUnit implements Serializable {
 
 	/**
@@ -35,13 +35,15 @@ public class OrgUnit implements Serializable {
 	private Timestamp changeTs;
 	@Column(name="changed_by")
 	private int changedBy;
+	@Column(name="cost_center_id",nullable=true)
+	private Integer costCenterId;
 	
-	@ManyToOne
-	@JoinColumn(name="cost_center_id", nullable=false)
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="cost_center_id", nullable=true, insertable=false, updatable=false)
 	private CostCenter costCenter;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="parent_id")
+	@JoinColumn(name="parent_id",nullable=true)
 	@JsonIgnore
 	private OrgUnit parent;
 	
@@ -55,6 +57,7 @@ public class OrgUnit implements Serializable {
 	
 	public OrgUnit(OrgUnit orgUnit) {
 		this.id=orgUnit.id;
+		this.costCenterId=orgUnit.costCenterId;
 		if(orgUnit.name!=null) {
 			this.name=new String(orgUnit.name);
 		}
@@ -84,6 +87,14 @@ public class OrgUnit implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getCostCenterId() {
+		return costCenterId;
+	}
+
+	public void setCostCenterId(Integer costCenterId) {
+		this.costCenterId = costCenterId;
 	}
 
 	public CostCenter getCostCenter() {

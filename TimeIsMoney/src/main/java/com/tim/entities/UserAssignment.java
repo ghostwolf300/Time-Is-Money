@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,7 +25,7 @@ public class UserAssignment extends DateEffectiveRecord<UserAssignment> implemen
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER, optional=false)
 	@JoinColumn(name="org_unit_id", nullable=false)
 	private OrgUnit orgUnit;
 	

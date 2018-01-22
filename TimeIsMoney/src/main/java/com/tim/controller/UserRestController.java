@@ -37,26 +37,40 @@ public class UserRestController {
 	private TIMSessionInfo sessionInfo;
 	
 	@RequestMapping("/personaldetails")
-	public ResponseEntity<UserPersonal> getPersonalDetails(@PathVariable int userId){
-		UserPersonal up=userService.findPersonalByKeyDate(userId, getDateObject("2018-01-01"));
+	public ResponseEntity<UserPersonal> getPersonalDetails(@PathVariable int userId,@RequestParam("keyDate") Date date){
+		UserPersonal up=null;
+		if(date!=null) {
+			up=userService.findPersonalByKeyDate(userId, date);
+		}
+		else {
+			up=userService.findPersonalByKeyDate(userId, new Date(System.currentTimeMillis()));
+		}
+		if(up==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/personaldetails/next")
 	public ResponseEntity<UserPersonal> getNextPersonalDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserPersonal up=userService.findNextPersonal(userId, date);
+		if(up==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/personaldetails/prev")
 	public ResponseEntity<UserPersonal> getPreviousPersonalDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserPersonal up=userService.findPreviousPersonal(userId, date);
-		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
+		if(up==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);	
 	}
 	
 	@RequestMapping(value="/personaldetails/save", method=RequestMethod.POST)
 	public ResponseEntity<UserPersonal> savePersonalDetails(@PathVariable int userId, @RequestBody UserPersonal personalDetail){
-		System.out.println("sent JSON userId: "+personalDetail.getKey().getUserId());
 		personalDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
 		personalDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
 		UserPersonal up=userService.savePersonal(personalDetail);
@@ -64,20 +78,36 @@ public class UserRestController {
 	}
 	
 	@RequestMapping("/contractdetails")
-	public ResponseEntity<UserContract> getContractDetails(@PathVariable int userId){
-		UserContract uc=userService.findContractByKeyDate(userId, getDateObject("2018-01-01"));
+	public ResponseEntity<UserContract> getContractDetails(@PathVariable int userId,@RequestParam("keyDate") Date date){
+		UserContract uc=null;
+		if(date!=null) {
+			uc=userService.findContractByKeyDate(userId, date);
+		}
+		else {
+			uc=userService.findContractByKeyDate(userId, new Date(System.currentTimeMillis()));
+		}
+		if(uc==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/contractdetails/next")
 	public ResponseEntity<UserContract> getNextContractDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserContract uc=userService.findNextContract(userId, date);
+		if(uc==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
+		
 	}
 	
 	@RequestMapping("/contractdetails/prev")
 	public ResponseEntity<UserContract> getPreviousContractDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserContract uc=userService.findPreviousContract(userId, date);
+		if(uc==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
 	}
 	
@@ -90,20 +120,35 @@ public class UserRestController {
 	}
 	
 	@RequestMapping("/assignmentdetails")
-	public ResponseEntity<UserAssignment> getAssignmentDetails(@PathVariable int userId){
-		UserAssignment ua=userService.findAssignmentByKeyDate(userId, getDateObject("2018-01-01"));
+	public ResponseEntity<UserAssignment> getAssignmentDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
+		UserAssignment ua=null;
+		if(date!=null) {
+			ua=userService.findAssignmentByKeyDate(userId, date);
+		}
+		else {
+			ua=userService.findAssignmentByKeyDate(userId, new Date(System.currentTimeMillis()));
+		}
+		if(ua==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/assignmentdetails/next")
 	public ResponseEntity<UserAssignment> getNextAssignmentDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserAssignment ua=userService.findNextAssignment(userId, date);
+		if(ua==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/assignmentdetails/prev")
 	public ResponseEntity<UserAssignment> getPreviousAssignmentDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserAssignment ua=userService.findPreviousAssignment(userId, date);
+		if(ua==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
@@ -112,19 +157,24 @@ public class UserRestController {
 		assignmentDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
 		assignmentDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
 		UserAssignment ua=userService.saveAssignment(assignmentDetail);
-		System.out.println("RestController CCID: "+ua.getOrgUnit().getCostCenter().getId());
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/credentialsdetails")
 	public ResponseEntity<User> getCredentialsDetails(@PathVariable int userId){
 		User u=userService.findByUserId(userId);
+		if(u==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<User>(u,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/roledetails")
 	public ResponseEntity<List<UserRole>> getRoleDetails(@PathVariable int userId){
 		List<UserRole> roles=userService.findRolesByUserId(userId);
+		if(roles==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<List<UserRole>>(roles,HttpStatus.OK);
 	}
 	

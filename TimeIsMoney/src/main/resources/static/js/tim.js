@@ -14,6 +14,23 @@ $(document).ready(function(){
 	        'Content-Type': 'application/json'
         }
     });
+	var currentDate=$.format.date(new Date($.now()),'yyyy-MM-dd')
+	$('#searchKeyDate').val(currentDate);
+});
+
+$(function () {
+	// 6 create an instance when the DOM is ready
+	$('#jstree').jstree();
+	// 7 bind to events triggered on the tree
+	$('#jstree').on("changed.jstree", function (e, data) {
+		console.log(data.selected);
+	});
+	// 8 interact with the tree - either way is OK
+	$('button').on('click', function () {
+		$('#jstree').jstree(true).select_node('child_node_1');
+		$('#jstree').jstree('select_node', 'child_node_1');
+		$.jstree.reference('#jstree').select_node('child_node_1');
+	});
 });
 
 
@@ -71,14 +88,23 @@ function displayResults(users){
 }
 
 function showUser(userId){
-	showPersonalDetails(userId);
-	showContractDetails(userId);
-	showAssignmentDetails(userId);
+	var keyDate=$('#searchKeyDate').val();
+	//console.log(keyDate);
+	if(keyDate==null){
+		keyDate=new Date();
+	}
+	showPersonalDetails(userId,keyDate);
+	showContractDetails(userId,keyDate);
+	showAssignmentDetails(userId,keyDate);
 	showCredentialsDetails(userId);
 	showRolesDetails(userId);
 }
 
 function newPersonalRecord(){
+	
+	$('#userpersonal_record').show();
+	$('#userpersonal_noRecordFound').hide();
+	
 	clearPersonalDetails();
 	var today=$.now();
 	$('#personalStartDate').val($.format.date(today, 'yyyy-MM-dd'));
@@ -86,6 +112,10 @@ function newPersonalRecord(){
 }
 
 function newContractRecord(){
+	
+	$('#usercontract_record').show();
+	$('#usercontract_noRecordFound').hide();
+	
 	clearContractDetails();
 	var today=$.now();
 	$('#contractStartDate').val($.format.date(today, 'yyyy-MM-dd'));
@@ -93,49 +123,45 @@ function newContractRecord(){
 }
 
 function newAssignmentRecord(){
+	
+	$('#userassignment_record').show();
+	$('#userassignment_noRecordFound').hide();
+	
 	clearAssignmentDetails();
 	var today=$.now();
 	$('#assignmentStartDate').val($.format.date(today, 'yyyy-MM-dd'));
 	$('#assignmentDetailRecord').append("New");
 }
 
-function showPersonalDetails(userId){
+function showPersonalDetails(userId,keyDate){
 	
 	clearPersonalDetails();
 	
-	var url='/userrecord/show/'+userId+'/personaldetails';
+	var url='/userrecord/show/'+userId+'/personaldetails/?keyDate='+keyDate;
 	
-	$.getJSON(url,function(ud){
-		//console.log(ud);
-		$('#personalStartDate').val(ud.key.startDate);
-		$('#personalEndDate').val(ud.endDate);
-		$('#firstName').val(ud.firstName);
-		$('#middleName').val(ud.middleName);
-		$('#lastName').val(ud.lastName);
-		$('#birthDate').val(ud.birthDate);
-		$('#phone').val(ud.phone);
-		$('#email').val(ud.email);
-		var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy HH:mm');
-		$('#personalChangedTs').append(ts);
-		$('#personalDetailRecord').append(ud.currentRecord+'/'+ud.totalRecords);
-		
-		$('#nextPersonalDetail').prop('disabled',false);
-		$('#prevPersonalDetail').prop('disabled',false);
-		
-		if(ud.currentRecord==ud.totalRecords && ud.totalRecords==1){
-			$('#nextPersonalDetail').prop('disabled',true);
-			$('#prevPersonalDetail').prop('disabled',true);
+	$.getJSON(url,function(ud,statusText,jqxhr){
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(ud.currentRecord==ud.totalRecords){
-			$('#nextPersonalDetail').prop('disabled',true);
-		}
-		else if(ud.currentRecord==1){
-			$('#prevPersonalDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//no results
 		}
 		
+	}).done(function(ud,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populatePersonalDetails(ud);
+		}
+		else if(jqxhr.status==204){
+			//no results
+			console.log('no results. hiding div...')
+			$('#userpersonal_record').hide();
+			$('#userpersonal_noRecordFound').show();
+		}
+	}).fail(function(jqxhr, textStatus, error){
+		console.log('Search failed '+textStatus+': '+jqxhr.status);
+	}).always(function(){
 		
-	}).done(function(ud){
-		addUsernameToElement(ud.changedBy,'#personalChangedBy');
 	});
 
 }
@@ -148,35 +174,24 @@ function nextPersonalRecord(){
 	
 	clearPersonalDetails();
 	
-	$.getJSON(url,function(ud){
-		console.log(ud);
-		$('#personalStartDate').val(ud.key.startDate);
-		$('#personalEndDate').val(ud.endDate);
-		$('#firstName').val(ud.firstName);
-		$('#middleName').val(ud.middleName);
-		$('#lastName').val(ud.lastName);
-		$('#birthDate').val(ud.birthDate);
-		$('#phone').val(ud.phone);
-		$('#email').val(ud.email);
-		var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy hh:mm');
-		$('#personalChangedTs').append(ts);
-		$('#personalDetailRecord').append(ud.currentRecord+'/'+ud.totalRecords);
-		
-		$('#nextPersonalDetail').prop('disabled',false);
-		$('#prevPersonalDetail').prop('disabled',false);
-		if(ud.currentRecord==ud.totalRecords && ud.totalRecords==1){
-			$('#nextPersonalDetail').prop('disabled',true);
-			$('#prevPersonalDetail').prop('disabled',true);
+	$.getJSON(url,function(ud,statusText,jqxhr){
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(ud.currentRecord==ud.totalRecords){
-			$('#nextPersonalDetail').prop('disabled',true);
-		}
-		else if(ud.currentRecord==1){
-			$('#prevPersonalDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//No results
 		}
 		
-	}).done(function(ud){
-		addUsernameToElement(ud.changedBy,'#personalChangedBy');
+	}).done(function(ud,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populatePersonalDetails(ud);
+		}
+		else if(jqxhr.status==204){
+			//no results
+			$('#userpersonal_record').hide();
+			$('#userpersonal_noRecordFound').show();
+		}
 	});
 	
 }
@@ -189,34 +204,23 @@ function previousPersonalRecord(){
 	
 	clearPersonalDetails();
 	
-	$.getJSON(url,function(ud){
-		console.log(ud);
-		$('#personalStartDate').val(ud.key.startDate);
-		$('#personalEndDate').val(ud.endDate);
-		$('#firstName').val(ud.firstName);
-		$('#middleName').val(ud.middleName);
-		$('#lastName').val(ud.lastName);
-		$('#birthDate').val(ud.birthDate);
-		$('#phone').val(ud.phone);
-		$('#email').val(ud.email);
-		var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy hh:mm');
-		$('#personalChangedTs').append(ts);
-		$('#personalDetailRecord').append(ud.currentRecord+'/'+ud.totalRecords);
-		
-		$('#nextPersonalDetail').prop('disabled',false);
-		$('#prevPersonalDetail').prop('disabled',false);
-		if(ud.currentRecord==ud.totalRecords && ud.totalRecords==1){
-			$('#nextPersonalDetail').prop('disabled',true);
-			$('#prevPersonalDetail').prop('disabled',true);
+	$.getJSON(url,function(ud,statusText,jqxhr){
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(ud.currentRecord==ud.totalRecords){
-			$('#nextPersonalDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//no results
 		}
-		else if(ud.currentRecord==1){
-			$('#prevPersonalDetail').prop('disabled',true);
+	}).done(function(ud,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populatePersonalDetails(ud);
 		}
-	}).done(function(ud){
-		addUsernameToElement(ud.changedBy,'#personalChangedBy');
+		else if(jqxhr.status==204){
+			//no results
+			$('#userpersonal_record').hide();
+			$('#userpersonal_noRecordFound').show();
+		}
 	});
 }
 
@@ -259,15 +263,6 @@ function savePersonalRecord(){
 		
 	});
 	
-	/*$.post(url,function(data){
-		//success
-	}).done(function(rv){
-		console.log("Works!");
-	}).fail(function(){
-		//failed!!!
-		alert("ERROR: Couldn't save personal details.");
-	});*/
-	
 }
 
 function clearPersonalDetails(){
@@ -284,6 +279,10 @@ function clearPersonalDetails(){
 }
 
 function populatePersonalDetails(ud){
+	
+	$('#userpersonal_record').show();
+	$('#userpersonal_noRecordFound').hide();
+	
 	$('#personalStartDate').val(ud.key.startDate);
 	$('#personalEndDate').val(ud.endDate);
 	$('#firstName').val(ud.firstName);
@@ -295,41 +294,48 @@ function populatePersonalDetails(ud){
 	var ts=$.format.date(new Date(ud.changeTs),'dd.MM.yyyy hh:mm');
 	$('#personalChangedTs').append(ts);
 	$('#personalDetailRecord').append(ud.currentRecord+'/'+ud.totalRecords);
+	
 	addUsernameToElement(ud.key.userId,'#personalChangedBy');
+	
+	$('#nextPersonalDetail').prop('disabled',false);
+	$('#prevPersonalDetail').prop('disabled',false);
+
+	if(ud.currentRecord==ud.totalRecords && ud.totalRecords==1){
+		$('#nextPersonalDetail').prop('disabled',true);
+		$('#prevPersonalDetail').prop('disabled',true);
+	}
+	else if(ud.currentRecord==ud.totalRecords){
+		$('#nextPersonalDetail').prop('disabled',true);
+	}
+	else if(ud.currentRecord==1){
+		$('#prevPersonalDetail').prop('disabled',true);
+	}
+	
 }
 
-function showContractDetails(userId){
+function showContractDetails(userId,keyDate){
 	
 	clearContractDetails();
 	
-	var url='/userrecord/show/'+userId+'/contractdetails';
-	$.getJSON(url,function(cd){
-		//console.log(cd);
-		$('#contractStartDate').val(cd.key.startDate);
-		$('#contractEndDate').val(cd.endDate);
-		$('#contractType').val(cd.contractType.id);
-		$('#minHours').val(cd.minHours);
-		$('#maxHours').val(cd.maxHours);
-		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
-		$('#contractChangedTs').append(ts);
-		$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
-		
-		$('#nextContractDetail').prop('disabled',false);
-		$('#prevContractDetail').prop('disabled',false);
-		
-		if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
-			$('#nextContractDetail').prop('disabled',true);
-			$('#prevContractDetail').prop('disabled',true);
+	var url='/userrecord/show/'+userId+'/contractdetails/?keyDate='+keyDate;
+	$.getJSON(url,function(cd,statusText,jqxhr){
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(cd.currentRecord==cd.totalRecords){
-			$('#nextContractDetail').prop('disabled',true);
-		}
-		else if(cd.currentRecord==1){
-			$('#prevContractDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//No results
 		}
 		
-	}).done(function(cd){
-		addUsernameToElement(cd.changedBy,'#contractChangedBy');
+	}).done(function(cd,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populateContractDetails(cd);
+		}
+		else if(jqxhr.status==204){
+			//no results
+			$('#usercontract_record').hide();
+			$('#usercontract_noRecordFound').show();
+		}
 	});
 }
 
@@ -340,33 +346,24 @@ function nextContractRecord(){
 	
 	clearContractDetails();
 	
-	$.getJSON(url,function(cd){
-		//console.log(cd);
-		$('#contractStartDate').val(cd.key.startDate);
-		$('#contractEndDate').val(cd.endDate);
-		$('#contractType').val(cd.contractType.id);
-		$('#minHours').val(cd.minHours);
-		$('#maxHours').val(cd.maxHours);
-		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
-		$('#contractChangedTs').append(ts);
-		$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
-		
-		$('#nextContractDetail').prop('disabled',false);
-		$('#prevContractDetail').prop('disabled',false);
-		
-		if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
-			$('#nextContractDetail').prop('disabled',true);
-			$('#prevContractDetail').prop('disabled',true);
+	$.getJSON(url,function(cd,statusText,jqxhr){
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(cd.currentRecord==cd.totalRecords){
-			$('#nextContractDetail').prop('disabled',true);
-		}
-		else if(cd.currentRecord==1){
-			$('#prevContractDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//no results
 		}
 		
-	}).done(function(cd){
-		addUsernameToElement(cd.changedBy,'#contractChangedBy');
+	}).done(function(cd,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populateContractDetails(cd);
+		}
+		else if(jqxhr.status==204){
+			//no results
+			$('#usercontract_record').hide();
+			$('#usercontract_noRecordFound').show();
+		}
 	});
 }
 
@@ -377,33 +374,24 @@ function previousContractRecord(){
 	
 	clearContractDetails();
 	
-	$.getJSON(url,function(cd){
-		//console.log(cd);
-		$('#contractStartDate').val(cd.key.startDate);
-		$('#contractEndDate').val(cd.endDate);
-		$('#contractType').val(cd.contractType.id);
-		$('#minHours').val(cd.minHours);
-		$('#maxHours').val(cd.maxHours);
-		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
-		$('#contractChangedTs').append(ts);
-		$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
-		
-		$('#nextContractDetail').prop('disabled',false);
-		$('#prevContractDetail').prop('disabled',false);
-		
-		if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
-			$('#nextContractDetail').prop('disabled',true);
-			$('#prevContractDetail').prop('disabled',true);
+	$.getJSON(url,function(cd,statusText,jqxhr){
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(cd.currentRecord==cd.totalRecords){
-			$('#nextContractDetail').prop('disabled',true);
-		}
-		else if(cd.currentRecord==1){
-			$('#prevContractDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//no results
 		}
 		
-	}).done(function(cd){
-		addUsernameToElement(cd.changedBy,'#contractChangedBy');
+	}).done(function(cd,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populateContractDetails(cd);
+		}
+		else if(jqxhr.status==204){
+			//no results
+			$('#usercontract_record').hide();
+			$('#usercontract_noRecordFound').show();
+		}
 	});
 	
 }
@@ -459,6 +447,10 @@ function clearContractDetails(){
 }
 
 function populateContractDetails(cd){
+	
+	$('#usercontract_record').show();
+	$('#usercontract_noRecordFound').hide();
+	
 	$('#contractStartDate').val(cd.key.startDate);
 	$('#contractEndDate').val(cd.endDate);
 	$('#contractType').val(cd.contractType.id);
@@ -467,42 +459,48 @@ function populateContractDetails(cd){
 	var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
 	$('#contractChangedTs').append(ts);
 	$('#contractDetailRecord').append(cd.currentRecord+'/'+cd.totalRecords);
+	
 	addUsernameToElement(cd.key.userId,'#contractChangedBy');
+	
+	$('#nextContractDetail').prop('disabled',false);
+	$('#prevContractDetail').prop('disabled',false);
+
+	if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
+		$('#nextContractDetail').prop('disabled',true);
+		$('#prevContractDetail').prop('disabled',true);
+	}
+	else if(cd.currentRecord==cd.totalRecords){
+		$('#nextContractDetail').prop('disabled',true);
+	}
+	else if(cd.currentRecord==1){
+		$('#prevContractDetail').prop('disabled',true);
+	}
+	
 }
 
-function showAssignmentDetails(userId){
+function showAssignmentDetails(userId,keyDate){
 	
 	clearAssignmentDetails();
 	
-	var url='/userrecord/show/'+userId+'/assignmentdetails';
-	$.getJSON(url,function(ad){
-		//console.log(ad);
-		$('#assignmentStartDate').val(ad.key.startDate);
-		$('#assignmentEndDate').val(ad.endDate);
-		$('#orgUnitId').val(ad.orgUnit.id);
-		$('#orgUnitName').val(ad.orgUnit.name);
-		$('#costCenterId').val(ad.orgUnit.costCenter.id);
-		$('#costCenterName').val(ad.orgUnit.costCenter.name);
-		var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
-		$('#assignmentChangedTs').append(ts);
-		$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
-		
-		$('#nextAssignmentDetail').prop('disabled',false);
-		$('#prevAssignmentDetail').prop('disabled',false);
-		
-		if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
-			$('#nextAssignmentDetail').prop('disabled',true);
-			$('#prevAssignmentDetail').prop('disabled',true);
+	var url='/userrecord/show/'+userId+'/assignmentdetails/?keyDate='+keyDate;
+	$.getJSON(url,function(ad,statusText,jqxhr){
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(ad.currentRecord==ad.totalRecords){
-			$('#nextAssignmentDetail').prop('disabled',true);
-		}
-		else if(ad.currentRecord==1){
-			$('#prevAssignmentDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//no results
 		}
 		
-	}).done(function(ad){
-		addUsernameToElement(ad.changedBy,'#assignmentChangedBy')
+	}).done(function(ad,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populateAssignmentDetails(ad);
+		}
+		else if(jqxhr.status==204){
+			//no results
+			$('#userassignment_record').hide();
+			$('#userassignment_noRecordFound').show();
+		}
 	});
 }
 
@@ -513,34 +511,24 @@ function nextAssignmentRecord(){
 	
 	clearAssignmentDetails();
 	
-	$.getJSON(url,function(ad){
-		//console.log(ad);
-		$('#assignmentStartDate').val(ad.key.startDate);
-		$('#assignmentEndDate').val(ad.endDate);
-		$('#orgUnitId').val(ad.orgUnit.id);
-		$('#orgUnitName').val(ad.orgUnit.name);
-		$('#costCenterId').val(ad.orgUnit.costCenter.id);
-		$('#costCenterName').val(ad.orgUnit.costCenter.name);
-		var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
-		$('#assignmentChangedTs').append(ts);
-		$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
-		
-		$('#nextAssignmentDetail').prop('disabled',false);
-		$('#prevAssignmentDetail').prop('disabled',false);
-		
-		if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
-			$('#nextAssignmentDetail').prop('disabled',true);
-			$('#prevAssignmentDetail').prop('disabled',true);
+	$.getJSON(url,function(ad,statusText,jqxhr){
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(ad.currentRecord==ad.totalRecords){
-			$('#nextAssignmentDetail').prop('disabled',true);
-		}
-		else if(ad.currentRecord==1){
-			$('#prevAssignmentDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//no results
 		}
 		
-	}).done(function(ad){
-		addUsernameToElement(ad.changedBy,'#assignmentChangedBy')
+	}).done(function(ad,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populateAssignmentDetails(ad);
+		}
+		else if(jqxhr.status==204){
+			//no results
+			$('#userassignment_record').hide();
+			$('#userassignment_noRecordFound').show();
+		}
 	});
 }
 
@@ -551,34 +539,25 @@ function previousAssignmentRecord(){
 	
 	clearAssignmentDetails();
 	
-	$.getJSON(url,function(ad){
+	$.getJSON(url,function(ad,statusText,jqxhr){
 		//console.log(ad);
-		$('#assignmentStartDate').val(ad.key.startDate);
-		$('#assignmentEndDate').val(ad.endDate);
-		$('#orgUnitId').val(ad.orgUnit.id);
-		$('#orgUnitName').val(ad.orgUnit.name);
-		$('#costCenterId').val(ad.orgUnit.costCenter.id);
-		$('#costCenterName').val(ad.orgUnit.costCenter.name);
-		var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
-		$('#assignmentChangedTs').append(ts);
-		$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
-		
-		$('#nextAssignmentDetail').prop('disabled',false);
-		$('#prevAssignmentDetail').prop('disabled',false);
-		
-		if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
-			$('#nextAssignmentDetail').prop('disabled',true);
-			$('#prevAssignmentDetail').prop('disabled',true);
+		if(jqxhr.status==200){
+			//do something here... 
+			//note: can't call outside this function. User "done" function if you want call
 		}
-		else if(ad.currentRecord==ad.totalRecords){
-			$('#nextAssignmentDetail').prop('disabled',true);
-		}
-		else if(ad.currentRecord==1){
-			$('#prevAssignmentDetail').prop('disabled',true);
+		else if(jqxhr.status==204){
+			//no results
 		}
 		
-	}).done(function(ad){
-		addUsernameToElement(ad.changedBy,'#assignmentChangedBy')
+	}).done(function(ad,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populateAssignmentDetails(ad);
+		}
+		else if(jqxhr.status==204){
+			//no results
+			$('#userassignment_record').hide();
+			$('#userassignment_noRecordFound').show();
+		}
 	});
 	
 }
@@ -609,12 +588,30 @@ function saveAssignmentRecord(){
 	}).success(function(ad){
 		//console.log('success: '+data.firstName);
 	}).done(function(ad){
-		console.log('done: '+JSON.stringify(ad));
+		//console.log('done: '+JSON.stringify(ad));
 		clearAssignmentDetails();
 		populateAssignmentDetails(ad);
+		addOrgUnitDetails(ad.orgUnit.id);
 	}).fail(function(){
 		alert("ERROR: Couldn't save assignment details.");
 	}).always(function(){
+		
+	});
+}
+
+function addOrgUnitDetails(orgUnitId){
+	
+	var url='/organisation/?id='+orgUnitId;
+	
+	$.getJSON(url,function(ou){
+		console.log(ou);
+		$('#orgUnitId').val(ou.id);
+		$('#orgUnitName').val(ou.name);
+		$('#costCenterId').val(ou.costCenter.id);
+		$('#costCenterName').val(ou.costCenter.name);
+	}).done(function(ou){
+		
+	}).fail(function(ou){
 		
 	});
 }
@@ -631,16 +628,34 @@ function clearAssignmentDetails(){
 } 
 
 function populateAssignmentDetails(ad){
+	
+	$('#userassignment_record').show();
+	$('#userassignment_noRecordFound').hide();
+	
 	$('#assignmentStartDate').val(ad.key.startDate);
 	$('#assignmentEndDate').val(ad.endDate);
-	$('#orgUnitId').val(ad.orgUnit.id);
-	$('#orgUnitName').val(ad.orgUnit.name);
-	$('#costCenterId').val(ad.orgUnit.costCenter.id);
-	$('#costCenterName').val(ad.orgUnit.costCenter.name);
+	
 	var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
 	$('#assignmentChangedTs').append(ts);
 	$('#assignmentDetailRecord').append(ad.currentRecord+'/'+ad.totalRecords);
+	
 	addUsernameToElement(ad.key.userId,'#assignmentChangedBy');
+	addOrgUnitDetails(ad.orgUnit.id);
+	
+	$('#nextAssignmentDetail').prop('disabled',false);
+	$('#prevAssignmentDetail').prop('disabled',false);
+	
+	if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
+		$('#nextAssignmentDetail').prop('disabled',true);
+		$('#prevAssignmentDetail').prop('disabled',true);
+	}
+	else if(ad.currentRecord==ad.totalRecords){
+		$('#nextAssignmentDetail').prop('disabled',true);
+	}
+	else if(ad.currentRecord==1){
+		$('#prevAssignmentDetail').prop('disabled',true);
+	}
+	
 }
 
 function showCredentialsDetails(userId){
@@ -703,6 +718,17 @@ function addUsernameToElement(userId,elementId){
 		$(elementId).append(u.username);
 	});
 	
+}
+
+function showOrgTree(){
+	var url='/organisation/tree'
+	$.getJSON(url,function(tree,statusText,jqxhr){
+		
+	}).done(function(tree,statusText,jqxhr){
+		if(jqxhr.status==200){
+			console.log(tree);
+		}
+	});
 }
 
 

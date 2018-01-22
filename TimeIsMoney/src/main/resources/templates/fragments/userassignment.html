@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
-<div class="userrecord_fragment" th:fragment="userassignment">
+<div id="userassignment" class="userrecord_fragment" th:fragment="userassignment">
 	<h2>Assignment</h2>
 	<div>
 		<div id="recordControls_top">
@@ -17,24 +17,40 @@
 			</div>
 		</div>
 	</div>
-	<div>
+	<div id="userassignment_record">
 		<div>
-			<label for="orgUnitId">Org. unit:</label><input id="orgUnitId" type="text"/>
-			<input id="orgUnitName" type="text"/>
-			<input id="selectOrgUnit" type="button" value="Change"/>
+			<div>
+				<label for="orgUnitId">Org. unit:</label><input id="orgUnitId" type="text"/>
+				<input id="orgUnitName" type="text"/>
+				<div id="jstree">
+					<ul>
+						<li>Root node 1
+							<ul>
+								<li id="child_node_1">Child node 1</li>
+								<li>Child node 2</li>
+							</ul>
+						</li>
+						<li>Root node 2</li>
+					</ul>
+				</div>
+				<input id="selectOrgUnit" type="button" value="Change" th:onclick="'showOrgTree()'"/>
+			</div>
+			<div>
+				<label for="costCenterId">CC ID:</label><input id="costCenterId" type="text"/>
+				<label for="costCenterName">Name:</label><input id="costCenterName" type="text"/>
+			</div>
 		</div>
-		<div>
-			<label for="costCenterId">CC ID:</label><input id="costCenterId" type="text"/>
-			<label for="costCenterName">Name:</label><input id="costCenterName" type="text"/>
+		<div id="recordControls_bottom">
+			<div id="recordControls_bottom_left">
+				<input id="saveAssignmentDetails" type="button" value="Save" th:onclick="'saveAssignmentRecord()'"/>
+			</div>
+			<div id="recordControls_bottom_right">
+				<p>Changed: <span id="assignmentChangedTs"></span> by: <span id="assignmentChangedBy"></span></p>
+			</div>
 		</div>
 	</div>
-	<div id="recordControls_bottom">
-		<div id="recordControls_bottom_left">
-			<input id="saveAssignmentDetails" type="button" value="Save" th:onclick="'saveAssignmentRecord()'"/>
-		</div>
-		<div id="recordControls_bottom_right">
-			<p>Changed: <span id="assignmentChangedTs"></span> by: <span id="assignmentChangedBy"></span></p>
-		</div>
+	<div id="userassignment_noRecordFound" hidden="true">
+		<p>No record found!</p>
 	</div>
 </div>
 </html>
