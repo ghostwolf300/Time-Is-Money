@@ -8,16 +8,14 @@
 		<div id="searchShow">
 			<p>Search here!</p>
 		</div>
-		<div id="searchContent">
-			<label for="freesearch">Search for:</label><input id="freesearch" type="text"/>
-			<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
-			<label for="searchKeyDate">Key date:</label><input id="searchKeyDate" type="date"/>
-			<input id="searchUsers" type="button" value="Search" />
-		</div>
+		<div th:replace="fragments/usersearch :: usersearchByName"></div>
 	</div>
 	<div id="userrecord-wrapper">
 		<div th:replace="fragments/searchresults_user :: searchresults"></div>
 		<div id="userrecord">
+			<div id="userrecord-selected">
+				<p id="userrecord-selected-text"></p>
+			</div>
 			<div th:replace="fragments/userpersonal :: userpersonal">Personal (replace)</div>
 			<div th:replace="fragments/usercontract :: usercontract">Contract (replace)</div>
 			<div th:replace="fragments/userassignment :: userassignment">Assignment (replace)</div>

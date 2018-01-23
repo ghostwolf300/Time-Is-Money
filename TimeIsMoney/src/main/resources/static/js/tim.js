@@ -29,6 +29,8 @@ function globalSetup(){
 function bindEventHandlers(){
 	
 	$('#searchUsers').on('click',searchUsers);
+	//$('#searchResults-tbody').delegate('tr','click',testFunction);
+	$('#searchResults-tbody').on('click',showUser);
 	$('#showOrgTree').on('click',showAssignmentOrgTreeClick);
 	$('#assignmentOrgTree').on('changed.jstree', function(e,data){
 		assignmentOrgTreeChanged(e, data);
@@ -40,10 +42,16 @@ function setDefaultValues(){
 	$('#searchKeyDate').val(currentDate);
 }
 
+function testFunction(event){
+	var tr=event.target.parentNode;
+	var userId=$(tr).find('#user_id').text();
+}
+
 function searchUsers(){
 	//var username=$('#freesearch').val();
 	//findUserByUsername(username);
 	findAll();
+	$('#searchResults').show();
 }
 
 function findUserByUsername(username){
@@ -67,17 +75,20 @@ function displayResults(users){
 	$('#searchResults-tbody').empty();
 	$.each(users, function(i,up){
 		trHtml+='<tr>\
-		<td>'+up.key.userId+'</td>\
-		<td>'+up.user.username+'</td>\
-		<td>'+up.lastName+', '+up.firstName+'</td>\
-		<td><input type="button" value="Show..." onclick="showUser('+up.key.userId+')"/></td>\
+		<td id="user_id">'+up.key.userId+'</td>\
+		<td id="username">'+up.user.username+'</td>\
+		<td id="name">'+up.lastName+', '+up.firstName+'</td>\
 		</tr>'
 	});
 	$('#searchResults-tbody').append(trHtml);
 }
 
-function showUser(userId){
+function showUser(event){
+	
+	var tr=event.target.parentNode;
+	var userId=$(tr).find('#user_id').text();
 	var keyDate=$('#searchKeyDate').val();
+	
 	//console.log(keyDate);
 	if(keyDate==null){
 		keyDate=new Date();
@@ -87,6 +98,11 @@ function showUser(userId){
 	showAssignmentDetails(userId,keyDate);
 	showCredentialsDetails(userId);
 	showRolesDetails(userId);
+	
+	$('#userrecord').show();
+	$('#userrecord-selected-text').empty();
+	$('#userrecord-selected-text').append('ID: '+userId);
+	$('#userrecord-selected').show();
 }
 
 function newPersonalRecord(){

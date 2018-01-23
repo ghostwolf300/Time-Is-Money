@@ -135,6 +135,8 @@ div#userrecord-content{
 	height:inherit;
 }
 
+
+
 div#userrecord-wrapper{
 	width:90%;
 	height: inherit;
@@ -144,9 +146,9 @@ div#userrecord-wrapper{
 }
 
 div#searchResults{
-	width: 30%;
+	width: 300px;
+	min-width:300px;
 	height: inherit;
-	min-width:30%;
 	border: 1px solid black;
 	padding-left: 10px;
     padding-right: 10px;
@@ -154,11 +156,24 @@ div#searchResults{
     float: left;
 }
 
+tbody#searchResults-tbody tr:hover{
+	background: yellow;
+}
+
 div#userrecord{
 	width: 60%;
     height: inherit;
     min-width: 60%;
     float: left;
+}
+
+div#userrecord-selected{
+	width: inherit;
+	min-width: 98%;
+	height: 40px;
+	border: 1px solid black;
+	padding-left: 2%;
+	display: none;
 }
 
 div#personal{
