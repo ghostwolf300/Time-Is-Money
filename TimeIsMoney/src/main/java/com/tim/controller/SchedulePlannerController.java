@@ -9,10 +9,10 @@ public class SchedulePlannerController {
 	
 	private static final String VIEW_NAME="Schedule Planner";
 	
-	@RequestMapping("/scheduleplanner")
+	/*@RequestMapping("/scheduleplanner")
 	public String myWorkTime(Model m) {
 		m.addAttribute("viewName", VIEW_NAME);
 		return "scheduleplanner";
-	}
+	}*/
 	
 }

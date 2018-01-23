@@ -9,10 +9,10 @@ public class MyWorkTimeController {
 	
 	private static final String VIEW_NAME="My Work Time";
 	
-	@RequestMapping("/myworktime")
+	/*@RequestMapping("/myworktime")
 	public String myWorkTime(Model m) {
 		m.addAttribute("viewName", VIEW_NAME);
 		return "myworktime";
-	}
+	}*/
 	
 }

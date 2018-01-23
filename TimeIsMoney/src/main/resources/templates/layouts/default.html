@@ -13,7 +13,7 @@
 	<script th:src="@{/webjars/jstree/3.3.3/jstree.min.js}"></script>
 	<script src="../static/js/tim.js" th:src="@{js/tim.js}"></script>
   </head>
-  <body id="layout">
+  <body id="layout" th:attr="data-viewId=${viewId},data-viewName=${viewName}" >
     <!--/* Standard layout can be mixed with Layout Dialect */-->
     <div th:replace="fragments/header :: header">
     </div>

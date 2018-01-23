@@ -5,7 +5,17 @@
 var csrf_header=$('meta[name="_csrf_header"]').attr('content');
 var csrf_token=$('meta[name="_csrf"]').attr('content');
 
-$(document).ready(function(){
+$(document).ready(initPage);
+
+function initPage(){
+	console.log('initializing page...'+$(document.body).data('viewId'));
+	globalSetup();
+	bindEventHandlers();
+	setDefaultValues();
+	
+}
+
+function globalSetup(){
 	$.ajaxSetup({
         headers:
         { 
@@ -14,42 +24,21 @@ $(document).ready(function(){
 	        'Content-Type': 'application/json'
         }
     });
+}
+
+function bindEventHandlers(){
+	
+	$('#searchUsers').on('click',searchUsers);
+	$('#showOrgTree').on('click',showAssignmentOrgTreeClick);
+	$('#assignmentOrgTree').on('changed.jstree', function(e,data){
+		assignmentOrgTreeChanged(e, data);
+	});
+}
+
+function setDefaultValues(){
 	var currentDate=$.format.date(new Date($.now()),'yyyy-MM-dd')
 	$('#searchKeyDate').val(currentDate);
-});
-
-$(function () {
-	// 6 create an instance when the DOM is ready
-	$('#jstree').jstree();
-	// 7 bind to events triggered on the tree
-	$('#jstree').on("changed.jstree", function (e, data) {
-		console.log(data.selected);
-	});
-	// 8 interact with the tree - either way is OK
-	$('button').on('click', function () {
-		$('#jstree').jstree(true).select_node('child_node_1');
-		$('#jstree').jstree('select_node', 'child_node_1');
-		$.jstree.reference('#jstree').select_node('child_node_1');
-	});
-});
-
-
-/*$.ajaxPrefilter(function(options, originalOptions, jqXHR){
-	
-	if (options.type.toLowerCase() === "post") {
-		// initialize `data` to empty string if it does not exist
-		options.data = options.data || "";
-
-		// add leading ampersand if `data` is non-empty
-		options.data += options.data?"&":"";
-
-		// add _token entry
-		options.data += "_token=" + encodeURIComponent(csrf_token);
-		//options['data'] = options['data']+"&_token=" + encodeURIComponent(csrf_token);
-		alert(options.data);
-	}
-	
-});*/
+}
 
 function searchUsers(){
 	//var username=$('#freesearch').val();
@@ -607,8 +596,14 @@ function addOrgUnitDetails(orgUnitId){
 		console.log(ou);
 		$('#orgUnitId').val(ou.id);
 		$('#orgUnitName').val(ou.name);
-		$('#costCenterId').val(ou.costCenter.id);
-		$('#costCenterName').val(ou.costCenter.name);
+		if(ou.costCenter!=null){
+			$('#costCenterId').val(ou.costCenter.id);
+			$('#costCenterName').val(ou.costCenter.name);
+		}
+		else{
+			$('#costCenterId').val('N/A');
+			$('#costCenterName').val('N/A');
+		}
 	}).done(function(ou){
 		
 	}).fail(function(ou){
@@ -720,16 +715,53 @@ function addUsernameToElement(userId,elementId){
 	
 }
 
-function showOrgTree(){
+function loadOrgTree(){
+
+	var tree=null;
 	var url='/organisation/tree'
+
 	$.getJSON(url,function(tree,statusText,jqxhr){
-		
+
 	}).done(function(tree,statusText,jqxhr){
 		if(jqxhr.status==200){
-			console.log("TEST");
 			console.log(tree);
+			populateOrgTree(tree)
 		}
 	});
+}
+
+function populateOrgTree(data){
+	
+	$('#assignmentOrgTree').jstree({ 
+		'core' : {
+			'data' : data
+		} 
+	});
+	
+}
+
+function showAssignmentOrgTreeClick(){
+	
+	console.log('showOrgTree click...');
+	console.log('tree visible: '+$('#showOrgTree').data('treevisible'));
+	if($('#showOrgTree').data('treevisible')==true){
+		$('#orgTreeDiv').hide();
+		$('#showOrgTree').data('treevisible',false);
+		$('#showOrgTree').val('Show Org. Tree');
+	}
+	else{
+		loadOrgTree();
+		$('#orgTreeDiv').show();
+		$('#showOrgTree').data('treevisible',true);
+		$('#showOrgTree').val('Hide Org. Tree');
+	}
+}
+
+function assignmentOrgTreeChanged(e, data){
+	console.log(data.selected);
+	
+	var orgUnitId=data.selected;
+	addOrgUnitDetails(orgUnitId);
 }
 
 

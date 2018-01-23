@@ -3,37 +3,26 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layouts/default">
-<div layout:fragment="content">
+<div id="userrecord-content" layout:fragment="content">
 	<div id="search">
-		<label for="freesearch">Search for:</label><input id="freesearch" type="text"/>
-		<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
-		<label for="searchKeyDate">Key date:</label><input id="searchKeyDate" type="date"/>
-		<input type="button" value="Search" th:onclick="'searchUsers()'"/>
+		<div id="searchShow">
+			<p>Search here!</p>
+		</div>
+		<div id="searchContent">
+			<label for="freesearch">Search for:</label><input id="freesearch" type="text"/>
+			<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
+			<label for="searchKeyDate">Key date:</label><input id="searchKeyDate" type="date"/>
+			<input id="searchUsers" type="button" value="Search" />
+		</div>
 	</div>
-	<div>
-		<table id="searchResults">
-			<thead id="searchResults-thead">
-				<tr>
-					<th>ID</th>
-					<th>Username</th>
-					<th>Name</th>
-				</tr>
-			</thead>
-			<tbody id="searchResults-tbody">
-				<tr>
-					<td>44000123</td>
-					<td>gdaga</td>
-					<td>Rönttönen, Jorma</td>
-					<td><input th:onclick="'showUser(2)'" type="button" value="Show..."/></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div id="userrecord">
-		<div th:replace="fragments/userpersonal :: userpersonal">Personal (replace)</div>
-		<div th:replace="fragments/usercontract :: usercontract">Contract (replace)</div>
-		<div th:replace="fragments/userassignment :: userassignment">Assignment (replace)</div>
-		<div th:replace="fragments/usercredentials :: usercredentials">Credentials (replace)</div>
+	<div id="userrecord-wrapper">
+		<div th:replace="fragments/searchresults_user :: searchresults"></div>
+		<div id="userrecord">
+			<div th:replace="fragments/userpersonal :: userpersonal">Personal (replace)</div>
+			<div th:replace="fragments/usercontract :: usercontract">Contract (replace)</div>
+			<div th:replace="fragments/userassignment :: userassignment">Assignment (replace)</div>
+			<div th:replace="fragments/usercredentials :: usercredentials">Credentials (replace)</div>
+		</div>
 	</div>
 </div>
 </html>

@@ -22,22 +22,18 @@
 			<div>
 				<label for="orgUnitId">Org. unit:</label><input id="orgUnitId" type="text"/>
 				<input id="orgUnitName" type="text"/>
-				<div id="jstree">
-					<ul>
-						<li>Root node 1
-							<ul>
-								<li id="child_node_1">Child node 1</li>
-								<li>Child node 2</li>
-							</ul>
-						</li>
-						<li>Root node 2</li>
-					</ul>
-				</div>
-				<input id="selectOrgUnit" type="button" value="Change" th:onclick="'showOrgTree()'"/>
 			</div>
 			<div>
 				<label for="costCenterId">CC ID:</label><input id="costCenterId" type="text"/>
 				<label for="costCenterName">Name:</label><input id="costCenterName" type="text"/>
+			</div>
+			<div>
+				<input id="showOrgTree" type="button" value="Show Org. Tree" data-treevisible="false"/>
+			</div>
+			<div id="orgTreeDiv">
+				<div id="assignmentOrgTree">
+	
+				</div>
 			</div>
 		</div>
 		<div id="recordControls_bottom">

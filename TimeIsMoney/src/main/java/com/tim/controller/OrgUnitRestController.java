@@ -1,5 +1,8 @@
 package com.tim.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.entities.OrgUnit;
 import com.tim.service.OrgUnitService;
+import com.tim.util.JsTreeNode;
 import com.tim.util.TreeNode;
 
 @RestController
@@ -25,13 +29,15 @@ public class OrgUnitRestController {
 	}
 	
 	@RequestMapping("/tree")
-	public ResponseEntity<TreeNode<OrgUnit>> getOrgTree(){
+	public ResponseEntity<List<JsTreeNode>> getOrgTree(){
 		System.out.println("OrgUnitRestController");
-		TreeNode<OrgUnit> root=orgUnitService.getOrgTree(1);
+		JsTreeNode root=orgUnitService.getOrgTree(1);
+		List<JsTreeNode> tree=new ArrayList<JsTreeNode>();
+		tree.add(root);
 		if(root==null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<TreeNode<OrgUnit>>(root,HttpStatus.OK);
+		return new ResponseEntity<List<JsTreeNode>>(tree,HttpStatus.OK);
 	}
 	
 }

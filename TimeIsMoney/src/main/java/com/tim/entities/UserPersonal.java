@@ -191,5 +191,10 @@ public class UserPersonal extends DateEffectiveRecord<UserPersonal> implements S
 		
 		
 	}
+
+	@Override
+	public UserPersonal createCopy() {
+		return new UserPersonal(this);
+	}
 	
 }

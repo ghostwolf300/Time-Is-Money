@@ -9,9 +9,9 @@ public class UserRecordController {
 	
 	private static final String VIEW_NAME="User Record";
 	
-	@RequestMapping("/userrecord")
+	/*@RequestMapping("/userrecord")
 	public String myWorkTime(Model m) {
 		m.addAttribute("viewName", VIEW_NAME);
 		return "userrecord";
-	}
+	}*/
 }

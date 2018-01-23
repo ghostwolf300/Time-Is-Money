@@ -183,18 +183,24 @@ public abstract class AbstractDateEffectiveRepository<T extends DateEffectiveRec
 			next=findNextRecord(dbRec.getKey().getUserId(),dbRec.getKey().getStartDate());
 			//if next exists
 			if(next!=null) {
-				System.out.println("next found");
-				//if next.startDate!=this.endDate+1
+				System.out.println("next found "+next.getKey().getStartDate());
 				c.setTime(dbRec.getEndDate());
 				c.add(Calendar.DATE, 1);
+				//if next.startDate!=this.endDate+1
 				if(next.getKey().getStartDate().compareTo(c.getTime())!=0) {
 					//if next.endDate==null or this.endDate+1<=next.endDate
 					if(next.getEndDate()==null 
 							|| c.getTime().compareTo(next.getEndDate())==-1 
 							|| c.getTime().compareTo(next.getEndDate())==0){
 						//update next.startDate=this.endDate+1
-						System.out.println("moving next start date");
-						next.getKey().setStartDate(new Date(c.getTimeInMillis()));
+						System.out.println("moving next start date from "+next.getKey().getStartDate()+" to "+new Date(c.getTimeInMillis()));
+						T newNext=(T) next.createCopy();
+						newNext.getKey().setStartDate(new Date(c.getTimeInMillis()));
+						//System.out.println("new userId: "+newNext.getKey().getUserId()+" start: "+newNext.getKey().getStartDate()+" end: "+newNext.getEndDate());
+						//delete old
+						em.remove(next);
+						//add new
+						em.persist(newNext);
 					}	
 					//else
 					else {

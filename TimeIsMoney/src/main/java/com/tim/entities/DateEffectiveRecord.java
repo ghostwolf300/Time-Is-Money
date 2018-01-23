@@ -84,4 +84,6 @@ public abstract class DateEffectiveRecord<T> {
 	
 	abstract public void copy(T rec);
 	
+	abstract public T createCopy();
+	
 }

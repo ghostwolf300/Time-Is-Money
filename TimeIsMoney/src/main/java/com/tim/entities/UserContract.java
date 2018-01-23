@@ -126,11 +126,11 @@ public class UserContract extends DateEffectiveRecord<UserContract> implements S
 			this.changeTs=new Timestamp(rec.changeTs.getTime());
 		}
 		
-		
-		
-		
-		
-		
+	}
+
+	@Override
+	public UserContract createCopy() {
+		return new UserContract(this);
 	}
 	
 	

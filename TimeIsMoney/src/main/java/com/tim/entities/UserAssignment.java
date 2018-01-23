@@ -85,4 +85,9 @@ public class UserAssignment extends DateEffectiveRecord<UserAssignment> implemen
 		}
 		
 	}
+
+	@Override
+	public UserAssignment createCopy() {
+		return new UserAssignment(this);
+	}
 }

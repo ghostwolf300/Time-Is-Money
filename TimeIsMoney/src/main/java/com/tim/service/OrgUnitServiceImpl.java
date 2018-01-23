@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.tim.db.orgunit.OrgUnitRepository;
 import com.tim.entities.OrgUnit;
+import com.tim.util.JsTreeNode;
 import com.tim.util.TreeNode;
 
 @Service("orgUnitService")
@@ -23,6 +24,20 @@ public class OrgUnitServiceImpl implements OrgUnitService {
 
 	@Override
 	public TreeNode<OrgUnit> getOrgTree(int rootId) {
+		OrgUnit rootUnit=orgUnitRepo.findById(rootId);
+		System.out.println("root: "+rootUnit.getId());
+		TreeNode<OrgUnit> rootNode=null;
+		if(rootUnit!=null) {
+			rootNode=new TreeNode<OrgUnit>(rootUnit);
+			rootNode.setId(""+rootUnit.getId());
+			rootNode.setText(rootUnit.getName());
+			addChildren(rootNode);
+		}
+		return rootNode;
+	}
+	
+	@Override
+	public JsTreeNode getJsOrgTree(int rootId) {
 		OrgUnit rootUnit=orgUnitRepo.findById(rootId);
 		System.out.println("root: "+rootUnit.getId());
 		TreeNode<OrgUnit> rootNode=null;
@@ -46,6 +61,8 @@ public class OrgUnitServiceImpl implements OrgUnitService {
 			for(OrgUnit child : children) {
 				System.out.println("parent: "+parent.getData().getId()+" adding child: "+child.getId());
 				TreeNode<OrgUnit> childNode=parent.addChild(child);
+				childNode.setId(""+child.getId());
+				childNode.setText(child.getName());
 				childNodes.add(childNode);
 				return findChildren(childNode);
 			}
@@ -61,6 +78,8 @@ public class OrgUnitServiceImpl implements OrgUnitService {
 			for(OrgUnit child : children) {
 				System.out.println("parent: "+parent.getData().getId()+" adding child: "+child.getId());
 				TreeNode<OrgUnit> childNode=parent.addChild(child);
+				childNode.setId(""+child.getId());
+				childNode.setText(child.getName());
 				childNodes.add(childNode);
 				addChildren(childNode);
 			}
@@ -70,5 +89,7 @@ public class OrgUnitServiceImpl implements OrgUnitService {
 			return null;
 		}
 	}
+
+	
 
 }

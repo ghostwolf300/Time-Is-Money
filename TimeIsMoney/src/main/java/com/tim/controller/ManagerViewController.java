@@ -9,10 +9,10 @@ public class ManagerViewController {
 	
 	private static final String VIEW_NAME="Manager View";
 	
-	@RequestMapping("/managerview")
+	/*@RequestMapping("/managerview")
 	public String myWorkTime(Model m) {
 		m.addAttribute("viewName", VIEW_NAME);
 		return "managerview";
-	}
+	}*/
 	
 }
