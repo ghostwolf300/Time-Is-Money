@@ -35,6 +35,16 @@ function bindEventHandlers(){
 	$('#assignmentOrgTree').on('changed.jstree', function(e,data){
 		assignmentOrgTreeChanged(e, data);
 	});
+	
+	$('#userrecord-save-credentials-button').on('click',saveCredentialsRecord);
+	$('#userrecord-save-personal-button').on('click',savePersonalRecord);
+	$('#userrecord-save-contract-button').on('click',saveContractRecord);
+	$('#userrecord-save-assignment-button').on('click',saveAssignmentRecord);
+	
+	$('#userrecord-inactivate-button').on('click',inactivateUser);
+	$('#userrecord-copy-button').on('click',copyUser);
+	$('#userrecord-new-button').on('click',newUser);
+	$('#userrecord-delete-button').on('click',deleteUser);
 }
 
 function setDefaultValues(){
@@ -43,8 +53,34 @@ function setDefaultValues(){
 }
 
 function testFunction(event){
-	var tr=event.target.parentNode;
-	var userId=$(tr).find('#user_id').text();
+	
+	var userId=$('#id').val();
+	alert('Inactivate/Copy/New user: '+userId);
+	
+	
+}
+
+function newUser(){
+	
+	clearPersonalDetails();
+	clearContractDetails();
+	clearAssignmentDetails();
+	clearCredentialsDetails();
+	
+	$('#userrecord-selected-text').text('New user');
+}
+
+function copyUser(){
+	var userId=$('#id').val();
+	$('#userrecord-selected-text').text('Copy of user '+userId);
+}
+
+function inactivateUser(){
+	var userId=$('#id').val();
+}
+
+function deleteUser(){
+	var userId=$('#id').val();
 }
 
 function searchUsers(){
@@ -671,26 +707,61 @@ function populateAssignmentDetails(ad){
 
 function showCredentialsDetails(userId){
 	
+	clearCredentialsDetails();
+	
+	var url='/userrecord/show/'+userId+'/credentialsdetails';
+	$.getJSON(url,function(user,statusText,jqxhr){
+		
+	}).done(function(user,statusText,jqxhr){
+		if(jqxhr.status==200){
+			populateCredentialsDetails(user);
+		}
+		else if(jqxhr.status==204){
+			//no records found
+		}
+	}).fail(function(){
+		alert('Something went wrong...');
+	});
+}
+
+function getCredentials(){
+	var cred={
+			id : $('#id').val(),
+			secondaryId : $('#secondaryId').val(),
+			username : $('#uname').val(),
+			password : $('#pword').val(),
+			enabled : $('#enabled').prop('checked')
+	}
+	return cred;
+}
+
+function getRoles(userId){
+	var roles;
+	$('#userrecord-roles input:checked').each(function(){
+		alert($(this).data('role_id'));
+	});
+	return roles;
+}
+
+function clearCredentialsDetails(){
 	$('#id').val(null);
 	$('#secondaryId').val(null);
 	$('#uname').val(null);
 	$('#pword').val(null);
 	$('#enabled').prop("checked",false);
 	$('#credentialsChangedTs').empty();
-	
-	var url='/userrecord/show/'+userId+'/credentialsdetails';
-	$.getJSON(url,function(cd){
-		//console.log(cd);
-		$('#id').val(cd.id);
-		$('#secondaryId').val(cd.secondaryId);
-		$('#uname').val(cd.username);
-		$('#pword').val(cd.password);
-		$('#enabled').prop("checked",cd.enabled);
-		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
-		$('#credentialsChangedTs').append(ts);
-	}).done(function(cd){
-		addUsernameToElement(cd.changedBy,'#credentialsChangedBy');
-	});
+	$('#credentialsChangedBy').empty();
+}
+
+function populateCredentialsDetails(user){
+	$('#id').val(user.id);
+	$('#secondaryId').val(user.secondaryId);
+	$('#uname').val(user.username);
+	$('#pword').val(user.password);
+	$('#enabled').prop("checked",user.enabled);
+	var ts=$.format.date(new Date(user.changeTs),'dd.MM.yyyy hh:mm');
+	$('#credentialsChangedTs').append(ts);
+	addUsernameToElement(user.changedBy,'#credentialsChangedBy');
 }
 
 function showRolesDetails(userId){
@@ -719,6 +790,63 @@ function showRolesDetails(userId){
 			}
 		});
 	});
+}
+
+function saveCredentialsRecord(){
+	
+	var u=getCredentials();
+	console.log(u);
+	
+	var url='/userrecord/show/'+u.id+'/credentialsdetails/save';
+	
+	data=JSON.stringify(u);
+	
+	$.ajax({
+		url : url,
+		method : "POST",
+		data : data,
+		dataType : "json"
+	}).success(function(u){
+		
+	}).done(function(u){
+		console.log(u);
+		clearCredentialsDetails();
+		populateCredentialsDetails(u);
+		saveRoles();
+	}).fail(function(){
+		alert("ERROR: Couldn't save credentials details.");
+	}).always(function(){
+		
+	});
+}
+
+function saveRoles(){
+	
+	var userId=$('#id');
+	var roles=getRoles(userId);
+	console.log(roles);
+	
+	/*var url='/userrecord/show/'+u.id+'/roledetails/save';
+	
+	data=JSON.stringify(roles);
+	
+	$.ajax({
+		url : url,
+		method : "POST",
+		data : data,
+		dataType : "json"
+	}).success(function(u){
+		
+	}).done(function(u){
+		console.log(u);
+		clearCredentialsDetails();
+		populateCredentialsDetails(u);
+		
+	}).fail(function(){
+		alert("ERROR: Couldn't save role details.");
+	}).always(function(){
+		
+	});*/
 }
 
 function addUsernameToElement(userId,elementId){

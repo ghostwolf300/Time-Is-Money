@@ -37,7 +37,9 @@ public class User implements Serializable {
 	
 	@Id
 	@Column(name="id",table="user")
-	private int id;
+	private Integer id;
+	@Column(name="secondary_id")
+	private String secondaryId;
 	@Column(name="username",table="user")
 	private String username;
 	@Column(name="password",table="user")
@@ -74,12 +76,20 @@ public class User implements Serializable {
 		
 	}
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getSecondaryId() {
+		return secondaryId;
+	}
+
+	public void setSecondaryId(String secondaryId) {
+		this.secondaryId = secondaryId;
 	}
 
 	public String getUsername() {

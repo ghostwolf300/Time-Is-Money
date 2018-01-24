@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
 <div id="searchContent" th:fragment="usersearchByName">
-	<label for="freesearch">Search for:</label><input id="freesearch" type="text"/>
-	<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
-	<label for="searchKeyDate">Key date:</label><input id="searchKeyDate" type="date"/>
-	<input id="searchUsers" type="button" value="Search" />
+	<div>
+		<label for="freesearch">Search for:</label><input id="freesearch" type="text"/>
+	</div>
+	<div>
+		<label for="activeonly">Show active only</label><input id="activeonly" type="checkbox" value="activeonly" checked="true"/>
+	</div>
+	<div>
+		<label for="searchKeyDate">Key date:</label><input id="searchKeyDate" type="date"/>
+	</div>
+	<div>
+		<input id="searchUsers" type="button" value="Search" />
+	</div>
 </div>
 </html>

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.component.TIMSessionInfo;
+import com.tim.db.user.UserRepository;
 import com.tim.entities.Role;
 import com.tim.entities.User;
 import com.tim.entities.UserAssignment;
@@ -27,7 +28,7 @@ import com.tim.service.UserPersonalService;
 import com.tim.service.UserService;
 
 @RestController
-@RequestMapping("/userrecord/show/{userId}")
+@RequestMapping("/userrecord")
 public class UserRestController {
 	
 	@Autowired
@@ -36,7 +37,7 @@ public class UserRestController {
 	@Autowired
 	private TIMSessionInfo sessionInfo;
 	
-	@RequestMapping("/personaldetails")
+	@RequestMapping("/show/{userId}/personaldetails")
 	public ResponseEntity<UserPersonal> getPersonalDetails(@PathVariable int userId,@RequestParam("keyDate") Date date){
 		UserPersonal up=null;
 		if(date!=null) {
@@ -51,7 +52,7 @@ public class UserRestController {
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/personaldetails/next")
+	@RequestMapping("/show/{userId}/personaldetails/next")
 	public ResponseEntity<UserPersonal> getNextPersonalDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserPersonal up=userService.findNextPersonal(userId, date);
 		if(up==null) {
@@ -60,7 +61,7 @@ public class UserRestController {
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/personaldetails/prev")
+	@RequestMapping("/show/{userId}/personaldetails/prev")
 	public ResponseEntity<UserPersonal> getPreviousPersonalDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserPersonal up=userService.findPreviousPersonal(userId, date);
 		if(up==null) {
@@ -69,7 +70,7 @@ public class UserRestController {
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);	
 	}
 	
-	@RequestMapping(value="/personaldetails/save", method=RequestMethod.POST)
+	@RequestMapping(value="/show/{userId}/personaldetails/save", method=RequestMethod.POST)
 	public ResponseEntity<UserPersonal> savePersonalDetails(@PathVariable int userId, @RequestBody UserPersonal personalDetail){
 		personalDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
 		personalDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
@@ -77,7 +78,7 @@ public class UserRestController {
 		return new ResponseEntity<UserPersonal>(up,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/contractdetails")
+	@RequestMapping("/show/{userId}/contractdetails")
 	public ResponseEntity<UserContract> getContractDetails(@PathVariable int userId,@RequestParam("keyDate") Date date){
 		UserContract uc=null;
 		if(date!=null) {
@@ -92,7 +93,7 @@ public class UserRestController {
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/contractdetails/next")
+	@RequestMapping("/show/{userId}/contractdetails/next")
 	public ResponseEntity<UserContract> getNextContractDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserContract uc=userService.findNextContract(userId, date);
 		if(uc==null) {
@@ -102,7 +103,7 @@ public class UserRestController {
 		
 	}
 	
-	@RequestMapping("/contractdetails/prev")
+	@RequestMapping("/show/{userId}/contractdetails/prev")
 	public ResponseEntity<UserContract> getPreviousContractDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserContract uc=userService.findPreviousContract(userId, date);
 		if(uc==null) {
@@ -111,7 +112,7 @@ public class UserRestController {
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/contractdetails/save", method=RequestMethod.POST)
+	@RequestMapping(value="/show/{userId}/contractdetails/save", method=RequestMethod.POST)
 	public ResponseEntity<UserContract> saveContractDetails(@PathVariable int userId, @RequestBody UserContract contractDetail){
 		contractDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
 		contractDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
@@ -119,7 +120,7 @@ public class UserRestController {
 		return new ResponseEntity<UserContract>(uc,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/assignmentdetails")
+	@RequestMapping("/show/{userId}/assignmentdetails")
 	public ResponseEntity<UserAssignment> getAssignmentDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserAssignment ua=null;
 		if(date!=null) {
@@ -134,7 +135,7 @@ public class UserRestController {
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/assignmentdetails/next")
+	@RequestMapping("/show/{userId}/assignmentdetails/next")
 	public ResponseEntity<UserAssignment> getNextAssignmentDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserAssignment ua=userService.findNextAssignment(userId, date);
 		if(ua==null) {
@@ -143,7 +144,7 @@ public class UserRestController {
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/assignmentdetails/prev")
+	@RequestMapping("/show/{userId}/assignmentdetails/prev")
 	public ResponseEntity<UserAssignment> getPreviousAssignmentDetails(@PathVariable int userId, @RequestParam("keyDate") Date date){
 		UserAssignment ua=userService.findPreviousAssignment(userId, date);
 		if(ua==null) {
@@ -152,7 +153,7 @@ public class UserRestController {
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/assignmentdetails/save", method=RequestMethod.POST)
+	@RequestMapping(value="/show/{userId}/assignmentdetails/save", method=RequestMethod.POST)
 	public ResponseEntity<UserAssignment> saveAssignmentDetails(@PathVariable int userId, @RequestBody UserAssignment assignmentDetail){
 		assignmentDetail.setChangedBy(sessionInfo.getCurrentUser().getId());
 		assignmentDetail.setChangeTs(new Timestamp(System.currentTimeMillis()));
@@ -160,7 +161,7 @@ public class UserRestController {
 		return new ResponseEntity<UserAssignment>(ua,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/credentialsdetails")
+	@RequestMapping("/show/{userId}/credentialsdetails")
 	public ResponseEntity<User> getCredentialsDetails(@PathVariable int userId){
 		User u=userService.findByUserId(userId);
 		if(u==null) {
@@ -169,13 +170,28 @@ public class UserRestController {
 		return new ResponseEntity<User>(u,HttpStatus.OK);
 	}
 	
-	@RequestMapping("/roledetails")
+	@RequestMapping(value="/show/{userId}/credentialsdetails/save", method=RequestMethod.POST)
+	public ResponseEntity<User> saveCredentialsDetails(@PathVariable int userId, @RequestBody User user){
+		user.setChangedBy(sessionInfo.getCurrentUser().getId());
+		user.setChangeTs(new Timestamp(System.currentTimeMillis()));
+		System.out.println("Controller, userId: "+user.getId());
+		User u=userService.saveUser(user);
+		return new ResponseEntity<User>(u,HttpStatus.OK);
+	}
+	
+	@RequestMapping("/show/{userId}/roledetails")
 	public ResponseEntity<List<UserRole>> getRoleDetails(@PathVariable int userId){
 		List<UserRole> roles=userService.findRolesByUserId(userId);
 		if(roles==null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<List<UserRole>>(roles,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/show/{userId}/roledetails/save", method=RequestMethod.POST)
+	public ResponseEntity<List<UserRole>> saveRoleDetails(@PathVariable int userId, @RequestBody List<UserRole> roles){
+		List<UserRole> r=userService.saveUserRoles(userId, roles);
+		return new ResponseEntity<List<UserRole>>(r,HttpStatus.OK);
 	}
 	
 	private Date getDateObject(String dateString) {

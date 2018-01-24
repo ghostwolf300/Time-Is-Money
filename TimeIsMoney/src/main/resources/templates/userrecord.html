@@ -4,17 +4,25 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layouts/default">
 <div id="userrecord-content" layout:fragment="content">
-	<div id="search">
-		<div id="searchShow">
-			<p>Search here!</p>
+	<div id="userRecordMenuBar" class="menuBar">
+		<div id="search" class="menuBarDiv">
+			<input id="searchButton" class="menuBarButton" type="button" value="Search..."/>
+			<div th:replace="fragments/usersearch :: usersearchByName"></div>
 		</div>
-		<div th:replace="fragments/usersearch :: usersearchByName"></div>
+		<input id="userrecord-new-button" class="record-edit-button" type="button" value="New"/>
 	</div>
 	<div id="userrecord-wrapper">
 		<div th:replace="fragments/searchresults_user :: searchresults"></div>
 		<div id="userrecord">
 			<div id="userrecord-selected">
-				<p id="userrecord-selected-text"></p>
+				<div class="userrecord-selected-left">
+					<p id="userrecord-selected-text"></p>
+				</div>
+				<div class="userrecord-selected-right">
+					<input id="userrecord-copy-button" class="record-edit-button" type="button" value="Copy"/>
+					<input id="userrecord-inactivate-button" class="record-edit-button" type="button" value="Inactivate"/>
+					<input id="userrecord-delete-button" class="record-edit-button" type="button" value="Delete"/>
+				</div>
 			</div>
 			<div th:replace="fragments/userpersonal :: userpersonal">Personal (replace)</div>
 			<div th:replace="fragments/usercontract :: usercontract">Contract (replace)</div>

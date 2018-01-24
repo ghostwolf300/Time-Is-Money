@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
-    <div class="header" id="container" th:fragment="header">
-    	<div class="header" id="info">
-    		<h2>Time Is Money</h2>
-    	</div>
-    	<div th:if="${#httpServletRequest.remoteUser}!=null" class="header" id="user">
-		    <div class="header" id="username" >
-		    	<span  th:inline="text">Logged in: [[${#httpServletRequest.remoteUser}]]</span>
-		    </div>
-		    <div class="header" id="logout">
-		    	<form th:action="@{/logout}" method="post">
-		    		<input type="submit" value="Logout"/>
-		    	</form>
-		    </div>
-    	</div>
-    	<div class="header" id="bar">
-    		<div class="dropdown">
-    			<button class="dropbtn">Navigate</button>
-    			<div th:replace="fragments/navmenu :: navmenu">
-    			</div>
-    		</div>
+	<div class="header" id="container" th:fragment="header">
+	    <div class="header" id="info-wrapper">
+	    	<div class="header" id="info">
+	    		<h2>Time Is Money</h2>
+	    	</div>
+	    	<div th:if="${#httpServletRequest.remoteUser}!=null" class="header" id="user">
+			    <div class="header" id="username" >
+			    	<span  th:inline="text">Logged in: [[${#httpServletRequest.remoteUser}]]</span>
+			    </div>
+			    <div class="header" id="logout">
+			    	<form th:action="@{/logout}" method="post">
+			    		<input type="submit" value="Logout"/>
+			    	</form>
+			    </div>
+	    	</div>
+	    </div>
+	    <div class="header" id="bar">
+			<div class="dropdown">
+				<button class="dropbtn">Navigate</button>
+				<div th:replace="fragments/navmenu :: navmenu"></div>
+			</div>
 			<span th:text="${viewName}"></span>
-    	</div>
+	    </div>
     </div>
 </html>

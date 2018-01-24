@@ -193,4 +193,18 @@ public class UserServiceImpl implements UserService {
 		rec.setCurrentRecord(currentRec);
 	}
 
+	@Override
+	public User saveUser(User user) {
+		System.out.println("Saving user: "+user.getId());
+		User u=userRepository.save(user);
+		
+		return u;
+	}
+
+	@Override
+	public List<UserRole> saveUserRoles(int userId,List<UserRole> roles) {
+		userRoleRepository.removeByUserId(userId);
+		return userRoleRepository.save(roles);
+	}
+
 }

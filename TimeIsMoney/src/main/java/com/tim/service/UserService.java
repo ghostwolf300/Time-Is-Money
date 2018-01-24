@@ -20,6 +20,9 @@ public interface UserService {
 	public List<User> currentRecords();
 	public List<UserRole> findRolesByUserId(int userId);
 	
+	public User saveUser(User user);
+	public List<UserRole> saveUserRoles(int userId,List<UserRole> roles);
+	
 	public UserPersonal findPersonalByKeyDate(int userId,Date date);
 	public UserPersonal findNextPersonal(int userId,Date date);
 	public UserPersonal findPreviousPersonal(int userId,Date date);

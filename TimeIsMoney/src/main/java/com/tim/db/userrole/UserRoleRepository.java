@@ -12,5 +12,6 @@ import com.tim.entities.UserRoleKey;
 public interface UserRoleRepository extends JpaRepository<UserRole,UserRoleKey>,UserRoleRepositoryCustom {
 	
 	public List<UserRole> findByUserId(int userId);
+	public int removeByUserId(int userId);
 	
 }
