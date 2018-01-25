@@ -35,4 +35,12 @@ public class UserRoleKey implements Serializable {
 		this.userId = userId;
 	}
 
+	public int getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
+
 }

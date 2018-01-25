@@ -203,8 +203,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserRole> saveUserRoles(int userId,List<UserRole> roles) {
-		userRoleRepository.removeByUserId(userId);
-		return userRoleRepository.save(roles);
+		userRoleRepository.removeByUserRoleKeyUserId(userId);
+		List<UserRole> saved=userRoleRepository.save(roles);
+		return saved;
 	}
 
 }
