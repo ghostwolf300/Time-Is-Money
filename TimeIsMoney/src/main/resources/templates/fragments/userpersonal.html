@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
 <div id="userpersonal" class="userrecord_fragment" th:fragment="userpersonal">
-	<h2>Personal</h2>
+	<div id="userrecord-personal-header" class="userrecord-type-header">
+		<div>
+			<h2>Personal</h2>
+		</div>
+		<div>
+			<span id="userrecord-personal-isChanged" class="changeIndicator"></span>
+		</div>
+	</div>
 	<div id="recordControls_top">
 		<div id="recordControls_top_left">
 			<div>
@@ -13,7 +20,8 @@
 			</div>
 			<div>
 				<input id="userrecord-personal-prev-button" type="button" value="Prev" /> 
-				<input id="userrecord-personal-next-button" type="button" value="Next" /> 
+				<input id="userrecord-personal-next-button" type="button" value="Next" />
+				<input id="userrecord-personal-copy-button" type="button" value="Copy" /> 
 				<input id="userrecord-personal-new-button" type="button" value="New" />
 			</div>
 		</div>

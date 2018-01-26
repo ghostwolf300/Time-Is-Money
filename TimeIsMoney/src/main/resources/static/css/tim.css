@@ -194,10 +194,22 @@ div.userrecord-selected-right{
     display:block;
 } */
 
+.userrecord-type-header{
+	display: flex;
+    align-items: center;
+    height: 46px;
+}
+
+.changeIndicator{
+	color : red;
+	margin-left: 10px;
+}
+
 div#personal{
 	width:100%;
 	border: 1px solid black;	
 }
+
 div#contract{
 	width:100%;
 	border: 1px solid black;
