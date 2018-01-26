@@ -10,11 +10,9 @@ $(document).ready(initPage);
 function initPage(){
 	console.log('initializing page...'+$(document.body).data('viewId'));
 	globalSetup();
+	console.log(DAO.STATUS.DONE);
 	UserRecord.bindEventHandlers();
 	UserRecord.setDefaultValues();
-	//bindEventHandlers();
-	//setDefaultValues();
-	
 }
 
 function globalSetup(){
@@ -28,26 +26,42 @@ function globalSetup(){
     });
 }
 
-var UserRecord = (function(DAO){
+var UserRecord = (function(){
 	
-	var myDAO=DAO;
+	function test(){
+		DAO.test();
+	}
 	
 	function bindEventHandlers(){
-		
-		this.myDAO.test();
-		this.DAO.test();
 		
 		$('#searchUsers').on('click',searchUsers);
 		$('#searchResults-tbody').on('click',showUser);
 		$('#showOrgTree').on('click',showOrgTree);
-		$('#assignmentOrgTree').on('changed.jstree', function(e,data){
+		/*$('#assignmentOrgTree').on('changed.jstree', function(e,data){
 			orgTreeChanged(e, data);
-		});
+		})*/;
+		$('#assignmentOrgTree').on('changed.jstree', orgTreeChanged);
+			
 		
-		$('#userrecord-save-credentials-button').on('click',saveCredentials);
-		$('#userrecord-save-personal-button').on('click',savePersonal);
-		$('#userrecord-save-contract-button').on('click',saveContract);
-		$('#userrecord-save-assignment-button').on('click',saveAssignment);
+		$('#userrecord-credentials-save-button').on('click',saveCredentials);
+		
+		$('#userrecord-personal-save-button').on('click',savePersonal);
+		$('#userrecord-personal-next-button').on('click',showPersonalNext);
+		$('#userrecord-personal-prev-button').on('click',showPersonalPrev);
+		$('#userrecord-personal-new-button').on('click',newPersonal);
+		$('#userrecord-personal-del-button').on('click',deletePersonal);
+		
+		$('#userrecord-contract-save-button').on('click',saveContract);
+		$('#userrecord-contract-next-button').on('click',showContractNext);
+		$('#userrecord-contract-prev-button').on('click',showContractPrev);
+		$('#userrecord-contract-new-button').on('click',newContract);
+		$('#userrecord-contract-del-button').on('click',deleteContract);
+		
+		$('#userrecord-assignment-save-button').on('click',saveAssignment);
+		$('#userrecord-assignment-next-button').on('click',showAssignmentNext);
+		$('#userrecord-assignment-prev-button').on('click',showAssignmentPrev);
+		$('#userrecord-assignment-new-button').on('click',newAssignment);
+		$('#userrecord-assignment-del-button').on('click',deleteAssignment);
 		
 		$('#userrecord-inactivate-button').on('click',inactivateUser);
 		$('#userrecord-copy-button').on('click',copyUser);
@@ -61,9 +75,11 @@ var UserRecord = (function(DAO){
 	}
 	
 	function searchUsers(){
-		var users;
-		DAO.findAllUsers(users,function(status){
+		
+		DAO.findAllUsers(function(status,users){
+			//console.log('DAO returned: '+status);
 			if(status=='done'){
+				console.log(users);
 				displaySearchResults(users);
 			}
 		});
@@ -82,31 +98,659 @@ var UserRecord = (function(DAO){
 		$('#searchResults-tbody').append(trHtml);
 	}
 	
-	function showUser(){
+	function showUser(event){
 		
+		var tr=event.target.parentNode;
+		var userId=$(tr).find('#user_id').text();
+		var keyDate=$('#searchKeyDate').val();
+		
+		//console.log(keyDate);
+		if(keyDate==null){
+			keyDate=new Date();
+		}
+		
+		showPersonalOnKeyDate(userId,keyDate);
+		showContractOnKeyDate(userId,keyDate);
+		showAssignmentOnKeyDate(userId,keyDate);
+		showCredentials(userId);
+		showRoles(userId);
+		
+		$('#userrecord').show();
+		$('#userrecord-selected-text').empty();
+		$('#userrecord-selected-text').append('ID: '+userId);
+		$('#userrecord-selected').show();
+	}
+	
+	function _addUsernameToElement(userId,elementId){
+		var url='/userrecord/show/'+userId+'/credentialsdetails';
+		$(elementId).empty();
+		$.getJSON(url,function(u){
+			$(elementId).append(u.username);
+		});
+	}
+	
+	function _addOrgUnitDetails(orgUnitId){
+		var url='/organisation/?id='+orgUnitId;
+		
+		$.getJSON(url,function(ou){
+			console.log(ou);
+			$('#orgUnitId').val(ou.id);
+			$('#orgUnitName').val(ou.name);
+			if(ou.costCenter!=null){
+				$('#costCenterId').val(ou.costCenter.id);
+				$('#costCenterName').val(ou.costCenter.name);
+			}
+			else{
+				$('#costCenterId').val('N/A');
+				$('#costCenterName').val('N/A');
+			}
+		}).done(function(ou){
+			
+		}).fail(function(ou){
+			
+		});
+	}
+	
+	function showPersonalOnKeyDate(userId,keyDate){
+		
+		var personal;
+		
+		_clearPersonal();
+		
+		DAO.loadPersonal(userId,keyDate,function(status,personal){
+			
+			console.log('DAO returned : '+status);
+			if(status==DAO.STATUS.DONE){
+				console.log(personal.firstName);
+				_fillPersonal(personal);
+			}
+			else if(status==DAO.STATUS.NA){
+				console.log('no results. hiding div...');
+				$('#userpersonal_record').hide();
+				$('#userpersonal_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function showPersonalNext(){
+		
+		var startDate=$('#personalStartDate').val();
+		var userId=$('#id').val();
+		var personal;
+		
+		_clearPersonal();
+		
+		DAO.loadNextPersonal(userId,startDate,function(status,personal){
+			if(status==DAO.STATUS.DONE){
+				_fillPersonal(personal);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#userpersonal_record').hide();
+				$('#userpersonal_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function showPersonalPrev(){
+		var startDate=$('#personalStartDate').val();
+		var userId=$('#id').val();
+		var personal;
+		
+		_clearPersonal();
+		
+		DAO.loadPrevPersonal(userId,startDate,function(status,personal){
+			if(status==DAO.STATUS.DONE){
+				_fillPersonal(personal);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#userpersonal_record').hide();
+				$('#userpersonal_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function _clearPersonal(){
+		$('#personalStartDate').val(null);
+		$('#personalEndDate').val(null);
+		$('#firstName').val(null);
+		$('#middleName').val(null);
+		$('#lastName').val(null);
+		$('#birthDate').val(null);
+		$('#phone').val(null);
+		$('#email').val(null);
+		$('#personalChangedTs').empty();
+		$('#userrecord-personal-counter').empty();
+	}
+	
+	function _fillPersonal(personal){
+		$('#userpersonal_record').show();
+		$('#userpersonal_noRecordFound').hide();
+		
+		$('#personalStartDate').val(personal.key.startDate);
+		$('#personalEndDate').val(personal.endDate);
+		$('#firstName').val(personal.firstName);
+		$('#middleName').val(personal.middleName);
+		$('#lastName').val(personal.lastName);
+		$('#birthDate').val(personal.birthDate);
+		$('#phone').val(personal.phone);
+		$('#email').val(personal.email);
+		var ts=$.format.date(new Date(personal.changeTs),'dd.MM.yyyy hh:mm');
+		$('#personalChangedTs').append(ts);
+		$('#userrecord-personal-counter').append(personal.currentRecord+'/'+personal.totalRecords);
+		
+		_addUsernameToElement(personal.key.userId,'#personalChangedBy');
+		
+		$('#userrecord-personal-next-button').prop('disabled',false);
+		$('#userrecord-personal-prev-button').prop('disabled',false);
+
+		if(personal.currentRecord==personal.totalRecords && personal.totalRecords==1){
+			$('#userrecord-personal-next-button').prop('disabled',true);
+			$('#userrecord-personal-prev-button').prop('disabled',true);
+		}
+		else if(personal.currentRecord==personal.totalRecords){
+			$('#userrecord-personal-next-button').prop('disabled',true);
+		}
+		else if(personal.currentRecord==1){
+			$('#userrecord-personal-prev-button').prop('disabled',true);
+		}
+	}
+	
+	function showContractOnKeyDate(userId,keyDate){
+		
+		var contract;
+		_clearContract();
+		
+		DAO.loadContract(userId,keyDate,function(status,contract){
+			if(status==DAO.STATUS.DONE){
+				_fillContract(contract);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#usercontract_record').hide();
+				$('#usercontract_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function showContractNext(){
+		
+		var startDate=$('#contractStartDate').val();
+		var userId=$('#id').val();
+		var contract;
+		
+		_clearContract();
+		
+		DAO.loadNextContract(userId,startDate,function(status,contract){
+			if(status==DAO.STATUS.DONE){
+				_fillContract(contract);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#usercontract_record').hide();
+				$('#usercontract_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function showContractPrev(){
+		var startDate=$('#contractStartDate').val();
+		var userId=$('#id').val();
+		var contract;
+		
+		_clearContract();
+		
+		DAO.loadPrevContract(userId,startDate,function(status,contract){
+			if(status==DAO.STATUS.DONE){
+				_fillContract(contract);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#usercontract_record').hide();
+				$('#usercontract_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function _clearContract(){
+		$('#contractStartDate').val(null);
+		$('#contractEndDate').val(null);
+		$('#contractType').val(null);
+		$('#minHours').val(null);
+		$('#maxHours').val(null);
+		$('#contractChangedTs').empty();
+		$('#userrecord-contract-counter').empty();
+	}
+	
+	function _fillContract(cd){
+		$('#usercontract_record').show();
+		$('#usercontract_noRecordFound').hide();
+		
+		$('#contractStartDate').val(cd.key.startDate);
+		$('#contractEndDate').val(cd.endDate);
+		$('#contractType').val(cd.contractType.id);
+		$('#minHours').val(cd.minHours);
+		$('#maxHours').val(cd.maxHours);
+		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
+		$('#contractChangedTs').append(ts);
+		$('#userrecord-contract-counter').append(cd.currentRecord+'/'+cd.totalRecords);
+		
+		_addUsernameToElement(cd.key.userId,'#contractChangedBy');
+		
+		$('#userrecord-contract-next-button').prop('disabled',false);
+		$('#userrecord-contract-prev-button').prop('disabled',false);
+
+		if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
+			$('#userrecord-contract-next-button').prop('disabled',true);
+			$('#userrecord-contract-prev-button').prop('disabled',true);
+		}
+		else if(cd.currentRecord==cd.totalRecords){
+			$('#userrecord-contract-next-button').prop('disabled',true);
+		}
+		else if(cd.currentRecord==1){
+			$('#userrecord-contract-prev-button').prop('disabled',true);
+		}
+	}
+	
+	function showAssignmentOnKeyDate(userId,keyDate){
+		var assignment;
+		_clearAssignment();
+		
+		DAO.loadAssignment(userId,keyDate,function(status,assignment){
+			if(status==DAO.STATUS.DONE){
+				_fillAssignment(assignment);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#userassignment_record').hide();
+				$('#userassignment_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function showAssignmentNext(){
+		var startDate=$('#assignmentStartDate').val();
+		var userId=$('#id').val();
+		var assignment;
+		
+		_clearAssignment();
+		
+		DAO.loadNextAssignment(userId,startDate,function(status,assignment){
+			if(status==DAO.STATUS.DONE){
+				_fillAssignment(assignment);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#userassignment_record').hide();
+				$('#userassignment_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function showAssignmentPrev(){
+		var startDate=$('#assignmentStartDate').val();
+		var userId=$('#id').val();
+		var assignment;
+		
+		_clearAssignment();
+		
+		DAO.loadPrevAssignment(userId,startDate,function(status,assignment){
+			if(status==DAO.STATUS.DONE){
+				_fillAssignment(assignment);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#userassignment_record').hide();
+				$('#userassignment_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function _clearAssignment(){
+		$('#assignmentStartDate').val(null);
+		$('#assignmentEndDate').val(null);
+		$('#orgUnitId').val(null);
+		$('#orgUnitName').val(null);
+		$('#costCenterId').val(null);
+		$('#costCenterName').val(null);
+		$('#assignmentChangedTs').empty();
+		$('#userrecord-assignment-counter').empty();
+	}
+	
+	function _fillAssignment(ad){
+		$('#userassignment_record').show();
+		$('#userassignment_noRecordFound').hide();
+		
+		$('#assignmentStartDate').val(ad.key.startDate);
+		$('#assignmentEndDate').val(ad.endDate);
+		
+		var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
+		$('#assignmentChangedTs').append(ts);
+		$('#userrecord-assignment-counter').append(ad.currentRecord+'/'+ad.totalRecords);
+		
+		_addUsernameToElement(ad.key.userId,'#assignmentChangedBy');
+		_addOrgUnitDetails(ad.orgUnit.id);
+		
+		$('#userrecord-assignment-next-button').prop('disabled',false);
+		$('#userrecord-assignment-prev-button').prop('disabled',false);
+		
+		if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
+			$('#userrecord-assignment-next-button').prop('disabled',true);
+			$('#userrecord-assignment-prev-button').prop('disabled',true);
+		}
+		else if(ad.currentRecord==ad.totalRecords){
+			$('#userrecord-assignment-next-button').prop('disabled',true);
+		}
+		else if(ad.currentRecord==1){
+			$('#userrecord-assignment-prev-button').prop('disabled',true);
+		}
+	}
+	
+	function showCredentials(userId){
+		
+		var credentials;
+		_clearCredentials();
+	
+		DAO.loadCredentials(userId,function(status,credentials){
+			if(status==DAO.STATUS.DONE){
+				_fillCredentials(credentials);
+				
+			}
+			else if(status==DAO.STATUS.NA){
+				
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+		
+		showRoles(userId);
+		
+	}
+	
+	function _clearCredentials(){
+		$('#id').val(null);
+		$('#secondaryId').val(null);
+		$('#uname').val(null);
+		$('#pword').val(null);
+		$('#enabled').prop("checked",false);
+		$('#credentialsChangedTs').empty();
+		$('#credentialsChangedBy').empty();
+	}
+	
+	function _fillCredentials(user){
+		$('#id').val(user.id);
+		$('#secondaryId').val(user.secondaryId);
+		$('#uname').val(user.username);
+		$('#pword').val(user.password);
+		$('#enabled').prop("checked",user.enabled);
+		var ts=$.format.date(new Date(user.changeTs),'dd.MM.yyyy hh:mm');
+		$('#credentialsChangedTs').append(ts);
+		_addUsernameToElement(user.changedBy,'#credentialsChangedBy');
+	}
+	
+	function showRoles(userId){
+		
+		var roles;
+		
+		_clearRoles();
+		
+		DAO.loadRoles(userId,function(status,roles){
+			if(status==DAO.STATUS.DONE){
+				_fillRoles(roles);
+			}
+			else if(status==DAO.STATUS.NA){
+				
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function _clearRoles(){
+		$('#userrecord-roles').find('input[type="checkbox"]').each(function(){
+			var cb=$(this);
+			cb.prop('checked',false);
+		});
+	}
+	
+	function _fillRoles(roles){
+		
+		var r;
+		var cb;
+		
+		console.log('checking roles...');
+		
+		for(var i=0;i<roles.length;i++){
+			r=roles[i];
+			$('#userrecord-roles').find('input[type="checkbox"]').each(function(){
+				cb=$(this);
+				if(cb.data('role_id')==r.userRoleKey.roleId){
+					cb.prop('checked',true);
+				}
+			});
+		}
+	}
+	
+	function _loadOrgTree(){
+		var tree;
+		DAO.loadOrgTree(function(status,tree){
+			if(status==DAO.STATUS.DONE){
+				_fillOrgTree(tree);
+			}
+		});
+	}
+	
+	function _fillOrgTree(data){
+		$('#assignmentOrgTree').jstree({ 
+			'core' : {
+				'data' : data
+			} 
+		});
+	}
+	
+	function _getCredentials(){
+		var cred={
+				id : $('#id').val(),
+				secondaryId : $('#secondaryId').val(),
+				username : $('#uname').val(),
+				password : $('#pword').val(),
+				enabled : $('#enabled').prop('checked')
+		}
+		return cred;
+	}
+	
+	function _getRoles(userId){
+		var roles=[];
+		var roleId;
+		
+		$('#userrecord-roles input:checked').each(function(){
+			roleId=$(this).data('role_id');
+			roles.push({
+				'userRoleKey' :{
+					'userId' : userId,
+					'roleId' : roleId
+				}
+			});
+		});
+		return roles;
+	}
+	
+	function _getPersonal(){
+		var pd={
+				key : {
+					userId : parseInt($('#id').val()),
+					startDate : $('#personalStartDate').val()
+				},
+				endDate : $('#personalEndDate').val(),
+				firstName : $('#firstName').val(),
+				middleName : $('#middleName').val(),
+				lastName : $('#lastName').val(),
+				birthDate : $('#birthDate').val(),
+				phone : $('#phone').val(),
+				email : $('#email').val()
+		}
+		return pd;
+	}
+	
+	function _getContract(){
+		var cd={
+				key : {
+					userId : $('#id').val(),
+					startDate : $('#contractStartDate').val()
+				},
+				endDate : $('#contractEndDate').val(),
+				contractType : {
+					id : $('#contractType').val(),
+				},
+				minHours : $('#minHours').val(),
+				maxHours : $('#maxHours').val()
+		}
+		return cd;
+	}
+	
+	function _getAssignment(){
+		var ad={
+				key : {
+					userId : $('#id').val(),
+					startDate : $('#assignmentStartDate').val()
+				},
+				endDate : $('#assignmentEndDate').val(),
+				orgUnit : {
+					id : $('#orgUnitId').val(),
+				}
+		}
+		return ad;
 	}
 	
 	function showOrgTree(){
-		
+		if($('#showOrgTree').data('treevisible')==true){
+			$('#orgTreeDiv').hide();
+			$('#showOrgTree').data('treevisible',false);
+			$('#showOrgTree').val('Show Org. Tree');
+		}
+		else{
+			_loadOrgTree();
+			$('#orgTreeDiv').show();
+			$('#showOrgTree').data('treevisible',true);
+			$('#showOrgTree').val('Hide Org. Tree');
+		}
 	}
 	
-	function orgTreeChanged(){
-		
+	function orgTreeChanged(e,data){
+		var orgUnitId=data.selected;
+		_addOrgUnitDetails(orgUnitId);
 	}
 	
 	function saveCredentials(){
+		var u=_getCredentials();
+		
+		DAO.saveCredentials(u,function(status){
+			if(status==DAO.STATUS.DONE){
+				//saved
+			}
+			else if(status==DAO.STATUS.FAIL){
+				//save failed
+			}
+		})
+		
+		var roles=_getRoles(u.id);
+		
+		DAO.saveRoles(roles,function(status){
+			if(status==DAO.STATUS.DONE){
+				
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
 		
 	}
 	
 	function savePersonal(){
 		
+		var pd=_getPersonal();
+		
+		DAO.savePersonal(pd,function(status){
+			if(status==DAO.STATUS.DONE){
+				//saved
+			}
+			else if(status==DAO.STATUS.FAIL){
+				//save failed
+			}
+		});
+		
+	}
+	
+	function newPersonal(){
+		
+	}
+	
+	function deletePersonal(){
+		
 	}
 	
 	function saveContract(){
+		var contract=_getContract();
+		
+		DAO.saveContract(contract,function(status){
+			if(status==DAO.STATUS.DONE){
+				
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function newContract(){
+		
+	}
+	
+	function deleteContract(){
 		
 	}
 	
 	function saveAssignment(){
+		var assignment=_getAssignment();
+		
+		DAO.saveAssignment(assignment,function(status){
+			if(status==DAO.STATUS.DONE){
+				
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+		
+	}
+	
+	function newAssignment(){
+		
+	}
+	
+	function deleteAssignment(){
 		
 	}
 	
@@ -127,46 +771,49 @@ var UserRecord = (function(DAO){
 	}
 	
 	return{
+		test : test,
 		bindEventHandlers : bindEventHandlers,
-		setDefaultValues : setDefaultValues
+		setDefaultValues : setDefaultValues,
+		showUser : showUser,
+		//getPersonal : getPersonal
 	}
 	
-})(this.DAO={});
+})();
 
-var DAO = (function () {
+var DAO = (function() {
+	
+	var STATUS={
+		DONE : 'done',
+		NA : 'na',
+		UNKNOWN : 'unknown',
+		FAIL : 'fail'
+	}
 	
 	function test(){
 		var text='DAO : this is a test!';
-		console.log(test);
+		console.log(text);
 	}
 	
-	function loadCredentials(userId,cred,_callback){
+	function loadCredentials(userId,_callback){
 		
 		var url='/userrecord/show/'+userId+'/credentialsdetails';
+		var credentials;
 		
 		$.getJSON(url,function(user,statusText,jqxhr){
 
 		}).done(function(user,statusText,jqxhr){
-			console.log('done');
 			if(jqxhr.status==200){
-				console.log('record found. setting values '+user.id);
-				this.cred=user;
-				/*cred.id=user.id;
-				cred.secondaryId=user.secondaryId;
-				cred.username=user.username;
-				cred.password=user.password;
-				cred.enabled=user.enabled;
-				cred.changedBy=user.changedBy;
-				cred.changeTs=user.changeTs;*/
-				console.log('values set... '+cred.id);
+				credentials=user;
+				_callback(STATUS.DONE,credentials);
 			}
 			else if(jqxhr.status==204){
-				console.log('no record found');
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(){
-			alert('Something went wrong...');
-			_callback('fail')
+			_callback(STATUS.FAIL);
 		}).always(function(){
 
 		});
@@ -187,19 +834,20 @@ var DAO = (function () {
 			
 		}).done(function(cred){
 			console.log(cred);
-			_callback('done');
+			_callback(STATUS.DONE);
 
 		}).fail(function(){
 			alert("ERROR: Couldn't save credentials details.");
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadRoles(userId,roles,_callback){
+	function loadRoles(userId,_callback){
 		
 		var url='/userrecord/show/'+userId+'/roledetails';
+		var roles;
 		
 		$.getJSON(url,function(roles){
 			//console.log(roles);
@@ -207,13 +855,16 @@ var DAO = (function () {
 			console.log(roles);
 			if(jqxhr.status==200){
 				this.roles=roles;
+				_callback(STATUS.DONE,this.roles);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
@@ -234,83 +885,97 @@ var DAO = (function () {
 			
 		}).done(function(ur){
 			console.log(ur);
-			_callback('done');
+			_callback(STATUS.DONE);
 		}).fail(function(){
 			alert("ERROR: Couldn't save role details.");
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadPersonal(userId,keyDate,personal,_callback){
+	function loadPersonal(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/personaldetails/?keyDate='+keyDate;
+		var personal;
 		
 		$.getJSON(url,function(ud,statusText,jqxhr){
 			
 		}).done(function(ud,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.personal=ud;
+				personal=ud;
+				_callback(STATUS.DONE,personal);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(jqxhr, textStatus, error){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadNextPersonal(userId,keyDate,personal,_callback){
+	function loadNextPersonal(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/personaldetails/next?keyDate='+keyDate;
+		var personal;
 		
 		$.getJSON(url,function(ud,statusText,jqxhr){
 			
 		}).done(function(ud,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.personal=ud;
+				personal=ud;
+				_callback(STATUS.DONE,personal);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
+			
 		}).fail(function(){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadPrevPersonal(userId,keyDate,personal,_callback){
+	function loadPrevPersonal(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/personaldetails/prev?keyDate='+keyDate;
+		var personal;
 		
 		$.getJSON(url,function(ud,statusText,jqxhr){
 			
 		}).done(function(ud,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.personal=ud;
+				personal=ud;
+				_callback(STATUS.DONE,personal);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
+			
 		}).fail(function(){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function savePersonal(userId,personal,_callback){
+	function savePersonal(userId,pd,_callback){
 		
 		var url='/userrecord/show/'+userId+'/personaldetails/save';
 		
-		data=JSON.stringify(personal);
+		data=JSON.stringify(pd);
 		
 		$.ajax({
 			url : url,
@@ -318,73 +983,85 @@ var DAO = (function () {
 			data : data,
 			dataType : "json"
 		}).done(function(pers){
-			_callback('done');
+			_callback(STATUS.DONE);
 		}).fail(function(){
-			alert("ERROR: Couldn't save personal details.");
-			_callback('fail');
+			//alert("ERROR: Couldn't save personal details.");
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	} 
 	
-	function loadContract(userId,keyDate,contract,_callback){
+	function loadContract(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/contractdetails/?keyDate='+keyDate;
+		var contract;
 		
 		$.getJSON(url,function(ctrc,statusText,jqxhr){
 			
 		}).done(function(ctrc,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.contract=ctrc;
+				contract=ctrc;
+				_callback(STATUS.DONE,contract);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(jqxhr, textStatus, error){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadNextContract(userId,keyDate,contract,_callback){
+	function loadNextContract(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/contractdetails/next?keyDate='+keyDate;
+		var contract;
 		
 		$.getJSON(url,function(ctrc,statusText,jqxhr){
 			
 		}).done(function(ctrc,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.contract=ctrc;
+				contract=ctrc;
+				_callback(STATUS.DONE,contract);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadPrevContract(userId,keyDate,contract,_callback){
+	function loadPrevContract(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/contractdetails/prev?keyDate='+keyDate;
+		var contract;
 		
 		$.getJSON(url,function(ctrc,statusText,jqxhr){
 			
 		}).done(function(ctrc,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.contract=ctrc;
+				contract=ctrc;
+				_callback(STATUS.DONE,contract);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});	
@@ -402,73 +1079,104 @@ var DAO = (function () {
 			data : data,
 			dataType : "json"
 		}).done(function(ctrc){
-			_callback('done');
+			_callback(STATUS.DONE);
 		}).fail(function(){
 			alert("ERROR: Couldn't save contract details.");
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadAssignment(userId,keyDate,assignment,_callback){
+	function loadOrgTree(_callback){
+		
+		var tree=null;
+		var url='/organisation/tree'
+
+		$.getJSON(url,function(tree,statusText,jqxhr){
+
+		}).done(function(tree,statusText,jqxhr){
+			if(jqxhr.status==200){
+				_callback(STATUS.DONE,tree);
+			}
+			else if(jqxhr.status==204){
+				_callback(STATUS.NA)
+			}
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		});
+	}
+	
+	function loadAssignment(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/assignmentdetails/?keyDate='+keyDate;
+		var assignment;
 		
 		$.getJSON(url,function(asgn,statusText,jqxhr){
 			
 		}).done(function(asgn,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.assignment=asgn;
+				assignment=asgn;
+				_callback(STATUS.DONE,assignment);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(jqxhr, textStatus, error){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadNextAssignment(userId,keyDate,assignment,_callback){
+	function loadNextAssignment(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/assignmentdetails/next?keyDate='+keyDate;
+		var assignment;
 		
 		$.getJSON(url,function(asgn,statusText,jqxhr){
 			
 		}).done(function(asgn,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.assignment=asgn;
+				assignment=asgn;
+				_callback(STATUS.DONE,assignment);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function loadPrevAssignment(userId,keyDate,assignment,_callback){
+	function loadPrevAssignment(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/assignmentdetails/prev?keyDate='+keyDate;
+		var assignment;
 		
 		$.getJSON(url,function(asgn,statusText,jqxhr){
 			
 		}).done(function(asgn,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.assignment=asgn;
+				assignment=asgn;
+				_callback(STATUS.DONE,assignment);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});	
@@ -486,38 +1194,45 @@ var DAO = (function () {
 			data : data,
 			dataType : "json"
 		}).done(function(asgn){
-			_callback('done');
+			_callback(STATUS.DONE);
 		}).fail(function(){
 			alert("ERROR: Couldn't save assignment details.");
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
-	function findAllUsers(users,_callback){
+	function findAllUsers(_callback){
 		
 		var url='/userrecord/search/';
+		var users;
 		
-		$.getJSON(url,function(users,statusText,jqxhr){
+		$.getJSON(url,function(u,statusText,jqxhr){
 			
-		}).done(function(users,statusText,jqxhr){
+		}).done(function(u,statusText,jqxhr){
 			if(jqxhr.status==200){
-				this.users=users;
+				users=u;
+				_callback(STATUS.DONE,users);
 			}
 			else if(jqxhr.status==204){
-				
+				_callback(STATUS.NA);
 			}
-			_callback('done');
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
 		}).fail(function(){
-			_callback('fail');
+			_callback(STATUS.FAIL);
 		}).always(function(){
 			
 		});
 	}
 	
 	return{
+		STATUS : STATUS,
 		test : test,
+		findAllUsers : findAllUsers,
+		loadOrgTree : loadOrgTree,
 		loadCredentials : loadCredentials,
 		saveCredentials : saveCredentials,
 		loadRoles : loadRoles,

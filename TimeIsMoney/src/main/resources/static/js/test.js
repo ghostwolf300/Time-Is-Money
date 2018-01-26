@@ -8,19 +8,51 @@ $(document).ready(function(){
 
 function testApproach(){
 	console.log('Testing module approach...');
-	var cred={};
-	var userId=7;
-	DAO.loadCredentials(userId,cred,function(status){
-		console.log(status);
-		console.log(cred);
-		var roles;
-		DAO.loadRoles(userId,roles,function(status){
-			console.log(roles);
-		});
-	});
+	//console.log(Module);
+	//console.log(Module.testLocal());
+	//console.log(Module.testConnection());
+	//Module.testConnection();
+	UserRecord.test();
+	
 }
 
-var UserRecord = (function(DAO){
+var Module = (function () {
+	
+	var localText;
+	
+	function testConnection(){
+		ModuleTwo.test();
+	}
+	
+	function testLocal(){
+		localText='local variable'
+		return localText;
+	}
+	
+	return{
+		testConnection : testConnection,
+		testLocal : testLocal
+	}
+	
+})();
+
+var ModuleTwo = (function () {
+    
+	/*var test=function(){
+		console.log('Hello world');
+	}*/
+	
+	function test(){
+		console.log('Hello world');
+	}
+	
+	return{
+		test : test
+	}
+	    
+})();
+
+/*var UserRecord = (function(DAO){
 	
 	function bindEventHandlers(){
 		
@@ -127,13 +159,13 @@ var DAO = (function () {
 			if(jqxhr.status==200){
 				console.log('record found. setting values '+user.id);
 				this.cred=user;
-				/*cred.id=user.id;
+				cred.id=user.id;
 				cred.secondaryId=user.secondaryId;
 				cred.username=user.username;
 				cred.password=user.password;
 				cred.enabled=user.enabled;
 				cred.changedBy=user.changedBy;
-				cred.changeTs=user.changeTs;*/
+				cred.changeTs=user.changeTs;
 				console.log('values set... '+cred.id);
 			}
 			else if(jqxhr.status==204){
@@ -511,5 +543,5 @@ var DAO = (function () {
 		saveAssignment : saveAssignment
 	}
 	
-})();
+})();*/
 

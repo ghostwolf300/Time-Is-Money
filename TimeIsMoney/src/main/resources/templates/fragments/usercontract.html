@@ -5,12 +5,18 @@
 	<div>
 		<div id="recordControls_top">
 			<div id="recordControls_top_left">
-				<label for="contractStartDate">Start:</label><input id="contractStartDate" type="date" /> 
-				<label for="contractEndDate">End:</label><input id="contractEndDate" type="date" />
-				<span id="contractDetailRecord">(1/1)</span>  
-				<input id="prevContractDetail" type="button" value="Prev" th:onclick="'previousContractRecord()'" />
-				<input id="nextContractDetail" type="button" value="Next" th:onclick="'nextContractRecord()'" /> 
-				<input id="newContractDetail" type="button" value="New" th:onclick="'newContractRecord()'"/>
+				<div>
+					<label for="contractStartDate">Start:</label><input id="contractStartDate" type="date" /> 
+					<label for="contractEndDate">End:</label><input id="contractEndDate" type="date" />
+				</div>
+				<div class="recordCounter">
+					<span id="userrecord-contract-counter">(1/1)</span>  
+				</div>
+				<div>
+					<input id="userrecord-contract-prev-button" type="button" value="Prev"/>
+					<input id="userrecord-contract-next-button" type="button" value="Next"/> 
+					<input id="userrecord-contract-new-button" type="button" value="New"/>
+				</div>
 			</div>
 			<div id="recordControls_top_right">
 				<input id="delContractDetail" type="button" value="Delete" />
@@ -32,7 +38,7 @@
 		</div>
 		<div id="recordControls_bottom">
 			<div id="recordControls_bottom_left">
-				<input id="userrecord-save-contract-button" type="button" value="Save"/>
+				<input id="userrecord-contract-save-button" type="button" value="Save"/>
 			</div>
 			<div id="recordControls_bottom_right">
 				<p>Changed: <span id="contractChangedTs"></span> by: <span id="contractChangedBy"></span></p>
