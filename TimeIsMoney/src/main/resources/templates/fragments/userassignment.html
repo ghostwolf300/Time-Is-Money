@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
 <div id="userassignment" class="userrecord_fragment" th:fragment="userassignment">
-	<h2>Assignment</h2>
+	<div id="userrecord-assignment-header" class="userrecord-type-header">
+		<div>
+			<h2>Assignment</h2>
+		</div>
+		<div>
+			<span id="userrecord-assignment-isChanged" class="changeIndicator"></span>
+		</div>
+	</div>
 	<div>
 		<div id="recordControls_top">
 			<div id="recordControls_top_left">
 				<div>
-					<label for="assignmentStartDate">Start:</label><input id="assignmentStartDate" type="date" /> 
-					<label for="assignmentEndDate">End:</label><input id="assignmentEndDate" type="date" />
+					<label for="assignmentStartDate">Start:</label><input id="assignmentStartDate" class="dateField" type="date" /> 
+					<label for="assignmentEndDate">End:</label><input id="assignmentEndDate" class="dateField" type="date" />
 				</div>
 				<div class="recordCounter">
 					<span id="userrecord-assignment-counter">(1/1)</span>
 				</div>
 				<div>
 					<input id="userrecord-assignment-prev-button" type="button" value="Prev" /> 
-					<input id="userrecord-assignment-next-button" type="button" value="Next"/> 
+					<input id="userrecord-assignment-next-button" type="button" value="Next"/>
+					<input id="userrecord-assignment-copy-button" type="button" value="Copy" />  
 					<input id="userrecord-assignment-new-button" type="button" value="New"/>
 				</div> 
 			</div>
@@ -34,10 +42,10 @@
 				<label for="costCenterName">Name:</label><input id="costCenterName" type="text"/>
 			</div>
 			<div>
-				<input id="showOrgTree" type="button" value="Show Org. Tree" data-treevisible="false"/>
+				<input id="userrecord-assignment-orgtree-button" type="button" value="Show Org. Tree" data-treevisible="false"/>
 			</div>
 			<div id="orgTreeDiv">
-				<div id="assignmentOrgTree">
+				<div id="userrecord-assignment-orgtree">
 	
 				</div>
 			</div>

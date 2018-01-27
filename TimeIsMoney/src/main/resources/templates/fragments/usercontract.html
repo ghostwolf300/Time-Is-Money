@@ -1,52 +1,65 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
 <div id="usercontract" class="userrecord_fragment" th:fragment="usercontract">
-	<h2>Contract</h2>
-	<div>
+	<div id="userrecord-contract-header" class="userrecord-type-header">
+		<div>
+			<h2>Contract</h2>
+		</div>
+		<div>
+			<span id="userrecord-contract-isChanged" class="changeIndicator"></span>
+		</div>
+	</div>
+	<div id="userrecord-contract-content">
 		<div id="recordControls_top">
 			<div id="recordControls_top_left">
 				<div>
-					<label for="contractStartDate">Start:</label><input id="contractStartDate" type="date" /> 
-					<label for="contractEndDate">End:</label><input id="contractEndDate" type="date" />
+					<label for="contractStartDate">Start:</label><input
+						id="contractStartDate" class="dateField" type="date" /> <label
+						for="contractEndDate">End:</label><input id="contractEndDate"
+						class="dateField" type="date" />
 				</div>
 				<div class="recordCounter">
-					<span id="userrecord-contract-counter">(1/1)</span>  
+					<span id="userrecord-contract-counter">(1/1)</span>
 				</div>
 				<div>
-					<input id="userrecord-contract-prev-button" type="button" value="Prev"/>
-					<input id="userrecord-contract-next-button" type="button" value="Next"/> 
-					<input id="userrecord-contract-new-button" type="button" value="New"/>
+					<input id="userrecord-contract-prev-button" type="button"
+						value="Prev" /> <input id="userrecord-contract-next-button"
+						type="button" value="Next" /> <input
+						id="userrecord-contract-copy-button" type="button" value="Copy" />
+					<input id="userrecord-contract-new-button" type="button" value="New" />
 				</div>
 			</div>
 			<div id="recordControls_top_right">
-				<input id="delContractDetail" type="button" value="Delete" />
+				<input id="userrecord-contract-del-button" type="button"
+					value="Delete" />
+			</div>
+		</div>
+		<div id="usercontract_record">
+			<div>
+				<label for="contractType">Contract type:</label> <select
+					id="contractType">
+					<option value="1">FT Retail Employee</option>
+					<option value="2">PT Retail Employee</option>
+					<option value="3">FT Logistics Employee</option>
+					<option value="4">PT Logistics Employee</option>
+					<option value="5">Office Employee</option>
+				</select> 
+				<label for="minHours">Min hours:</label><input id="minHours" type="number" /> 
+				<label for="maxHours">Max hours:</label><input id="maxHours" type="number" />
+			</div>
+			<div id="recordControls_bottom">
+				<div id="recordControls_bottom_left">
+					<input id="userrecord-contract-save-button" type="button" value="Save"/>
+				</div>
+				<div id="recordControls_bottom_right">
+					<p>Changed: <span id="contractChangedTs"></span> by: <span id="contractChangedBy"></span></p>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div id="usercontract_record">
-		<div>
-			<label for="contractType">Contract type:</label> <select
-				id="contractType">
-				<option value="1">FT Retail Employee</option>
-				<option value="2">PT Retail Employee</option>
-				<option value="3">FT Logistics Employee</option>
-				<option value="4">PT Logistics Employee</option>
-				<option value="5">Office Employee</option>
-			</select> 
-			<label for="minHours">Min hours:</label><input id="minHours" type="number" /> 
-			<label for="maxHours">Max hours:</label><input id="maxHours" type="number" />
-		</div>
-		<div id="recordControls_bottom">
-			<div id="recordControls_bottom_left">
-				<input id="userrecord-contract-save-button" type="button" value="Save"/>
-			</div>
-			<div id="recordControls_bottom_right">
-				<p>Changed: <span id="contractChangedTs"></span> by: <span id="contractChangedBy"></span></p>
-			</div>
-		</div>
-	</div>
-	<div id="usercontract_noRecordFound" hidden="true">
+	<div id="userrecord-contract-na" hidden="true">
 		<p>No record found!</p>
+		<input id="userrecord-contract-na-new-button" type="button" value="New" />
 	</div>
 </div>
 </html>

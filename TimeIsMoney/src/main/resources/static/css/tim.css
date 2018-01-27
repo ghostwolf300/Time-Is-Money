@@ -161,7 +161,7 @@ tbody#searchResults-tbody tr:hover{
 }
 
 div#userrecord{
-	width: 680px;
+	min-width: 700px;
     height: inherit;
     float: left;
 }
@@ -203,6 +203,10 @@ div.userrecord-selected-right{
 .changeIndicator{
 	color : red;
 	margin-left: 10px;
+}
+
+.datefield{
+	width: 126px;
 }
 
 div#personal{
@@ -300,6 +304,7 @@ div#recordControls_top_right{
 	float: right;
 	padding-right: 10px;
 	margin-left: 40px;
+	display : flex;
 }
 
 .recordCounter{

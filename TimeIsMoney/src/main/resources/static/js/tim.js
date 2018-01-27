@@ -33,6 +33,8 @@ var UserRecord = (function(){
 	
 	function init(){
 		Personal.init();
+		Contract.init();
+		Assignment.init();
 		bindEventHandlers();
 	}
 	
@@ -40,26 +42,26 @@ var UserRecord = (function(){
 		
 		$('#searchUsers').on('click',searchUsers);
 		$('#searchResults-tbody').on('click',showUser);
-		$('#showOrgTree').on('click',showOrgTree);
+		//$('#showOrgTree').on('click',showOrgTree);
 		/*$('#assignmentOrgTree').on('changed.jstree', function(e,data){
 			orgTreeChanged(e, data);
 		})*/;
-		$('#assignmentOrgTree').on('changed.jstree', orgTreeChanged);
+		//$('#assignmentOrgTree').on('changed.jstree', orgTreeChanged);
 			
 		
 		$('#userrecord-credentials-save-button').on('click',saveCredentials);
 		
-		$('#userrecord-contract-save-button').on('click',saveContract);
+		/*$('#userrecord-contract-save-button').on('click',saveContract);
 		$('#userrecord-contract-next-button').on('click',showContractNext);
 		$('#userrecord-contract-prev-button').on('click',showContractPrev);
 		$('#userrecord-contract-new-button').on('click',newContract);
-		$('#userrecord-contract-del-button').on('click',deleteContract);
+		$('#userrecord-contract-del-button').on('click',deleteContract);*/
 		
-		$('#userrecord-assignment-save-button').on('click',saveAssignment);
+		/*$('#userrecord-assignment-save-button').on('click',saveAssignment);
 		$('#userrecord-assignment-next-button').on('click',showAssignmentNext);
 		$('#userrecord-assignment-prev-button').on('click',showAssignmentPrev);
 		$('#userrecord-assignment-new-button').on('click',newAssignment);
-		$('#userrecord-assignment-del-button').on('click',deleteAssignment);
+		$('#userrecord-assignment-del-button').on('click',deleteAssignment);*/
 		
 		$('#userrecord-inactivate-button').on('click',inactivateUser);
 		$('#userrecord-copy-button').on('click',copyUser);
@@ -109,8 +111,10 @@ var UserRecord = (function(){
 		
 		//showPersonalOnKeyDate(userId,keyDate);
 		Personal.showOnKeyDate(userId,keyDate);
-		showContractOnKeyDate(userId,keyDate);
-		showAssignmentOnKeyDate(userId,keyDate);
+		//showContractOnKeyDate(userId,keyDate);
+		Contract.showOnKeyDate(userId,keyDate);
+		//showAssignmentOnKeyDate(userId,keyDate);
+		Assignment.showOnKeyDate(userId,keyDate);
 		showCredentials(userId);
 		showRoles(userId);
 		
@@ -128,7 +132,7 @@ var UserRecord = (function(){
 		});
 	}
 	
-	function _addOrgUnitDetails(orgUnitId){
+	/*function _addOrgUnitDetails(orgUnitId){
 		var url='/organisation/?id='+orgUnitId;
 		
 		$.getJSON(url,function(ou){
@@ -148,9 +152,9 @@ var UserRecord = (function(){
 		}).fail(function(ou){
 			
 		});
-	}
+	}*/
 	
-	function showContractOnKeyDate(userId,keyDate){
+	/*function showContractOnKeyDate(userId,keyDate){
 		
 		var contract;
 		_clearContract();
@@ -250,9 +254,9 @@ var UserRecord = (function(){
 		else if(cd.currentRecord==1){
 			$('#userrecord-contract-prev-button').prop('disabled',true);
 		}
-	}
+	}*/
 	
-	function showAssignmentOnKeyDate(userId,keyDate){
+	/*function showAssignmentOnKeyDate(userId,keyDate){
 		var assignment;
 		_clearAssignment();
 		
@@ -350,7 +354,7 @@ var UserRecord = (function(){
 		else if(ad.currentRecord==1){
 			$('#userrecord-assignment-prev-button').prop('disabled',true);
 		}
-	}
+	}*/
 	
 	function showCredentials(userId){
 		
@@ -439,7 +443,7 @@ var UserRecord = (function(){
 		}
 	}
 	
-	function _loadOrgTree(){
+	/*function _loadOrgTree(){
 		var tree;
 		DAO.loadOrgTree(function(status,tree){
 			if(status==DAO.STATUS.DONE){
@@ -454,7 +458,7 @@ var UserRecord = (function(){
 				'data' : data
 			} 
 		});
-	}
+	}*/
 	
 	function _getCredentials(){
 		var cred={
@@ -483,7 +487,7 @@ var UserRecord = (function(){
 		return roles;
 	}
 	
-	function _getContract(){
+	/*function _getContract(){
 		var cd={
 				key : {
 					userId : $('#id').val(),
@@ -497,9 +501,9 @@ var UserRecord = (function(){
 				maxHours : $('#maxHours').val()
 		}
 		return cd;
-	}
+	}*/
 	
-	function _getAssignment(){
+	/*function _getAssignment(){
 		var ad={
 				key : {
 					userId : $('#id').val(),
@@ -530,7 +534,7 @@ var UserRecord = (function(){
 	function orgTreeChanged(e,data){
 		var orgUnitId=data.selected;
 		_addOrgUnitDetails(orgUnitId);
-	}
+	}*/
 	
 	function saveCredentials(){
 		
@@ -559,7 +563,7 @@ var UserRecord = (function(){
 		
 	}
 	
-	function saveContract(){
+	/*function saveContract(){
 		var contract=_getContract();
 		var userId=$('#id').val();
 		
@@ -581,14 +585,6 @@ var UserRecord = (function(){
 		var today=$.now();
 		$('#contractStartDate').val($.format.date(today, 'yyyy-MM-dd'));
 		$('#userrecord-contract-counter').append("New");
-	}
-	
-	function copyContract(){
-		
-	}
-	
-	function deleteContract(){
-		
 	}
 	
 	function saveAssignment(){
@@ -622,7 +618,7 @@ var UserRecord = (function(){
 	
 	function deleteAssignment(){
 		
-	}
+	}*/
 	
 	function inactivateUser(){
 		
@@ -1188,6 +1184,7 @@ var Personal=(function(){
 	}
 	
 	function _changeHandler(){
+		Personal.changed=true;
 		$(fields.isChanged).text('save changes');
 	}
 	
@@ -1204,9 +1201,11 @@ var Personal=(function(){
 		$(fields.birthDate).val(null);
 		$(fields.phone).val(null);
 		$(fields.email).val(null);
+		
 		$(fields.changeTs).empty();
 		$(fields.changedBy).empty();
 		$(fields.counter).empty();
+		$(fields.isChanged).empty();
 	}
 	
 	function _fill(p){
@@ -1272,6 +1271,7 @@ var Personal=(function(){
 	
 		var personal;
 		Personal.userId=userId;
+		Personal.changed=false;
 		_clear();
 		
 		DAO.loadPersonal(userId,keyDate,function(status,personal){
@@ -1296,11 +1296,14 @@ var Personal=(function(){
 		DAO.savePersonal(Personal.userId,pd,function(status){
 			if(status==DAO.STATUS.DONE){
 				//saved
+				Personal.changed=false;
+				$(fields.isChanged).empty();
 			}
 			else if(status==DAO.STATUS.FAIL){
 				//save failed
 			}
 		});
+		
 	}
 	
 	function next(){
@@ -1308,6 +1311,7 @@ var Personal=(function(){
 		var startDate=$(fields.startDate).val();
 		var p;
 		
+		Personal.changed=false;
 		_clear();
 		
 		DAO.loadNextPersonal(Personal.userId,startDate,function(status,p){
@@ -1328,6 +1332,7 @@ var Personal=(function(){
 		var startDate=$(fields.startDate).val();
 		var p;
 		
+		Personal.changed=false;
 		_clear();
 		
 		DAO.loadPrevPersonal(Personal.userId,startDate,function(status,p){
@@ -1348,6 +1353,9 @@ var Personal=(function(){
 		$('#userpersonal_record').show();
 		$('#userpersonal_noRecordFound').hide();
 		
+		Personal.changed=false;
+		$(fields.isChanged).empty();
+		
 		var today=$.now();
 		$(fields.startDate).val($.format.date(today, 'yyyy-MM-dd'));
 		$(fields.endDate).val(null);
@@ -1358,14 +1366,17 @@ var Personal=(function(){
 		$('#userpersonal_record').show();
 		$('#userpersonal_noRecordFound').hide();
 		
+		Personal.changed=false;
 		_clear();
+		
 		var today=$.now();
 		$(fields.startDate).val($.format.date(today, 'yyyy-MM-dd'));
 		$(fields.counter).text("New");
 	}
 	
 	function del(){
-		
+		Personal.changed=false;
+		$(fields.isChanged).empty();
 	}
 	
 	return{
@@ -1382,3 +1393,584 @@ var Personal=(function(){
 	
 })();
 
+var Contract=(function(){
+	
+	var userId;
+	
+	var divs={
+			content : '#userrecord-contract-content',
+			na : '#userrecord-contract-na'
+	}
+	
+	var fields={
+			startDate : '#contractStartDate',
+			endDate : '#contractEndDate',
+			contractType : '#contractType',
+			minHours : '#minHours',
+			maxHours : '#maxHours',
+			changedBy : '#contractChangedBy',
+			changeTs : '#contractChangedTs',
+			counter : '#userrecord-contract-counter',
+			isChanged : '#userrecord-contract-isChanged'
+	}
+	
+	var controls={
+			prev : '#userrecord-contract-prev-button',
+			next : '#userrecord-contract-next-button',
+			copy : '#userrecord-contract-copy-button',
+			newRec : '#userrecord-contract-new-button',
+			newRecNA : '#userrecord-contract-na-new-button',
+			del : '#userrecord-contract-del-button',
+			save : '#userrecord-contract-save-button'	
+	}
+	
+	var STATUS={
+			FIRST : 'first',
+			LAST : 'last',
+			NORMAL : 'normal',
+			NEW : 'new'
+	}
+	
+	var currentStatus;
+	var changed=false;
+	
+	function init(){
+		console.log('Initializing Module Contract...')
+		_bindEventHandlers();
+	}
+	
+	function _bindEventHandlers(){
+		$(controls.save).on('click',save);
+		$(controls.next).on('click',next);
+		$(controls.prev).on('click',prev);
+		$(controls.copy).on('click',copy);
+		$(controls.newRec).on('click',newRec);
+		$(controls.newRecNA).on('click',newRec);
+		$(controls.del).on('click',del);
+		
+		$(fields.startDate).keyup(_changeHandler);
+		$(fields.endDate).keyup(_changeHandler);
+		$(fields.contractType).change(_changeHandler);
+		$(fields.minHours).keyup(_changeHandler);
+		$(fields.maxHours).keyup(_changeHandler);
+	}
+	
+	function _changeHandler(){
+		Contract.changed=true;
+		$(fields.isChanged).text('save changes');
+	}
+	
+	function isChanged(){
+		return changed;
+	}
+	
+	function _clear(){
+		$(fields.startDate).val(null);
+		$(fields.endDate).val(null);
+		$(fields.contractType).val(null);
+		$(fields.minHours).val(null);
+		$(fields.maxHours).val(null);
+		$(fields.changeTs).empty();
+		$(fields.changedBy).empty();
+		$(fields.counter).empty();
+		$(fields.isChanged).empty();
+	}
+	
+	function _fill(c){
+		
+		$(divs.content).show();
+		$(divs.na).hide();
+		
+		$(fields.startDate).val(c.key.startDate);
+		$(fields.endDate).val(c.endDate);
+		$(fields.contractType).val(c.contractType.id);
+		$(fields.minHours).val(c.minHours);
+		$(fields.maxHours).val(c.maxHours);
+		
+		var ts=$.format.date(new Date(c.changeTs),'dd.MM.yyyy hh:mm');
+		$(fields.changeTs).text(ts);
+		$(fields.counter).text(c.currentRecord+'/'+c.totalRecords);
+		
+		_addUsernameToElement(c.key.userId,fields.changedBy);
+		
+		$(controls.next).prop('disabled',false);
+		$(controls.prev).prop('disabled',false);
+
+		if(c.currentRecord==c.totalRecords && c.totalRecords==1){
+			$(controls.next).prop('disabled',true);
+			$(controls.prev).prop('disabled',true);
+		}
+		else if(c.currentRecord==c.totalRecords){
+			$(controls.next).prop('disabled',true);
+		}
+		else if(c.currentRecord==1){
+			$(controls.prev).prop('disabled',true);
+		}
+	}
+	
+	function _getJSON(){
+		var cd={
+				key : {
+					userId : Contract.userId,
+					startDate : $(fields.startDate).val()
+				},
+				endDate : $(fields.endDate).val(),
+				contractType : {
+					id : $(fields.contractType).val()
+				},
+				minHours : $(fields.minHours).val(),
+				maxHours : $(fields.maxHours).val()
+		}
+		return cd;
+	}
+	
+	function _addUsernameToElement(userId,elementId){
+		var url='/userrecord/show/'+userId+'/credentialsdetails';
+		$(elementId).empty();
+		$.getJSON(url,function(u){
+			$(elementId).append(u.username);
+		});
+	}
+	
+	function showOnKeyDate(userId,keyDate){
+	
+		var contract;
+		Contract.userId=userId;
+		Contract.changed=false;
+		_clear();
+		
+		DAO.loadContract(userId,keyDate,function(status,contract){
+			
+			console.log('Module Contract, DAO returned : '+status);
+			if(status==DAO.STATUS.DONE){
+				_fill(contract);
+			}
+			else if(status==DAO.STATUS.NA){
+				$(divs.content).hide();
+				$(divs.na).show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function save(){
+		var c=_getJSON();
+		
+		DAO.saveContract(Contract.userId,c,function(status){
+			if(status==DAO.STATUS.DONE){
+				//saved
+				Contract.changed=false;
+				$(fields.isChanged).empty();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				//save failed
+			}
+		});
+		
+	}
+	
+	function next(){
+		
+		var startDate=$(fields.startDate).val();
+		var c;
+		
+		Contract.changed=false;
+		_clear();
+		
+		DAO.loadNextContract(Contract.userId,startDate,function(status,c){
+			if(status==DAO.STATUS.DONE){
+				_fill(c);
+			}
+			else if(status==DAO.STATUS.NA){
+				$(divs.content).hide();
+				$(divs.na).show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function prev(){
+		var startDate=$(fields.startDate).val();
+		var c;
+		
+		Contract.changed=false;
+		_clear();
+		
+		DAO.loadPrevContract(Contract.userId,startDate,function(status,c){
+			if(status==DAO.STATUS.DONE){
+				_fill(c);
+			}
+			else if(status==DAO.STATUS.NA){
+				$(divs.content).hide();
+				$(divs.na).show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function copy(){
+		
+		Contract.changed=false;
+		$(fields.isChanged).empty();
+		
+		var today=$.now();
+		$(fields.startDate).val($.format.date(today, 'yyyy-MM-dd'));
+		$(fields.endDate).val(null);
+		$(fields.counter).text("New");
+	}
+	
+	function newRec(){
+		$(divs.na).hide();
+		$(divs.content).show();
+		
+		
+		Contract.changed=false;
+		_clear();
+		
+		var today=$.now();
+		$(fields.startDate).val($.format.date(today, 'yyyy-MM-dd'));
+		$(fields.counter).text("New");
+	}
+	
+	function del(){
+		Contract.changed=false;
+		$(fields.isChanged).empty();
+	}
+	
+	return{
+		init : init,
+		isChanged : isChanged,
+		showOnKeyDate : showOnKeyDate,
+		next : next,
+		prev : prev,
+		copy : copy,
+		newRec : newRec,
+		del : del,
+		save : save
+	}
+	
+})();
+
+var Assignment=(function(){
+	
+	var userId;
+	
+	var fields={
+			startDate : '#assignmentStartDate',
+			endDate : '#assignmentEndDate',
+			orgUnitId : '#orgUnitId',
+			orgUnitName : '#orgUnitName',
+			costCenterId : '#costCenterId',
+			costCenterName : '#costCenterName',
+			orgTree : '#userrecord-assignment-orgtree',
+			changedBy : '#assignmentChangedBy',
+			changeTs : '#assignmentChangedTs',
+			counter : '#userrecord-assignment-counter',
+			isChanged : '#userrecord-assignment-isChanged'
+	}
+	
+	var controls={
+			prev : '#userrecord-assignment-prev-button',
+			next : '#userrecord-assignment-next-button',
+			copy : '#userrecord-assignment-copy-button',
+			newRec : '#userrecord-assignment-new-button',
+			del : '#userrecord-assignment-del-button',
+			save : '#userrecord-assignment-save-button',
+			orgTree :'#userrecord-assignment-orgtree-button'
+	}
+	
+	var STATUS={
+			FIRST : 'first',
+			LAST : 'last',
+			NORMAL : 'normal',
+			NEW : 'new'
+	}
+	
+	var currentStatus;
+	var changed=false;
+	
+	function init(){
+		console.log('Initializing Module Assignment...')
+		_bindEventHandlers();
+	}
+	
+	function _bindEventHandlers(){
+		$(controls.save).on('click',save);
+		$(controls.next).on('click',next);
+		$(controls.prev).on('click',prev);
+		$(controls.copy).on('click',copy);
+		$(controls.newRec).on('click',newRec);
+		$(controls.del).on('click',del);
+		$(controls.orgTree).on('click',_showOrgTree);
+		
+		$(fields.startDate).keyup(_changeHandler);
+		$(fields.endDate).keyup(_changeHandler);
+		
+		$(fields.orgTree).on('changed.jstree', _orgTreeChangeHandler);
+		
+	}
+	
+	function _changeHandler(){
+		Contract.changed=true;
+		$(fields.isChanged).text('save changes');
+	}
+	
+	function _orgTreeChangeHandler(e,data){
+		var orgUnitId=data.selected;
+		_addOrgUnitDetails(orgUnitId);
+		Contract.changed=true;
+		$(fields.isChanged).text('save changes');
+	}
+	
+	function _addOrgUnitDetails(id){
+		var url='/organisation/?id='+id;
+		
+		$.getJSON(url,function(ou){
+			console.log(ou);
+			$(fields.orgUnitId).val(ou.id);
+			$(fields.orgUnitName).val(ou.name);
+			if(ou.costCenter!=null){
+				$(fields.costCenterId).val(ou.costCenter.id);
+				$(fields.costCenterName).val(ou.costCenter.name);
+			}
+			else{
+				$(fields.costCenterId).val('N/A');
+				$(fields.costCenterName).val('N/A');
+			}
+		}).done(function(ou){
+			
+		}).fail(function(ou){
+			
+		});
+	}
+	
+	function _showOrgTree(){
+		if($(controls.orgTree).data('treevisible')==true){
+			$('#orgTreeDiv').hide();
+			$(controls.orgTree).data('treevisible',false);
+			$(controls.orgTree).val('Show Org. Tree');
+		}
+		else{
+			_loadOrgTree();
+			$('#orgTreeDiv').show();
+			$(controls.orgTree).data('treevisible',true);
+			$(controls.orgTree).val('Hide Org. Tree');
+		}
+	}
+	
+	function _loadOrgTree(){
+		var tree;
+		DAO.loadOrgTree(function(status,tree){
+			if(status==DAO.STATUS.DONE){
+				_fillOrgTree(tree);
+			}
+		});
+	}
+	
+	function _fillOrgTree(data){
+		$(fields.orgTree).jstree({ 
+			'core' : {
+				'data' : data
+			} 
+		});
+	}
+	
+	function isChanged(){
+		return changed;
+	}
+	
+	function _clear(){
+		$(fields.startDate).val(null);
+		$(fields.endDate).val(null);
+		$(fields.orgUnitId).val(null);
+		$(fields.orgUnitName).val(null);
+		$(fields.costCenterId).val(null);
+		$(fields.costCenterName).val(null);
+		$(fields.changeTs).empty();
+		$(fields.changedBy).empty();
+		$(fields.counter).empty();
+		$(fields.isChanged).empty();
+	}
+	
+	function _fill(a){
+		
+		$('#userassignment_record').show();
+		$('#userassignment_noRecordFound').hide();
+		
+		$(fields.startDate).val(a.key.startDate);
+		$(fields.endDate).val(a.endDate);
+		var ts=$.format.date(new Date(a.changeTs),'dd.MM.yyyy hh:mm');
+		$(fields.changeTs).append(ts);
+		$(fields.counter).append(a.currentRecord+'/'+a.totalRecords);
+		
+		_addUsernameToElement(a.key.userId,fields.changedBy);
+		_addOrgUnitDetails(a.orgUnit.id);
+		
+		$(controls.next).prop('disabled',false);
+		$(controls.prev).prop('disabled',false);
+		
+		if(a.currentRecord==a.totalRecords && a.totalRecords==1){
+			$(controls.next).prop('disabled',true);
+			$(controls.prev).prop('disabled',true);
+		}
+		else if(a.currentRecord==a.totalRecords){
+			$(controls.next).prop('disabled',true);
+		}
+		else if(a.currentRecord==1){
+			$(controls.prev).prop('disabled',true);
+		}
+	}
+	
+	function _getJSON(){
+		var ad={
+				key : {
+					userId : Assignment.userId,
+					startDate : $(fields.startDate).val()
+				},
+				endDate : $(fields.endDate).val(),
+				orgUnit : {
+					id : $(fields.orgUnitId).val(),
+				}
+		}
+		return ad;
+	}
+	
+	function _addUsernameToElement(userId,elementId){
+		var url='/userrecord/show/'+userId+'/credentialsdetails';
+		$(elementId).empty();
+		$.getJSON(url,function(u){
+			$(elementId).append(u.username);
+		});
+	}
+	
+	function showOnKeyDate(userId,keyDate){
+	
+		var assignment;
+		Assignment.userId=userId;
+		Assignment.changed=false;
+		_clear();
+		
+		DAO.loadAssignment(userId,keyDate,function(status,assignment){
+			
+			console.log('Module Assignment, DAO returned : '+status);
+			if(status==DAO.STATUS.DONE){
+				_fill(assignment);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#userassignment_record').hide();
+				$('#userassignment_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function save(){
+		var a=_getJSON();
+		
+		DAO.saveAssignment(Assignment.userId,a,function(status){
+			if(status==DAO.STATUS.DONE){
+				//saved
+				Assignment.changed=false;
+				$(fields.isChanged).empty();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				//save failed
+			}
+		});
+		
+	}
+	
+	function next(){
+		
+		var startDate=$(fields.startDate).val();
+		var a;
+		
+		Assignment.changed=false;
+		_clear();
+		
+		DAO.loadNextAssignment(Assignment.userId,startDate,function(status,a){
+			if(status==DAO.STATUS.DONE){
+				_fill(a);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#userassignment_record').hide();
+				$('#userassignment_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function prev(){
+		var startDate=$(fields.startDate).val();
+		var a;
+		
+		Assignment.changed=false;
+		_clear();
+		
+		DAO.loadPrevAssignment(Assignment.userId,startDate,function(status,a){
+			if(status==DAO.STATUS.DONE){
+				_fill(a);
+			}
+			else if(status==DAO.STATUS.NA){
+				$('#userassignment_record').hide();
+				$('#userassignment_noRecordFound').show();
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function copy(){
+		$('#userassignment_record').show();
+		$('#userassignment_noRecordFound').hide();
+		
+		Assignment.changed=false;
+		$(fields.isChanged).empty();
+		
+		var today=$.now();
+		$(fields.startDate).val($.format.date(today, 'yyyy-MM-dd'));
+		$(fields.endDate).val(null);
+		$(fields.counter).text("New");
+	}
+	
+	function newRec(){
+		$('#userassignment_record').show();
+		$('#userassignment_noRecordFound').hide();
+		
+		Assignment.changed=false;
+		_clear();
+		
+		var today=$.now();
+		$(fields.startDate).val($.format.date(today, 'yyyy-MM-dd'));
+		$(fields.counter).text("New");
+	}
+	
+	function del(){
+		Assignment.changed=false;
+		$(fields.isChanged).empty();
+	}
+	
+	return{
+		init : init,
+		isChanged : isChanged,
+		showOnKeyDate : showOnKeyDate,
+		next : next,
+		prev : prev,
+		copy : copy,
+		newRec : newRec,
+		del : del,
+		save : save
+	}
+	
+})();
