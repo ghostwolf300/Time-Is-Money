@@ -9,7 +9,7 @@
 			<span id="userrecord-assignment-isChanged" class="changeIndicator"></span>
 		</div>
 	</div>
-	<div>
+	<div id="userrecord-contract-content">
 		<div id="recordControls_top">
 			<div id="recordControls_top_left">
 				<div>
@@ -30,37 +30,38 @@
 				<input id="delAssignmentDetail" type="button" value="Delete" />
 			</div>
 		</div>
-	</div>
-	<div id="userassignment_record">
-		<div>
+		<div id="userassignment_record">
 			<div>
-				<label for="orgUnitId">Org. unit:</label><input id="orgUnitId" type="text"/>
-				<input id="orgUnitName" type="text"/>
+				<div>
+					<label for="orgUnitId">Org. unit:</label><input id="orgUnitId" type="text"/>
+					<input id="orgUnitName" type="text"/>
+				</div>
+				<div>
+					<label for="costCenterId">CC ID:</label><input id="costCenterId" type="text"/>
+					<label for="costCenterName">Name:</label><input id="costCenterName" type="text"/>
+				</div>
+				<div>
+					<input id="userrecord-assignment-orgtree-button" type="button" value="Show Org. Tree" data-treevisible="false"/>
+				</div>
+				<div id="orgTreeDiv">
+					<div id="userrecord-assignment-orgtree">
+		
+					</div>
+				</div>
 			</div>
-			<div>
-				<label for="costCenterId">CC ID:</label><input id="costCenterId" type="text"/>
-				<label for="costCenterName">Name:</label><input id="costCenterName" type="text"/>
-			</div>
-			<div>
-				<input id="userrecord-assignment-orgtree-button" type="button" value="Show Org. Tree" data-treevisible="false"/>
-			</div>
-			<div id="orgTreeDiv">
-				<div id="userrecord-assignment-orgtree">
-	
+			<div id="recordControls_bottom">
+				<div id="recordControls_bottom_left">
+					<input id="userrecord-assignment-save-button" type="button" value="Save"/>
+				</div>
+				<div id="recordControls_bottom_right">
+					<p>Changed: <span id="assignmentChangedTs"></span> by: <span id="assignmentChangedBy"></span></p>
 				</div>
 			</div>
 		</div>
-		<div id="recordControls_bottom">
-			<div id="recordControls_bottom_left">
-				<input id="userrecord-assignment-save-button" type="button" value="Save"/>
-			</div>
-			<div id="recordControls_bottom_right">
-				<p>Changed: <span id="assignmentChangedTs"></span> by: <span id="assignmentChangedBy"></span></p>
-			</div>
-		</div>
 	</div>
-	<div id="userassignment_noRecordFound" hidden="true">
+	<div id="userrecord-assignment-na" hidden="true">
 		<p>No record found!</p>
+		<input id="userrecord-assignment-na-new-button" type="button" value="New" />
 	</div>
 </div>
 </html>

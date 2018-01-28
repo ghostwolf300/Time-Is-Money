@@ -35,6 +35,7 @@ var UserRecord = (function(){
 		Personal.init();
 		Contract.init();
 		Assignment.init();
+		Credentials.init();
 		bindEventHandlers();
 	}
 	
@@ -42,26 +43,6 @@ var UserRecord = (function(){
 		
 		$('#searchUsers').on('click',searchUsers);
 		$('#searchResults-tbody').on('click',showUser);
-		//$('#showOrgTree').on('click',showOrgTree);
-		/*$('#assignmentOrgTree').on('changed.jstree', function(e,data){
-			orgTreeChanged(e, data);
-		})*/;
-		//$('#assignmentOrgTree').on('changed.jstree', orgTreeChanged);
-			
-		
-		$('#userrecord-credentials-save-button').on('click',saveCredentials);
-		
-		/*$('#userrecord-contract-save-button').on('click',saveContract);
-		$('#userrecord-contract-next-button').on('click',showContractNext);
-		$('#userrecord-contract-prev-button').on('click',showContractPrev);
-		$('#userrecord-contract-new-button').on('click',newContract);
-		$('#userrecord-contract-del-button').on('click',deleteContract);*/
-		
-		/*$('#userrecord-assignment-save-button').on('click',saveAssignment);
-		$('#userrecord-assignment-next-button').on('click',showAssignmentNext);
-		$('#userrecord-assignment-prev-button').on('click',showAssignmentPrev);
-		$('#userrecord-assignment-new-button').on('click',newAssignment);
-		$('#userrecord-assignment-del-button').on('click',deleteAssignment);*/
 		
 		$('#userrecord-inactivate-button').on('click',inactivateUser);
 		$('#userrecord-copy-button').on('click',copyUser);
@@ -109,516 +90,19 @@ var UserRecord = (function(){
 			keyDate=new Date();
 		}
 		
-		//showPersonalOnKeyDate(userId,keyDate);
+		Credentials.show(userId);
 		Personal.showOnKeyDate(userId,keyDate);
-		//showContractOnKeyDate(userId,keyDate);
 		Contract.showOnKeyDate(userId,keyDate);
-		//showAssignmentOnKeyDate(userId,keyDate);
 		Assignment.showOnKeyDate(userId,keyDate);
-		showCredentials(userId);
-		showRoles(userId);
+		
+		//showCredentials(userId);
+		//showRoles(userId);
 		
 		$('#userrecord').show();
 		$('#userrecord-selected-text').empty();
 		$('#userrecord-selected-text').append('ID: '+userId);
 		$('#userrecord-selected').show();
 	}
-	
-	function _addUsernameToElement(userId,elementId){
-		var url='/userrecord/show/'+userId+'/credentialsdetails';
-		$(elementId).empty();
-		$.getJSON(url,function(u){
-			$(elementId).append(u.username);
-		});
-	}
-	
-	/*function _addOrgUnitDetails(orgUnitId){
-		var url='/organisation/?id='+orgUnitId;
-		
-		$.getJSON(url,function(ou){
-			console.log(ou);
-			$('#orgUnitId').val(ou.id);
-			$('#orgUnitName').val(ou.name);
-			if(ou.costCenter!=null){
-				$('#costCenterId').val(ou.costCenter.id);
-				$('#costCenterName').val(ou.costCenter.name);
-			}
-			else{
-				$('#costCenterId').val('N/A');
-				$('#costCenterName').val('N/A');
-			}
-		}).done(function(ou){
-			
-		}).fail(function(ou){
-			
-		});
-	}*/
-	
-	/*function showContractOnKeyDate(userId,keyDate){
-		
-		var contract;
-		_clearContract();
-		
-		DAO.loadContract(userId,keyDate,function(status,contract){
-			if(status==DAO.STATUS.DONE){
-				_fillContract(contract);
-			}
-			else if(status==DAO.STATUS.NA){
-				$('#usercontract_record').hide();
-				$('#usercontract_noRecordFound').show();
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-	}
-	
-	function showContractNext(){
-		
-		var startDate=$('#contractStartDate').val();
-		var userId=$('#id').val();
-		var contract;
-		
-		_clearContract();
-		
-		DAO.loadNextContract(userId,startDate,function(status,contract){
-			if(status==DAO.STATUS.DONE){
-				_fillContract(contract);
-			}
-			else if(status==DAO.STATUS.NA){
-				$('#usercontract_record').hide();
-				$('#usercontract_noRecordFound').show();
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-	}
-	
-	function showContractPrev(){
-		var startDate=$('#contractStartDate').val();
-		var userId=$('#id').val();
-		var contract;
-		
-		_clearContract();
-		
-		DAO.loadPrevContract(userId,startDate,function(status,contract){
-			if(status==DAO.STATUS.DONE){
-				_fillContract(contract);
-			}
-			else if(status==DAO.STATUS.NA){
-				$('#usercontract_record').hide();
-				$('#usercontract_noRecordFound').show();
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-	}
-	
-	function _clearContract(){
-		$('#contractStartDate').val(null);
-		$('#contractEndDate').val(null);
-		$('#contractType').val(null);
-		$('#minHours').val(null);
-		$('#maxHours').val(null);
-		$('#contractChangedTs').empty();
-		$('#userrecord-contract-counter').empty();
-	}
-	
-	function _fillContract(cd){
-		$('#usercontract_record').show();
-		$('#usercontract_noRecordFound').hide();
-		
-		$('#contractStartDate').val(cd.key.startDate);
-		$('#contractEndDate').val(cd.endDate);
-		$('#contractType').val(cd.contractType.id);
-		$('#minHours').val(cd.minHours);
-		$('#maxHours').val(cd.maxHours);
-		var ts=$.format.date(new Date(cd.changeTs),'dd.MM.yyyy hh:mm');
-		$('#contractChangedTs').append(ts);
-		$('#userrecord-contract-counter').append(cd.currentRecord+'/'+cd.totalRecords);
-		
-		_addUsernameToElement(cd.key.userId,'#contractChangedBy');
-		
-		$('#userrecord-contract-next-button').prop('disabled',false);
-		$('#userrecord-contract-prev-button').prop('disabled',false);
-
-		if(cd.currentRecord==cd.totalRecords && cd.totalRecords==1){
-			$('#userrecord-contract-next-button').prop('disabled',true);
-			$('#userrecord-contract-prev-button').prop('disabled',true);
-		}
-		else if(cd.currentRecord==cd.totalRecords){
-			$('#userrecord-contract-next-button').prop('disabled',true);
-		}
-		else if(cd.currentRecord==1){
-			$('#userrecord-contract-prev-button').prop('disabled',true);
-		}
-	}*/
-	
-	/*function showAssignmentOnKeyDate(userId,keyDate){
-		var assignment;
-		_clearAssignment();
-		
-		DAO.loadAssignment(userId,keyDate,function(status,assignment){
-			if(status==DAO.STATUS.DONE){
-				_fillAssignment(assignment);
-			}
-			else if(status==DAO.STATUS.NA){
-				$('#userassignment_record').hide();
-				$('#userassignment_noRecordFound').show();
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-	}
-	
-	function showAssignmentNext(){
-		var startDate=$('#assignmentStartDate').val();
-		var userId=$('#id').val();
-		var assignment;
-		
-		_clearAssignment();
-		
-		DAO.loadNextAssignment(userId,startDate,function(status,assignment){
-			if(status==DAO.STATUS.DONE){
-				_fillAssignment(assignment);
-			}
-			else if(status==DAO.STATUS.NA){
-				$('#userassignment_record').hide();
-				$('#userassignment_noRecordFound').show();
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-	}
-	
-	function showAssignmentPrev(){
-		var startDate=$('#assignmentStartDate').val();
-		var userId=$('#id').val();
-		var assignment;
-		
-		_clearAssignment();
-		
-		DAO.loadPrevAssignment(userId,startDate,function(status,assignment){
-			if(status==DAO.STATUS.DONE){
-				_fillAssignment(assignment);
-			}
-			else if(status==DAO.STATUS.NA){
-				$('#userassignment_record').hide();
-				$('#userassignment_noRecordFound').show();
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-	}
-	
-	function _clearAssignment(){
-		$('#assignmentStartDate').val(null);
-		$('#assignmentEndDate').val(null);
-		$('#orgUnitId').val(null);
-		$('#orgUnitName').val(null);
-		$('#costCenterId').val(null);
-		$('#costCenterName').val(null);
-		$('#assignmentChangedTs').empty();
-		$('#userrecord-assignment-counter').empty();
-	}
-	
-	function _fillAssignment(ad){
-		$('#userassignment_record').show();
-		$('#userassignment_noRecordFound').hide();
-		
-		$('#assignmentStartDate').val(ad.key.startDate);
-		$('#assignmentEndDate').val(ad.endDate);
-		
-		var ts=$.format.date(new Date(ad.changeTs),'dd.MM.yyyy hh:mm');
-		$('#assignmentChangedTs').append(ts);
-		$('#userrecord-assignment-counter').append(ad.currentRecord+'/'+ad.totalRecords);
-		
-		_addUsernameToElement(ad.key.userId,'#assignmentChangedBy');
-		_addOrgUnitDetails(ad.orgUnit.id);
-		
-		$('#userrecord-assignment-next-button').prop('disabled',false);
-		$('#userrecord-assignment-prev-button').prop('disabled',false);
-		
-		if(ad.currentRecord==ad.totalRecords && ad.totalRecords==1){
-			$('#userrecord-assignment-next-button').prop('disabled',true);
-			$('#userrecord-assignment-prev-button').prop('disabled',true);
-		}
-		else if(ad.currentRecord==ad.totalRecords){
-			$('#userrecord-assignment-next-button').prop('disabled',true);
-		}
-		else if(ad.currentRecord==1){
-			$('#userrecord-assignment-prev-button').prop('disabled',true);
-		}
-	}*/
-	
-	function showCredentials(userId){
-		
-		var credentials;
-		_clearCredentials();
-	
-		DAO.loadCredentials(userId,function(status,credentials){
-			if(status==DAO.STATUS.DONE){
-				_fillCredentials(credentials);
-				
-			}
-			else if(status==DAO.STATUS.NA){
-				
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-		
-		showRoles(userId);
-		
-	}
-	
-	function _clearCredentials(){
-		$('#id').val(null);
-		$('#secondaryId').val(null);
-		$('#uname').val(null);
-		$('#pword').val(null);
-		$('#enabled').prop("checked",false);
-		$('#credentialsChangedTs').empty();
-		$('#credentialsChangedBy').empty();
-	}
-	
-	function _fillCredentials(user){
-		$('#id').val(user.id);
-		$('#secondaryId').val(user.secondaryId);
-		$('#uname').val(user.username);
-		$('#pword').val(user.password);
-		$('#enabled').prop("checked",user.enabled);
-		var ts=$.format.date(new Date(user.changeTs),'dd.MM.yyyy hh:mm');
-		$('#credentialsChangedTs').append(ts);
-		_addUsernameToElement(user.changedBy,'#credentialsChangedBy');
-	}
-	
-	function showRoles(userId){
-		
-		var roles;
-		
-		_clearRoles();
-		
-		DAO.loadRoles(userId,function(status,roles){
-			if(status==DAO.STATUS.DONE){
-				_fillRoles(roles);
-			}
-			else if(status==DAO.STATUS.NA){
-				
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-	}
-	
-	function _clearRoles(){
-		$('#userrecord-roles').find('input[type="checkbox"]').each(function(){
-			var cb=$(this);
-			cb.prop('checked',false);
-		});
-	}
-	
-	function _fillRoles(roles){
-		
-		var r;
-		var cb;
-		
-		console.log('checking roles...');
-		
-		for(var i=0;i<roles.length;i++){
-			r=roles[i];
-			$('#userrecord-roles').find('input[type="checkbox"]').each(function(){
-				cb=$(this);
-				if(cb.data('role_id')==r.userRoleKey.roleId){
-					cb.prop('checked',true);
-				}
-			});
-		}
-	}
-	
-	/*function _loadOrgTree(){
-		var tree;
-		DAO.loadOrgTree(function(status,tree){
-			if(status==DAO.STATUS.DONE){
-				_fillOrgTree(tree);
-			}
-		});
-	}
-	
-	function _fillOrgTree(data){
-		$('#assignmentOrgTree').jstree({ 
-			'core' : {
-				'data' : data
-			} 
-		});
-	}*/
-	
-	function _getCredentials(){
-		var cred={
-				id : $('#id').val(),
-				secondaryId : $('#secondaryId').val(),
-				username : $('#uname').val(),
-				password : $('#pword').val(),
-				enabled : $('#enabled').prop('checked')
-		}
-		return cred;
-	}
-	
-	function _getRoles(userId){
-		var roles=[];
-		var roleId;
-		
-		$('#userrecord-roles input:checked').each(function(){
-			roleId=$(this).data('role_id');
-			roles.push({
-				'userRoleKey' :{
-					'userId' : userId,
-					'roleId' : roleId
-				}
-			});
-		});
-		return roles;
-	}
-	
-	/*function _getContract(){
-		var cd={
-				key : {
-					userId : $('#id').val(),
-					startDate : $('#contractStartDate').val()
-				},
-				endDate : $('#contractEndDate').val(),
-				contractType : {
-					id : $('#contractType').val(),
-				},
-				minHours : $('#minHours').val(),
-				maxHours : $('#maxHours').val()
-		}
-		return cd;
-	}*/
-	
-	/*function _getAssignment(){
-		var ad={
-				key : {
-					userId : $('#id').val(),
-					startDate : $('#assignmentStartDate').val()
-				},
-				endDate : $('#assignmentEndDate').val(),
-				orgUnit : {
-					id : $('#orgUnitId').val(),
-				}
-		}
-		return ad;
-	}
-	
-	function showOrgTree(){
-		if($('#showOrgTree').data('treevisible')==true){
-			$('#orgTreeDiv').hide();
-			$('#showOrgTree').data('treevisible',false);
-			$('#showOrgTree').val('Show Org. Tree');
-		}
-		else{
-			_loadOrgTree();
-			$('#orgTreeDiv').show();
-			$('#showOrgTree').data('treevisible',true);
-			$('#showOrgTree').val('Hide Org. Tree');
-		}
-	}
-	
-	function orgTreeChanged(e,data){
-		var orgUnitId=data.selected;
-		_addOrgUnitDetails(orgUnitId);
-	}*/
-	
-	function saveCredentials(){
-		
-		var u=_getCredentials();
-		var userId=$('#id').val();
-		
-		DAO.saveCredentials(userId,u,function(status){
-			if(status==DAO.STATUS.DONE){
-				//saved
-			}
-			else if(status==DAO.STATUS.FAIL){
-				//save failed
-			}
-		})
-		
-		var roles=_getRoles(userId);
-		
-		DAO.saveRoles(userId,roles,function(status){
-			if(status==DAO.STATUS.DONE){
-				
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-		
-	}
-	
-	/*function saveContract(){
-		var contract=_getContract();
-		var userId=$('#id').val();
-		
-		DAO.saveContract(userId,contract,function(status){
-			if(status==DAO.STATUS.DONE){
-				
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-	}
-	
-	function newContract(){
-		$('#usercontract_record').show();
-		$('#usercontract_noRecordFound').hide();
-		
-		_clearAssignment();
-		var today=$.now();
-		$('#contractStartDate').val($.format.date(today, 'yyyy-MM-dd'));
-		$('#userrecord-contract-counter').append("New");
-	}
-	
-	function saveAssignment(){
-		var assignment=_getAssignment();
-		var userId=$('#id').val();
-		
-		DAO.saveAssignment(userId,assignment,function(status){
-			if(status==DAO.STATUS.DONE){
-				
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-		
-	}
-	
-	function newAssignment(){
-		$('#userassignment_record').show();
-		$('#userassignment_noRecordFound').hide();
-		
-		_clearAssignment();
-		var today=$.now();
-		$('#assignmentStartDate').val($.format.date(today, 'yyyy-MM-dd'));
-		$('#userrecord-assignment-counter').append("New");
-	}
-	
-	function copyAssignment(){
-		
-	}
-	
-	function deleteAssignment(){
-		
-	}*/
 	
 	function inactivateUser(){
 		
@@ -1126,6 +610,11 @@ var Personal=(function(){
 	
 	var userId;
 	
+	var divs={
+			content : '#userrecord-personal-content',
+			na : '#userrecord-personal-na'
+	}
+	
 	var fields={
 			startDate : '#personalStartDate',
 			endDate : '#personalEndDate',
@@ -1210,8 +699,8 @@ var Personal=(function(){
 	
 	function _fill(p){
 		
-		$('#userpersonal_record').show();
-		$('#userpersonal_noRecordFound').hide();
+		$(divs.content).show();
+		$(divs.na).hide();
 		
 		$(fields.startDate).val(p.key.startDate);
 		$(fields.endDate).val(p.endDate);
@@ -1281,8 +770,8 @@ var Personal=(function(){
 				_fill(personal);
 			}
 			else if(status==DAO.STATUS.NA){
-				$('#userpersonal_record').hide();
-				$('#userpersonal_noRecordFound').show();
+				$(divs.content).hide();
+				$(divs.na).show();
 			}
 			else if(status==DAO.STATUS.FAIL){
 				
@@ -1319,8 +808,8 @@ var Personal=(function(){
 				_fill(p);
 			}
 			else if(status==DAO.STATUS.NA){
-				$('#userpersonal_record').hide();
-				$('#userpersonal_noRecordFound').show();
+				$(divs.content).hide();
+				$(divs.na).show();
 			}
 			else if(status==DAO.STATUS.FAIL){
 				
@@ -1340,8 +829,8 @@ var Personal=(function(){
 				_fill(p);
 			}
 			else if(status==DAO.STATUS.NA){
-				$('#userpersonal_record').hide();
-				$('#userpersonal_noRecordFound').show();
+				$(divs.content).hide();
+				$(divs.na).show();
 			}
 			else if(status==DAO.STATUS.FAIL){
 				
@@ -1350,8 +839,8 @@ var Personal=(function(){
 	}
 	
 	function copy(){
-		$('#userpersonal_record').show();
-		$('#userpersonal_noRecordFound').hide();
+		$(divs.content).show();
+		$(divs.na).hide();
 		
 		Personal.changed=false;
 		$(fields.isChanged).empty();
@@ -1363,8 +852,8 @@ var Personal=(function(){
 	}
 	
 	function newRec(){
-		$('#userpersonal_record').show();
-		$('#userpersonal_noRecordFound').hide();
+		$(divs.content).show();
+		$(divs.na).hide();
 		
 		Personal.changed=false;
 		_clear();
@@ -1661,6 +1150,11 @@ var Assignment=(function(){
 	
 	var userId;
 	
+	var divs={
+			content : '#userrecord-assignment-content',
+			na : '#userrecord-assignment-na'
+	}
+	
 	var fields={
 			startDate : '#assignmentStartDate',
 			endDate : '#assignmentEndDate',
@@ -1800,8 +1294,8 @@ var Assignment=(function(){
 	
 	function _fill(a){
 		
-		$('#userassignment_record').show();
-		$('#userassignment_noRecordFound').hide();
+		$(divs.content).show();
+		$(divs.na).hide();
 		
 		$(fields.startDate).val(a.key.startDate);
 		$(fields.endDate).val(a.endDate);
@@ -1863,8 +1357,8 @@ var Assignment=(function(){
 				_fill(assignment);
 			}
 			else if(status==DAO.STATUS.NA){
-				$('#userassignment_record').hide();
-				$('#userassignment_noRecordFound').show();
+				$(divs.content).hide();
+				$(divs.na).show();
 			}
 			else if(status==DAO.STATUS.FAIL){
 				
@@ -1901,8 +1395,8 @@ var Assignment=(function(){
 				_fill(a);
 			}
 			else if(status==DAO.STATUS.NA){
-				$('#userassignment_record').hide();
-				$('#userassignment_noRecordFound').show();
+				$(divs.content).hide();
+				$(divs.na).show();
 			}
 			else if(status==DAO.STATUS.FAIL){
 				
@@ -1922,8 +1416,8 @@ var Assignment=(function(){
 				_fill(a);
 			}
 			else if(status==DAO.STATUS.NA){
-				$('#userassignment_record').hide();
-				$('#userassignment_noRecordFound').show();
+				$(divs.content).hide();
+				$(divs.na).show();
 			}
 			else if(status==DAO.STATUS.FAIL){
 				
@@ -1932,8 +1426,8 @@ var Assignment=(function(){
 	}
 	
 	function copy(){
-		$('#userassignment_record').show();
-		$('#userassignment_noRecordFound').hide();
+		$(divs.content).show();
+		$(divs.na).hide();
 		
 		Assignment.changed=false;
 		$(fields.isChanged).empty();
@@ -1945,8 +1439,8 @@ var Assignment=(function(){
 	}
 	
 	function newRec(){
-		$('#userassignment_record').show();
-		$('#userassignment_noRecordFound').hide();
+		$(divs.content).show();
+		$(divs.na).hide();
 		
 		Assignment.changed=false;
 		_clear();
@@ -1970,6 +1464,239 @@ var Assignment=(function(){
 		copy : copy,
 		newRec : newRec,
 		del : del,
+		save : save
+	}
+	
+})();
+
+var Credentials=(function(){
+	
+	var userId;
+	
+	var divs={
+			content : '#userrecord-credentials-content',
+			na : '#userrecord-credentials-na'
+	}
+	
+	var fields={
+			id : '#id',
+			secondaryId : '#secondaryId',
+			username : '#uname',
+			password : '#pword',
+			enabled : '#enabled',
+			roles : '#userrecord-roles',
+			changedBy : '#credentialsChangedBy',
+			changeTs : '#credentialsChangedTs',
+			isChanged : '#userrecord-contract-isChanged'
+	}
+	
+	var controls={
+			newRecNA : '#userrecord-contract-na-new-button',
+			save : '#userrecord-contract-save-button'	
+	}
+	
+	var STATUS={
+			NORMAL : 'normal',
+			NEW : 'new'
+	}
+	
+	var currentStatus;
+	var changed=false;
+	
+	function init(){
+		console.log('Initializing Module Credentials...')
+		_bindEventHandlers();
+	}
+	
+	function _bindEventHandlers(){
+		$(controls.save).on('click',save);
+		$(controls.newRecNA).on('click',newRec);
+	}
+	
+	function _changeHandler(){
+		Credentials.changed=true;
+		$(fields.isChanged).text('save changes');
+	}
+	
+	function isChanged(){
+		return changed;
+	}
+	
+	function _clearCredentials(){
+		$(fields.id).val(null);
+		$(fields.secondaryId).val(null);
+		$(fields.username).val(null);
+		$(fields.password).val(null);
+		
+		$(fields.changeTs).empty();
+		$(fields.changedBy).empty();
+		$(fields.isChanged).empty();
+	}
+	
+	function _clearRoles(){
+		$(fields.roles).find('input[type="checkbox"]').each(function(){
+			var cb=$(this);
+			cb.prop('checked',false);
+		});
+	}
+	
+	function _fillCredentials(c){
+		
+		$(divs.content).show();
+		$(divs.na).hide();
+		
+		$(fields.id).val(c.id);
+		$(fields.secondaryId).val(c.secondaryId);
+		$(fields.username).val(c.username);
+		$(fields.password).val(c.password);
+		$(fields.enabled).prop("checked",c.enabled);
+		
+		var ts=$.format.date(new Date(c.changeTs),'dd.MM.yyyy hh:mm');
+		$(fields.changeTs).text(ts);
+		
+		_addUsernameToElement(c.id,fields.changedBy);
+		
+		$(controls.next).prop('disabled',false);
+		$(controls.prev).prop('disabled',false);
+
+		if(c.currentRecord==c.totalRecords && c.totalRecords==1){
+			$(controls.next).prop('disabled',true);
+			$(controls.prev).prop('disabled',true);
+		}
+		else if(c.currentRecord==c.totalRecords){
+			$(controls.next).prop('disabled',true);
+		}
+		else if(c.currentRecord==1){
+			$(controls.prev).prop('disabled',true);
+		}
+	}
+	
+	function _fillRoles(roles){
+		var r;
+		var cb;
+		
+		for(var i=0;i<roles.length;i++){
+			r=roles[i];
+			$(fields.roles).find('input[type="checkbox"]').each(function(){
+				cb=$(this);
+				if(cb.data('role_id')==r.userRoleKey.roleId){
+					cb.prop('checked',true);
+				}
+			});
+		}
+	}
+	
+	function _getCredentialsJSON(){
+		var cred={
+				id : $(fields.id).val(),
+				secondaryId : $(fields.secondaryId).val(),
+				username : $(fields.username).val(),
+				password : $(fields.password).val(),
+				enabled : $(fields.enabled).prop('checked')
+		}
+		return cred;
+	}
+	
+	function _getRolesJSON(userId){
+		var roles=[];
+		var roleId;
+		
+		$(fields.roles+' input:checked').each(function(){
+			roleId=$(this).data('role_id');
+			roles.push({
+				'userRoleKey' :{
+					'userId' : userId,
+					'roleId' : roleId
+				}
+			});
+		});
+		return roles;
+	}
+	
+	function _addUsernameToElement(userId,elementId){
+		var url='/userrecord/show/'+userId+'/credentialsdetails';
+		$(elementId).empty();
+		$.getJSON(url,function(u){
+			$(elementId).append(u.username);
+		});
+	}
+	
+	function show(userId){
+	
+		var cred;
+		Credentials.userId=userId;
+		Credentials.changed=false;
+		_clearCredentials();
+		_clearRoles();
+		
+		DAO.loadCredentials(this.userId,function(status,credentials){
+			if(status==DAO.STATUS.DONE){
+				_fillCredentials(credentials);
+				
+			}
+			else if(status==DAO.STATUS.NA){
+				
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+		
+		_showRoles(userId)
+	}
+	
+	function _showRoles(userId){
+		
+		var roles;
+		
+		_clearRoles();
+		
+		DAO.loadRoles(userId,function(status,roles){
+			if(status==DAO.STATUS.DONE){
+				_fillRoles(roles);
+			}
+			else if(status==DAO.STATUS.NA){
+				
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+	}
+	
+	function save(){
+		var cred=_getCredentialsJSON();
+		
+		DAO.saveCredentials(this.userId,cred,function(status){
+			if(status==DAO.STATUS.DONE){
+				//saved
+			}
+			else if(status==DAO.STATUS.FAIL){
+				//save failed
+			}
+		})
+		
+		var roles=_getRolesJSON(this.userId);
+		
+		DAO.saveRoles(this.userId,roles,function(status){
+			if(status==DAO.STATUS.DONE){
+				
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+		
+	}
+	
+	function newRec(){
+		
+	}
+	
+	return{
+		init : init,
+		isChanged : isChanged,
+		show : show,
 		save : save
 	}
 	

@@ -9,52 +9,55 @@
 			<span id="userrecord-personal-isChanged" class="changeIndicator"></span>
 		</div>
 	</div>
-	<div id="recordControls_top">
-		<div id="recordControls_top_left">
-			<div>
-				<label for="personalStartDate">Start:</label><input	id="personalStartDate" class="dateField" type="date" /> 
-				<label for="personalEndDate">End:</label><input	id="personalEndDate" class="dateField" type="date" />
+	<div id="userrecord-personal-content">
+		<div id="recordControls_top">
+			<div id="recordControls_top_left">
+				<div>
+					<label for="personalStartDate">Start:</label><input	id="personalStartDate" class="dateField" type="date" /> 
+					<label for="personalEndDate">End:</label><input	id="personalEndDate" class="dateField" type="date" />
+				</div>
+				<div class="recordCounter">
+					<span id="userrecord-personal-counter">(1/1)</span> 
+				</div>
+				<div>
+					<input id="userrecord-personal-prev-button" type="button" value="Prev" /> 
+					<input id="userrecord-personal-next-button" type="button" value="Next" />
+					<input id="userrecord-personal-copy-button" type="button" value="Copy" /> 
+					<input id="userrecord-personal-new-button" type="button" value="New" />
+				</div>
 			</div>
-			<div class="recordCounter">
-				<span id="userrecord-personal-counter">(1/1)</span> 
-			</div>
-			<div>
-				<input id="userrecord-personal-prev-button" type="button" value="Prev" /> 
-				<input id="userrecord-personal-next-button" type="button" value="Next" />
-				<input id="userrecord-personal-copy-button" type="button" value="Copy" /> 
-				<input id="userrecord-personal-new-button" type="button" value="New" />
+			<div id="recordControls_top_right">
+				<input id="userrecord-personal-del-button" type="button" value="Delete" />
 			</div>
 		</div>
-		<div id="recordControls_top_right">
-			<input id="userrecord-personal-del-button" type="button" value="Delete" />
+		<div id="userpersonal_record">
+			<div>
+				<div>
+					<label for="firstName">First name*</label><input id="firstName" type="text" /> 
+					<label for="middleName">Middle name</label><input id="middleName" type="text" /> 
+					<label for="lastName">Last name*</label><input id="lastName" type="text" />
+				</div>
+				<div>
+					<label for="birthDate">Birth date*</label><input id="birthDate" type="date" />
+				</div>
+				<div>
+					<label for="phone">Phone</label><input id="phone" type="text" /> 
+					<label for="email">Email</label><input id="email" type="text" />
+				</div>
+			</div>
+			<div id="recordControls_bottom">
+				<div id="recordControls_bottom_left">
+					<input id="userrecord-personal-save-button" type="button" value="Save"/>
+				</div>
+				<div id="recordControls_bottom_right">
+					<p>Changed: <span id="personalChangedTs"></span> by: <span id="personalChangedBy"></span></p>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div id="userpersonal_record">
-		<div>
-			<div>
-				<label for="firstName">First name*</label><input id="firstName" type="text" /> 
-				<label for="middleName">Middle name</label><input id="middleName" type="text" /> 
-				<label for="lastName">Last name*</label><input id="lastName" type="text" />
-			</div>
-			<div>
-				<label for="birthDate">Birth date*</label><input id="birthDate" type="date" />
-			</div>
-			<div>
-				<label for="phone">Phone</label><input id="phone" type="text" /> 
-				<label for="email">Email</label><input id="email" type="text" />
-			</div>
-		</div>
-		<div id="recordControls_bottom">
-			<div id="recordControls_bottom_left">
-				<input id="userrecord-personal-save-button" type="button" value="Save"/>
-			</div>
-			<div id="recordControls_bottom_right">
-				<p>Changed: <span id="personalChangedTs"></span> by: <span id="personalChangedBy"></span></p>
-			</div>
-		</div>
-	</div>
-	<div id="userpersonal_noRecordFound" hidden="true">
+	<div id="userrecord-personal-na" hidden="true">
 		<p>No record found!</p>
+		<input id="userrecord-personal-na-new-button" type="button" value="New" />
 	</div>
 </div>
 </html>
