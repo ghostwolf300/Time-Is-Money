@@ -10,8 +10,8 @@ $(document).ready(initPage);
 function initPage(){
 	console.log('initializing page...'+$(document.body).data('viewId'));
 	globalSetup();
+	UserSearch.init();
 	UserRecord.init();
-	UserRecord.setDefaultValues();
 }
 
 function globalSetup(){
@@ -25,106 +25,192 @@ function globalSetup(){
     });
 }
 
+var UserSearch=(function(){
+	
+	var divs={
+			searchResults : "#userrecord-search-results"
+	}
+	
+	var fields={
+		searchText : '#userrecord-search-text',
+		active : '#userrecord-search-activeonly',
+		keyDate : '#userrecord-search-keydate',
+		searchResults : '#userrecord-search-results-tbody'
+	}
+	
+	var controls={
+		searchDo : '#userrecord-search-do-button'
+	}
+	
+	var selected;
+	
+	function init(){
+		_bindEventHandlers();
+		_setDefaultValues();
+	}
+	
+	function _bindEventHandlers(){
+		$(controls.searchDo).click(findAll);
+		$(fields.searchResults).click(_showUser);
+	}
+	
+	function _setDefaultValues(){
+		var currentDate=$.format.date(new Date($.now()),'yyyy-MM-dd')
+		$(fields.keyDate).val(currentDate);
+	}
+	
+	function _showResults(users){
+		var trHtml='';
+		$(fields.searchResults).empty();
+		$.each(users, function(i,u){
+			trHtml+='<tr>\
+			<td id="user_id">'+u.id+'</td>\
+			<td id="username">'+u.username+'</td>\
+			<td id="name">'+u.lastName+', '+u.firstName+'</td>\
+			</tr>'
+		});
+		$(fields.searchResults).append(trHtml);
+		$(divs.searchResults).show();
+	}
+	
+	function _showUser(event){
+		var tr=event.target.parentNode;
+		selected=$(tr).find('#user_id').text();
+		var keyDate=$(fields.keyDate).val();
+		
+		if(keyDate==null){
+			keyDate=new Date();
+		}
+		
+		UserRecord.show(selected,keyDate)
+		
+	}
+	
+	function findAll(){
+		DAO.findAllUsers(function(status,users){
+			if(status==DAO.STATUS.DONE){
+				console.log(users);
+				_showResults(users);
+			}
+		});
+		
+	}
+	
+	return{
+		init : init,
+		findAll : findAll
+	} 
+	
+})();
+
 var UserRecord = (function(){
+	
+	var divs={
+		record : '#userrecord',
+		selected : '#userrecord-selected',
+		data : {
+			personal : '#userrecord-personal',
+			contract : '#userrecord-contract',
+			assignment : '#userrecord-assignment',
+			credentials : '#userrecord-credentials'
+		}
+		
+	}
+	
+	var fields={
+		selected : '#userrecord-selected-text'
+	}
+	
+	var controls={
+		newUser : '#userrecord-new-button',
+		copy : '#userrecord-copy-button',
+		inactivate : '#userrecord-inactivate-button',
+		del : '#userrecord-delete-button'
+	}
+	
+	var userId;
+	
 	
 	function test(){
 		DAO.test();
 	}
 	
 	function init(){
+		
+		_bindEventHandlers();
+		
 		Personal.init();
 		Contract.init();
 		Assignment.init();
 		Credentials.init();
-		bindEventHandlers();
+		
 	}
 	
-	function bindEventHandlers(){
+	function _bindEventHandlers(){
 		
-		$('#searchUsers').on('click',searchUsers);
-		$('#searchResults-tbody').on('click',showUser);
-		
-		$('#userrecord-inactivate-button').on('click',inactivateUser);
-		$('#userrecord-copy-button').on('click',copyUser);
-		$('#userrecord-new-button').on('click',newUser);
-		$('#userrecord-delete-button').on('click',deleteUser);
+		$(controls.inactivate).on('click',inactivate);
+		$(controls.copy).on('click',copy);
+		$(controls.newUser).on('click',newUser);
+		$(controls.del).on('click',del);
 	}
 	
-	function setDefaultValues(){
-		var currentDate=$.format.date(new Date($.now()),'yyyy-MM-dd')
-		$('#searchKeyDate').val(currentDate);
-	}
-	
-	function searchUsers(){
+	function show(uid,keyDate){
 		
-		DAO.findAllUsers(function(status,users){
-			//console.log('DAO returned: '+status);
-			if(status=='done'){
-				console.log(users);
-				displaySearchResults(users);
-			}
-		});
-	}
-	
-	function displaySearchResults(users){
-		var trHtml='';
-		$('#searchResults-tbody').empty();
-		$.each(users, function(i,up){
-			trHtml+='<tr>\
-			<td id="user_id">'+up.key.userId+'</td>\
-			<td id="username">'+up.user.username+'</td>\
-			<td id="name">'+up.lastName+', '+up.firstName+'</td>\
-			</tr>'
-		});
-		$('#searchResults-tbody').append(trHtml);
-	}
-	
-	function showUser(event){
-		
-		var tr=event.target.parentNode;
-		var userId=$(tr).find('#user_id').text();
-		var keyDate=$('#searchKeyDate').val();
-		
-		//console.log(keyDate);
-		if(keyDate==null){
-			keyDate=new Date();
-		}
+		userId=uid;
 		
 		Credentials.show(userId);
 		Personal.showOnKeyDate(userId,keyDate);
 		Contract.showOnKeyDate(userId,keyDate);
 		Assignment.showOnKeyDate(userId,keyDate);
 		
-		//showCredentials(userId);
-		//showRoles(userId);
-		
-		$('#userrecord').show();
-		$('#userrecord-selected-text').empty();
-		$('#userrecord-selected-text').append('ID: '+userId);
-		$('#userrecord-selected').show();
+		$(divs.record).show();
+		$(fields.selected).empty();
+		$(fields.selected).append('ID: '+userId);
+		$(divs.selected).show();
 	}
 	
-	function inactivateUser(){
-		
+	function inactivate(){
+		console.log('inactivate user: '+userId);
 	}
 	
-	function copyUser(){
-		
+	function copy(){
+		console.log('copy user: '+userId);
 	}
 	
 	function newUser(){
+		userId=null;
+		console.log('new user');
+		$(fields.selected).text('New');
+		
+		Credentials.newUser();
+		
+		
+		$(divs.data.personal).hide();
+		$(divs.data.contract).hide();
+		$(divs.data.assignment).hide();
+	}
+	
+	function userCreated(uid){
+		userId=uid;
+		Personal.newUser(userId);
+		Contract.newUser(userId);
+		Assignment.newUser(userId);
+		$(divs.data.personal).show();
+		$(divs.data.contract).show();
+		$(divs.data.assignment).show();
+		$(fields.selected).text('ID: '+userId);
 		
 	}
 	
-	function deleteUser(){
-		
+	function del(){
+		console.log('delete user: '+userId);
 	}
 	
 	return{
 		test : test,
 		init : init,
-		setDefaultValues : setDefaultValues,
-		showUser : showUser
+		show : show,
+		userCreated : userCreated
 	}
 	
 })();
@@ -137,6 +223,8 @@ var DAO = (function() {
 		UNKNOWN : 'unknown',
 		FAIL : 'fail'
 	}
+	
+	var NEW_ID=-10;
 	
 	function test(){
 		var text='DAO : this is a test!';
@@ -170,7 +258,16 @@ var DAO = (function() {
 	
 	function saveCredentials(userId,cred,_callback){
 		
-		var url='/userrecord/show/'+userId+'/credentialsdetails/save';
+		var url;
+		
+		if(userId!=NEW_ID){
+			console.log('saving old user...');
+			url='/userrecord/show/credentialsdetails/save?userId='+userId;
+		}
+		else{
+			console.log('saving new user...');
+			url='/userrecord/show/credentialsdetails/save';
+		}
 		
 		data=JSON.stringify(cred);
 		
@@ -183,7 +280,7 @@ var DAO = (function() {
 			
 		}).done(function(cred){
 			console.log(cred);
-			_callback(STATUS.DONE);
+			_callback(STATUS.DONE,cred);
 
 		}).fail(function(){
 			alert("ERROR: Couldn't save credentials details.");
@@ -221,7 +318,9 @@ var DAO = (function() {
 	
 	function saveRoles(userId,roles,_callback){
 		
-		var url='/userrecord/show/'+userId+'/roledetails/save';
+		var url;
+		
+		url='/userrecord/show/roledetails/save?userId='+userId;
 		
 		data=JSON.stringify(roles);
 		
@@ -233,8 +332,7 @@ var DAO = (function() {
 		}).success(function(ur){
 			
 		}).done(function(ur){
-			console.log(ur);
-			_callback(STATUS.DONE);
+			_callback(STATUS.DONE,ur);
 		}).fail(function(){
 			alert("ERROR: Couldn't save role details.");
 			_callback(STATUS.FAIL);
@@ -332,7 +430,7 @@ var DAO = (function() {
 			data : data,
 			dataType : "json"
 		}).done(function(pers){
-			_callback(STATUS.DONE);
+			_callback(STATUS.DONE,pers);
 		}).fail(function(){
 			//alert("ERROR: Couldn't save personal details.");
 			_callback(STATUS.FAIL);
@@ -428,7 +526,7 @@ var DAO = (function() {
 			data : data,
 			dataType : "json"
 		}).done(function(ctrc){
-			_callback(STATUS.DONE);
+			_callback(STATUS.DONE,ctrc);
 		}).fail(function(){
 			alert("ERROR: Couldn't save contract details.");
 			_callback(STATUS.FAIL);
@@ -543,7 +641,7 @@ var DAO = (function() {
 			data : data,
 			dataType : "json"
 		}).done(function(asgn){
-			_callback(STATUS.DONE);
+			_callback(STATUS.DONE,asgn);
 		}).fail(function(){
 			alert("ERROR: Couldn't save assignment details.");
 			_callback(STATUS.FAIL);
@@ -579,6 +677,7 @@ var DAO = (function() {
 	
 	return{
 		STATUS : STATUS,
+		NEW_ID : NEW_ID,
 		test : test,
 		findAllUsers : findAllUsers,
 		loadOrgTree : loadOrgTree,
@@ -635,6 +734,7 @@ var Personal=(function(){
 			next : '#userrecord-personal-next-button',
 			copy : '#userrecord-personal-copy-button',
 			newRec : '#userrecord-personal-new-button',
+			newRecNA : '#userrecord-personal-na-new-button',
 			del : '#userrecord-personal-del-button',
 			save : '#userrecord-personal-save-button'	
 	}
@@ -660,6 +760,7 @@ var Personal=(function(){
 		$(controls.prev).on('click',prev);
 		$(controls.copy).on('click',copy);
 		$(controls.newRec).on('click',newRec);
+		$(controls.newRecNA).on('click',newRec);
 		$(controls.del).on('click',del);
 		
 		$(fields.startDate).keyup(_changeHandler);
@@ -673,7 +774,7 @@ var Personal=(function(){
 	}
 	
 	function _changeHandler(){
-		Personal.changed=true;
+		changed=true;
 		$(fields.isChanged).text('save changes');
 	}
 	
@@ -734,7 +835,7 @@ var Personal=(function(){
 	function _getJSON(){
 		var pd={
 				key : {
-					userId : Personal.userId,
+					userId : userId,
 					startDate : $(fields.startDate).val()
 				},
 				endDate : $(fields.endDate).val(),
@@ -756,11 +857,11 @@ var Personal=(function(){
 		});
 	}
 	
-	function showOnKeyDate(userId,keyDate){
+	function showOnKeyDate(uid,keyDate){
 	
 		var personal;
-		Personal.userId=userId;
-		Personal.changed=false;
+		userId=uid;
+		changed=false;
 		_clear();
 		
 		DAO.loadPersonal(userId,keyDate,function(status,personal){
@@ -780,13 +881,15 @@ var Personal=(function(){
 	}
 	
 	function save(){
-		var pd=_getJSON();
-		
-		DAO.savePersonal(Personal.userId,pd,function(status){
+		var pers=_getJSON();
+		console.log(pers);
+		DAO.savePersonal(userId,pers,function(status,p){
 			if(status==DAO.STATUS.DONE){
 				//saved
-				Personal.changed=false;
+				changed=false;
 				$(fields.isChanged).empty();
+				_clear();
+				_fill(p);
 			}
 			else if(status==DAO.STATUS.FAIL){
 				//save failed
@@ -800,10 +903,10 @@ var Personal=(function(){
 		var startDate=$(fields.startDate).val();
 		var p;
 		
-		Personal.changed=false;
+		changed=false;
 		_clear();
 		
-		DAO.loadNextPersonal(Personal.userId,startDate,function(status,p){
+		DAO.loadNextPersonal(userId,startDate,function(status,p){
 			if(status==DAO.STATUS.DONE){
 				_fill(p);
 			}
@@ -821,10 +924,10 @@ var Personal=(function(){
 		var startDate=$(fields.startDate).val();
 		var p;
 		
-		Personal.changed=false;
+		changed=false;
 		_clear();
 		
-		DAO.loadPrevPersonal(Personal.userId,startDate,function(status,p){
+		DAO.loadPrevPersonal(userId,startDate,function(status,p){
 			if(status==DAO.STATUS.DONE){
 				_fill(p);
 			}
@@ -842,7 +945,7 @@ var Personal=(function(){
 		$(divs.content).show();
 		$(divs.na).hide();
 		
-		Personal.changed=false;
+		changed=false;
 		$(fields.isChanged).empty();
 		
 		var today=$.now();
@@ -855,7 +958,7 @@ var Personal=(function(){
 		$(divs.content).show();
 		$(divs.na).hide();
 		
-		Personal.changed=false;
+		changed=false;
 		_clear();
 		
 		var today=$.now();
@@ -864,8 +967,13 @@ var Personal=(function(){
 	}
 	
 	function del(){
-		Personal.changed=false;
+		changed=false;
 		$(fields.isChanged).empty();
+	}
+	
+	function newUser(uid){
+		userId=uid;
+		newRec();
 	}
 	
 	return{
@@ -877,7 +985,8 @@ var Personal=(function(){
 		copy : copy,
 		newRec : newRec,
 		del : del,
-		save : save
+		save : save,
+		newUser : newUser
 	}
 	
 })();
@@ -1000,7 +1109,7 @@ var Contract=(function(){
 	function _getJSON(){
 		var cd={
 				key : {
-					userId : Contract.userId,
+					userId : userId,
 					startDate : $(fields.startDate).val()
 				},
 				endDate : $(fields.endDate).val(),
@@ -1021,11 +1130,11 @@ var Contract=(function(){
 		});
 	}
 	
-	function showOnKeyDate(userId,keyDate){
+	function showOnKeyDate(uid,keyDate){
 	
 		var contract;
-		Contract.userId=userId;
-		Contract.changed=false;
+		userId=uid;
+		changed=false;
 		_clear();
 		
 		DAO.loadContract(userId,keyDate,function(status,contract){
@@ -1045,13 +1154,14 @@ var Contract=(function(){
 	}
 	
 	function save(){
-		var c=_getJSON();
-		
-		DAO.saveContract(Contract.userId,c,function(status){
+		var ctrc=_getJSON();
+		DAO.saveContract(userId,ctrc,function(status,c){
 			if(status==DAO.STATUS.DONE){
 				//saved
-				Contract.changed=false;
+				changed=false;
 				$(fields.isChanged).empty();
+				_clear();
+				_fill(c);
 			}
 			else if(status==DAO.STATUS.FAIL){
 				//save failed
@@ -1065,10 +1175,10 @@ var Contract=(function(){
 		var startDate=$(fields.startDate).val();
 		var c;
 		
-		Contract.changed=false;
+		changed=false;
 		_clear();
 		
-		DAO.loadNextContract(Contract.userId,startDate,function(status,c){
+		DAO.loadNextContract(userId,startDate,function(status,c){
 			if(status==DAO.STATUS.DONE){
 				_fill(c);
 			}
@@ -1086,10 +1196,10 @@ var Contract=(function(){
 		var startDate=$(fields.startDate).val();
 		var c;
 		
-		Contract.changed=false;
+		changed=false;
 		_clear();
 		
-		DAO.loadPrevContract(Contract.userId,startDate,function(status,c){
+		DAO.loadPrevContract(userId,startDate,function(status,c){
 			if(status==DAO.STATUS.DONE){
 				_fill(c);
 			}
@@ -1105,7 +1215,7 @@ var Contract=(function(){
 	
 	function copy(){
 		
-		Contract.changed=false;
+		changed=false;
 		$(fields.isChanged).empty();
 		
 		var today=$.now();
@@ -1119,7 +1229,7 @@ var Contract=(function(){
 		$(divs.content).show();
 		
 		
-		Contract.changed=false;
+		changed=false;
 		_clear();
 		
 		var today=$.now();
@@ -1128,8 +1238,13 @@ var Contract=(function(){
 	}
 	
 	function del(){
-		Contract.changed=false;
+		changed=false;
 		$(fields.isChanged).empty();
+	}
+	
+	function newUser(uid){
+		userId=uid;
+		newRec();
 	}
 	
 	return{
@@ -1141,7 +1256,8 @@ var Contract=(function(){
 		copy : copy,
 		newRec : newRec,
 		del : del,
-		save : save
+		save : save,
+		newUser : newUser
 	}
 	
 })();
@@ -1174,6 +1290,7 @@ var Assignment=(function(){
 			next : '#userrecord-assignment-next-button',
 			copy : '#userrecord-assignment-copy-button',
 			newRec : '#userrecord-assignment-new-button',
+			newRecNA : '#userrecord-assignment-na-new-button',
 			del : '#userrecord-assignment-del-button',
 			save : '#userrecord-assignment-save-button',
 			orgTree :'#userrecord-assignment-orgtree-button'
@@ -1200,6 +1317,7 @@ var Assignment=(function(){
 		$(controls.prev).on('click',prev);
 		$(controls.copy).on('click',copy);
 		$(controls.newRec).on('click',newRec);
+		$(controls.newRecNA).on('click',newRec);
 		$(controls.del).on('click',del);
 		$(controls.orgTree).on('click',_showOrgTree);
 		
@@ -1211,14 +1329,14 @@ var Assignment=(function(){
 	}
 	
 	function _changeHandler(){
-		Contract.changed=true;
+		changed=true;
 		$(fields.isChanged).text('save changes');
 	}
 	
 	function _orgTreeChangeHandler(e,data){
 		var orgUnitId=data.selected;
 		_addOrgUnitDetails(orgUnitId);
-		Contract.changed=true;
+		changed=true;
 		$(fields.isChanged).text('save changes');
 	}
 	
@@ -1324,7 +1442,7 @@ var Assignment=(function(){
 	function _getJSON(){
 		var ad={
 				key : {
-					userId : Assignment.userId,
+					userId : userId,
 					startDate : $(fields.startDate).val()
 				},
 				endDate : $(fields.endDate).val(),
@@ -1343,11 +1461,11 @@ var Assignment=(function(){
 		});
 	}
 	
-	function showOnKeyDate(userId,keyDate){
+	function showOnKeyDate(uid,keyDate){
 	
 		var assignment;
-		Assignment.userId=userId;
-		Assignment.changed=false;
+		userId=uid;
+		changed=false;
 		_clear();
 		
 		DAO.loadAssignment(userId,keyDate,function(status,assignment){
@@ -1367,13 +1485,15 @@ var Assignment=(function(){
 	}
 	
 	function save(){
-		var a=_getJSON();
+		var assignment=_getJSON();
 		
-		DAO.saveAssignment(Assignment.userId,a,function(status){
+		DAO.saveAssignment(userId,assignment,function(status,a){
 			if(status==DAO.STATUS.DONE){
 				//saved
 				Assignment.changed=false;
 				$(fields.isChanged).empty();
+				_clear();
+				_fill(a);
 			}
 			else if(status==DAO.STATUS.FAIL){
 				//save failed
@@ -1387,10 +1507,10 @@ var Assignment=(function(){
 		var startDate=$(fields.startDate).val();
 		var a;
 		
-		Assignment.changed=false;
+		changed=false;
 		_clear();
 		
-		DAO.loadNextAssignment(Assignment.userId,startDate,function(status,a){
+		DAO.loadNextAssignment(userId,startDate,function(status,a){
 			if(status==DAO.STATUS.DONE){
 				_fill(a);
 			}
@@ -1408,10 +1528,10 @@ var Assignment=(function(){
 		var startDate=$(fields.startDate).val();
 		var a;
 		
-		Assignment.changed=false;
+		changed=false;
 		_clear();
 		
-		DAO.loadPrevAssignment(Assignment.userId,startDate,function(status,a){
+		DAO.loadPrevAssignment(userId,startDate,function(status,a){
 			if(status==DAO.STATUS.DONE){
 				_fill(a);
 			}
@@ -1455,6 +1575,11 @@ var Assignment=(function(){
 		$(fields.isChanged).empty();
 	}
 	
+	function newUser(uid){
+		userId=uid;
+		newRec();
+	}
+	
 	return{
 		init : init,
 		isChanged : isChanged,
@@ -1464,7 +1589,8 @@ var Assignment=(function(){
 		copy : copy,
 		newRec : newRec,
 		del : del,
-		save : save
+		save : save,
+		newUser : newUser
 	}
 	
 })();
@@ -1487,12 +1613,12 @@ var Credentials=(function(){
 			roles : '#userrecord-roles',
 			changedBy : '#credentialsChangedBy',
 			changeTs : '#credentialsChangedTs',
-			isChanged : '#userrecord-contract-isChanged'
+			isChanged : '#userrecord-credentials-isChanged'
 	}
 	
 	var controls={
-			newRecNA : '#userrecord-contract-na-new-button',
-			save : '#userrecord-contract-save-button'	
+			newRecNA : '#userrecord-credentials-na-new-button',
+			save : '#userrecord-credentials-save-button'	
 	}
 	
 	var STATUS={
@@ -1510,11 +1636,24 @@ var Credentials=(function(){
 	
 	function _bindEventHandlers(){
 		$(controls.save).on('click',save);
-		$(controls.newRecNA).on('click',newRec);
+		$(controls.newRecNA).on('click',newUser);
+		
+		
+		$(fields.secondaryId).keyup(_changeHandler);
+		$(fields.username).keyup(_changeHandler);
+		$(fields.password).keyup(_changeHandler);
+		
+		$(fields.enabled).change(_changeHandler);
+		$(fields.roles).find('input[type="checkbox"]').each(function(){
+			cb=$(this);
+			cb.change(_changeHandler);
+		});
+		
+		
 	}
 	
 	function _changeHandler(){
-		Credentials.changed=true;
+		changed=true;
 		$(fields.isChanged).text('save changes');
 	}
 	
@@ -1588,7 +1727,7 @@ var Credentials=(function(){
 	
 	function _getCredentialsJSON(){
 		var cred={
-				id : $(fields.id).val(),
+				id : userId,
 				secondaryId : $(fields.secondaryId).val(),
 				username : $(fields.username).val(),
 				password : $(fields.password).val(),
@@ -1621,15 +1760,16 @@ var Credentials=(function(){
 		});
 	}
 	
-	function show(userId){
+	function show(uid){
 	
 		var cred;
-		Credentials.userId=userId;
-		Credentials.changed=false;
+		
+		userId=uid;
+		changed=false;
 		_clearCredentials();
 		_clearRoles();
 		
-		DAO.loadCredentials(this.userId,function(status,credentials){
+		DAO.loadCredentials(userId,function(status,credentials){
 			if(status==DAO.STATUS.DONE){
 				_fillCredentials(credentials);
 				
@@ -1665,39 +1805,62 @@ var Credentials=(function(){
 	}
 	
 	function save(){
-		var cred=_getCredentialsJSON();
 		
-		DAO.saveCredentials(this.userId,cred,function(status){
+		var cred=_getCredentialsJSON();
+		var roles;
+		var credSaveOk=false;
+		var rolesSaveOk=false;
+		
+		console.log('saving Credentials '+userId);
+		
+		DAO.saveCredentials(userId,cred,function(status,c){
 			if(status==DAO.STATUS.DONE){
-				//saved
+				
+				userId=c.id;
+				_clearCredentials();
+				_fillCredentials(c);
+				credSaveOk=true;
+				
+				UserRecord.userCreated(userId);
+				
+				roles=_getRolesJSON(userId);
+	
+				DAO.saveRoles(userId,roles,function(status,r){
+					if(status==DAO.STATUS.DONE){
+						_clearRoles();
+						_fillRoles(r);
+						rolesSaveOk=true;
+						if(credSaveOk && rolesSaveOk){
+							changed=false;
+							$(fields.isChanged).empty();
+						}
+						
+					}
+					else if(status==DAO.STATUS.FAIL){
+						
+					}
+				});
 			}
 			else if(status==DAO.STATUS.FAIL){
 				//save failed
 			}
 		})
 		
-		var roles=_getRolesJSON(this.userId);
-		
-		DAO.saveRoles(this.userId,roles,function(status){
-			if(status==DAO.STATUS.DONE){
-				
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
-		
 	}
 	
-	function newRec(){
-		
+	function newUser(){
+		changed=false;
+		userId=DAO.NEW_ID;
+		_clearCredentials();
+		_clearRoles();
 	}
 	
 	return{
 		init : init,
 		isChanged : isChanged,
 		show : show,
-		save : save
+		save : save,
+		newUser : newUser
 	}
 	
 })();

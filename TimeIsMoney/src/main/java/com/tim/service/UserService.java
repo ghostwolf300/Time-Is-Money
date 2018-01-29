@@ -10,10 +10,12 @@ import com.tim.entities.UserAssignment;
 import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
+import com.tim.pojo.UserSearchResult;
 
 public interface UserService {
 	
 	public List<User> findAll();
+	public List<UserSearchResult> findAllCustom();
 	public User findByUsername(String username);
 	public User findByUserId(int id);
 	public User currentRecord(String username);
@@ -37,5 +39,7 @@ public interface UserService {
 	public UserAssignment findNextAssignment(int userId,Date date);
 	public UserAssignment findPreviousAssignment(int userId, Date date);
 	public UserAssignment saveAssignment(UserAssignment userAssignment);
+	
+	public int removeUser(int userId);
 	
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="nz.net.ultraq.thymeleaf">
-<div id="userassignment" class="userrecord_fragment" th:fragment="userassignment">
+<div id="userrecord-assignment" class="userrecord_fragment" th:fragment="userrecord-assignment">
 	<div id="userrecord-assignment-header" class="userrecord-type-header">
 		<div>
 			<h2>Assignment</h2>
@@ -9,7 +9,7 @@
 			<span id="userrecord-assignment-isChanged" class="changeIndicator"></span>
 		</div>
 	</div>
-	<div id="userrecord-contract-content">
+	<div id="userrecord-assignment-content">
 		<div id="recordControls_top">
 			<div id="recordControls_top_left">
 				<div>
@@ -33,12 +33,12 @@
 		<div id="userassignment_record">
 			<div>
 				<div>
-					<label for="orgUnitId">Org. unit:</label><input id="orgUnitId" type="text"/>
-					<input id="orgUnitName" type="text"/>
+					<label for="orgUnitId">Org. unit</label><input id="orgUnitId" class="id-field-short" type="text" disabled="true"/>
+					<input id="orgUnitName" type="text" disabled="true"/>
 				</div>
 				<div>
-					<label for="costCenterId">CC ID:</label><input id="costCenterId" type="text"/>
-					<label for="costCenterName">Name:</label><input id="costCenterName" type="text"/>
+					<label for="costCenterId">Cost Center</label><input id="costCenterId" class="id-field-short" type="text" disabled="true"/>
+					<input id="costCenterName" type="text" disabled="true"/>
 				</div>
 				<div>
 					<input id="userrecord-assignment-orgtree-button" type="button" value="Show Org. Tree" data-treevisible="false"/>

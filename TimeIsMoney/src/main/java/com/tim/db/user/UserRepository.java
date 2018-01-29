@@ -23,5 +23,8 @@ public interface UserRepository extends JpaRepository<User,Integer>, UserReposit
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public User save(User user);
+	
+	@Transactional
+	public Long removeById(int userId);
 
 }

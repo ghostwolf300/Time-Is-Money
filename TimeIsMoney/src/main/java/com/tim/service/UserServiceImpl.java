@@ -18,6 +18,7 @@ import com.tim.entities.UserAssignment;
 import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
+import com.tim.pojo.UserSearchResult;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -203,9 +204,24 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<UserRole> saveUserRoles(int userId,List<UserRole> roles) {
-		userRoleRepository.removeByUserRoleKeyUserId(userId);
+		userRoleRepository.removeByKeyUserId(userId);
 		List<UserRole> saved=userRoleRepository.save(roles);
 		return saved;
+	}
+
+	@Override
+	public List<UserSearchResult> findAllCustom() {
+		return userRepository.findAllCustom();
+	}
+
+	@Override
+	public int removeUser(int userId) {
+		userRepository.removeById(userId);
+		/*userRoleRepository.removeByKeyUserId(userId);
+		userPersonalRepository.removeByKeyUserId(userId);
+		userContractRepository.removeByKeyUserId(userId);
+		userAssignmentRepository.removeByKeyUserId(userId);*/
+		return -1;
 	}
 
 }

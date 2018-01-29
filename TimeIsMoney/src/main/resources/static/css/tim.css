@@ -145,7 +145,7 @@ div#userrecord-wrapper{
 	padding-right:20px;
 }
 
-div#searchResults{
+div#userrecord-search-results{
 	width: 300px;
 	min-width:300px;
 	height: inherit;
@@ -156,7 +156,7 @@ div#searchResults{
     float: left;
 }
 
-tbody#searchResults-tbody tr:hover{
+tbody#userrecord-search-results-tbody tr:hover{
 	background: yellow;
 }
 
@@ -207,6 +207,11 @@ div.userrecord-selected-right{
 
 .datefield{
 	width: 126px;
+}
+
+.id-field-short{
+	width: 42px;
+		
 }
 
 div#personal{
@@ -383,4 +388,6 @@ div#recordControls_bottom_right{
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
 }
+
+
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.entities.User;
 import com.tim.entities.UserPersonal;
+import com.tim.pojo.UserSearchResult;
 import com.tim.service.UserPersonalService;
 import com.tim.service.UserService;
 
@@ -25,10 +26,10 @@ public class UserSearchController {
 	private UserPersonalService upService;
 	
 	@RequestMapping("/")
-	public ResponseEntity<List<UserPersonal>> getAllUsers(){
+	public ResponseEntity<List<UserSearchResult>> getAllUsers(){
 		System.out.println("finding all users");
-		List<UserPersonal> users=upService.findAll();
-		return new ResponseEntity<List<UserPersonal>>(users,HttpStatus.OK);
+		List<UserSearchResult> users=userService.findAllCustom();
+		return new ResponseEntity<List<UserSearchResult>>(users,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/{username}")

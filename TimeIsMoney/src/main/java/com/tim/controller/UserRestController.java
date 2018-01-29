@@ -170,17 +170,19 @@ public class UserRestController {
 		return new ResponseEntity<User>(u,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/show/{userId}/credentialsdetails/save", method=RequestMethod.POST)
-	public ResponseEntity<User> saveCredentialsDetails(@PathVariable int userId, @RequestBody User user){
+	@RequestMapping(value="/show/credentialsdetails/save", method=RequestMethod.POST)
+	public ResponseEntity<User> saveCredentialsDetails(@RequestParam(value="userId",required=false) Integer userId, @RequestBody User user){
+		if(userId==null) {
+			user.setId(null);
+		}
 		user.setChangedBy(sessionInfo.getCurrentUser().getId());
 		user.setChangeTs(new Timestamp(System.currentTimeMillis()));
-		System.out.println("Controller, userId: "+user.getId());
 		User u=userService.saveUser(user);
 		return new ResponseEntity<User>(u,HttpStatus.OK);
 	}
 	
 	@RequestMapping("/show/{userId}/roledetails")
-	public ResponseEntity<List<UserRole>> getRoleDetails(@PathVariable int userId){
+	public ResponseEntity<List<UserRole>> getRoleDetails(@PathVariable Integer userId){
 		List<UserRole> roles=userService.findRolesByUserId(userId);
 		if(roles==null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -188,10 +190,16 @@ public class UserRestController {
 		return new ResponseEntity<List<UserRole>>(roles,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/show/{userId}/roledetails/save", method=RequestMethod.POST)
-	public ResponseEntity<List<UserRole>> saveRoleDetails(@PathVariable int userId, @RequestBody List<UserRole> roles){
+	@RequestMapping(value="/show/roledetails/save", method=RequestMethod.POST)
+	public ResponseEntity<List<UserRole>> saveRoleDetails(@RequestParam(value="userId",required=false) Integer userId, @RequestBody List<UserRole> roles){
 		List<UserRole> r=userService.saveUserRoles(userId, roles);
 		return new ResponseEntity<List<UserRole>>(r,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/delete")
+	public ResponseEntity<Integer> removeUser(@RequestParam(value="userId") Integer userId){
+		userService.removeUser(userId);
+		return new ResponseEntity<Integer>(1,HttpStatus.OK);
 	}
 	
 	private Date getDateObject(String dateString) {

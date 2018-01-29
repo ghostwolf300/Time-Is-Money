@@ -16,7 +16,7 @@ public interface UserRoleRepository extends JpaRepository<UserRole,UserRoleKey>,
 	public List<UserRole> findByUserId(int userId);
 	
 	@Transactional
-	public int removeByUserRoleKeyUserId(int userId);
+	public int removeByKeyUserId(int userId);
 	
 	@SuppressWarnings("unchecked")
 	@Transactional

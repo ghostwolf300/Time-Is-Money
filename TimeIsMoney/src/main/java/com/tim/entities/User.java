@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -23,7 +28,16 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
-
+@SqlResultSetMapping(name="UserSearchResults",
+classes= {
+		@ConstructorResult(targetClass=com.tim.pojo.UserSearchResult.class,
+				columns={
+					@ColumnResult(name="id"),
+					@ColumnResult(name="username"),
+					@ColumnResult(name="first_name"),
+					@ColumnResult(name="last_name")
+		})
+})
 @Entity
 @Table(name="user")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -37,6 +51,7 @@ public class User implements Serializable {
 	
 	@Id
 	@Column(name="id",table="user")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	@Column(name="secondary_id")
 	private String secondaryId;
@@ -171,7 +186,5 @@ public class User implements Serializable {
 	public void setChangedBy(int changedBy) {
 		this.changedBy = changedBy;
 	}
-	
-	
 	
 }

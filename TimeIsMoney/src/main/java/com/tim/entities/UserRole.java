@@ -24,7 +24,7 @@ public class UserRole implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	private UserRoleKey userRoleKey;
+	private UserRoleKey key;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="user_id", nullable=false, insertable=false, updatable=false)
@@ -38,12 +38,12 @@ public class UserRole implements Serializable {
 		
 	}
 
-	public UserRoleKey getUserRoleKey() {
-		return userRoleKey;
+	public UserRoleKey getKey() {
+		return key;
 	}
 
-	public void setUserRoleKey(UserRoleKey userRoleKey) {
-		this.userRoleKey = userRoleKey;
+	public void setKey(UserRoleKey userRoleKey) {
+		this.key = userRoleKey;
 	}
 
 	public User getUser() {
