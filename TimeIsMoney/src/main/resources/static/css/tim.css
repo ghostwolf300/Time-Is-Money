@@ -389,9 +389,48 @@ div#recordControls_bottom_right{
     background-color: #3e8e41;
 }
 
+#scheduler-wrapper{
+	position: relative;
+    width: inherit;
+    min-width: inherit;
+    height: inherit;
+    margin-top: 10px;
+    margin-left: 4px;
+    display: flex;
+}
+
+#scheduler-search{
+	width: 300px;
+    height: inherit;
+    border: 1px solid black;
+}
+
+#scheduler-content{
+	margin-left: 2px;
+}
+
+#scheduler-menubar{
+	display: flex;
+	height: 36px;
+	border: 1px solid black;
+	padding-left: 10px;
+	background-color: lightgrey;
+	align-items: center;
+}
+
+.scheduler-button{
+	margin-left: 6px;
+}
+
 #schedule-editor-table th,td{
 	border: 1px solid black;
 	border-collapse: collapse;
+	
+}
+
+#schedule-editor-table tbody tr:hover{
+	background-color:#e8e87a; 
+	
 }
 
 #schedule-editor-thead-row-dates th{
@@ -404,8 +443,17 @@ div#recordControls_bottom_right{
 
 .cell-schedule{
 	font-size: 14px;
+	width: 80px;
+	text-align:center;
+}
+
+.cell-user{
+	font-size: 14px;
+	width: 200px;
+	min-width: 200px;
 }
 
 .cell-schedule:hover{
 	background-color: yellow;
+	border-color: #ff8d00;
 }

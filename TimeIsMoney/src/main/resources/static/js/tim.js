@@ -12,6 +12,7 @@ function initPage(){
 	globalSetup();
 	UserSearch.init();
 	UserRecord.init();
+	ScheduleEditor.init();
 }
 
 function globalSetup(){
@@ -1913,6 +1914,43 @@ var Credentials=(function(){
 		show : show,
 		save : save,
 		newUser : newUser
+	}
+	
+})();
+
+var ScheduleEditor=(function(){
+	
+	var controls={
+			refresh : '#scheduler-period-refresh-button'
+	}
+	var fields={
+			periodStart : '#scheduler-period-start',
+			periodEnd : '#scheduler-period-end'
+	}
+	var headerRowDates='#schedule-editor-thead-row-dates';
+	var headerRowWeekdays='#schedule-editor-thead-row-weekdays';
+	var tbody='#schedule-editor-tbody';
+	
+	function init(){
+		console.log('Initializing Module Schedule Editor');
+		_bindEventHandlers();
+	}
+	
+	function _bindEventHandlers(){
+		$(tbody).click(_edit);
+	}
+	
+	function _edit(event){
+		console.log('Click table cell');
+		var td=event.target;
+		var tr=event.target.parentNode;
+		//selected=$(tr).find('#user_id').text();
+		alert($(td).text());
+		
+	}
+	
+	return{
+		init : init
 	}
 	
 })();

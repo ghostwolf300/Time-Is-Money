@@ -9,6 +9,7 @@
 	</div>
 	<div id="scheduler-content">
 		<div id="scheduler-menubar">
+			<span><input id="scheduler-period-start" type="date"/>-<input id="scheduler-period-end" type="date"/></span><input id="scheduler-period-refresh-button" class="scheduler-button" type="button" value="Refresh"/>
 		</div>
 		<div id="scheduler-editor">
 			<table id="schedule-editor-table">
@@ -33,9 +34,29 @@
 						<th>Sun</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="schedule-editor-tbody">
 					<tr>
-						<td class="cell-user">User 1</td>
+						<td class="cell-user"><input type="checkbox" class="scheduler-user-select"/>User 1</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule"></td>
+						<td class="cell-schedule"></td>
+					</tr>
+					<tr>
+						<td class="cell-user"><input type="checkbox" class="scheduler-user-select"/>User 2</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule">9:00-17:00</td>
+						<td class="cell-schedule"></td>
+						<td class="cell-schedule"></td>
+					</tr>
+					<tr>
+						<td class="cell-user"><input type="checkbox" class="scheduler-user-select"/>User 3</td>
 						<td class="cell-schedule">9:00-17:00</td>
 						<td class="cell-schedule">9:00-17:00</td>
 						<td class="cell-schedule">9:00-17:00</td>
