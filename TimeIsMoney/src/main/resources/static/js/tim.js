@@ -96,9 +96,22 @@ var UserSearch=(function(){
 		
 	}
 	
+	function removeSelected(){
+		
+		$(fields.searchResults+' tr').each(function(){
+			console.log(selected);
+			if($(this).find('#user_id').text()==selected){
+				console.log('removing '+selected);
+				$(this).remove();
+			}
+		});
+		
+	}
+	
 	return{
 		init : init,
-		findAll : findAll
+		findAll : findAll,
+		removeSelected : removeSelected
 	} 
 	
 })();
@@ -167,6 +180,10 @@ var UserRecord = (function(){
 		$(fields.selected).empty();
 		$(fields.selected).append('ID: '+userId);
 		$(divs.selected).show();
+		
+		for(var view in divs.data){
+			$(divs.data[view]).show();
+		}
 	}
 	
 	function inactivate(){
@@ -180,11 +197,12 @@ var UserRecord = (function(){
 	function newUser(){
 		userId=null;
 		console.log('new user');
+		
 		$(fields.selected).text('New');
 		
 		Credentials.newUser();
-		
-		
+		$(divs.record).show();
+		$(divs.data.credentials).show();
 		$(divs.data.personal).hide();
 		$(divs.data.contract).hide();
 		$(divs.data.assignment).hide();
@@ -203,13 +221,25 @@ var UserRecord = (function(){
 	}
 	
 	function del(){
+		
+		$(fields.selected).text('ID: Removed');
+		$(divs.record).hide();
+		
 		console.log('delete user: '+userId);
+		DAO.delUser(userId,function(flag){
+			console.log(flag);
+		});
+		
+		userId=null;
+		UserSearch.removeSelected();
+	
 	}
 	
 	return{
 		test : test,
 		init : init,
 		show : show,
+		del : del,
 		userCreated : userCreated
 	}
 	
@@ -288,6 +318,27 @@ var DAO = (function() {
 		}).always(function(){
 			
 		});
+	}
+	
+	function delUser(userId,_callback){
+		var url='/userrecord/delete?userId='+userId;
+		
+		$.ajax({
+			url : url,
+			method : "POST",
+		}).success(function(flag){
+			
+		}).done(function(flag){
+			console.log(flag);
+			_callback(STATUS.DONE);
+
+		}).fail(function(){
+			alert("ERROR: Couldn't delete user "+userId);
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+		
 	}
 	
 	function loadRoles(userId,_callback){
@@ -680,6 +731,7 @@ var DAO = (function() {
 		NEW_ID : NEW_ID,
 		test : test,
 		findAllUsers : findAllUsers,
+		delUser : delUser,
 		loadOrgTree : loadOrgTree,
 		loadCredentials : loadCredentials,
 		saveCredentials : saveCredentials,
@@ -1718,7 +1770,7 @@ var Credentials=(function(){
 			r=roles[i];
 			$(fields.roles).find('input[type="checkbox"]').each(function(){
 				cb=$(this);
-				if(cb.data('role_id')==r.userRoleKey.roleId){
+				if(cb.data('role_id')==r.key.roleId){
 					cb.prop('checked',true);
 				}
 			});
@@ -1743,7 +1795,7 @@ var Credentials=(function(){
 		$(fields.roles+' input:checked').each(function(){
 			roleId=$(this).data('role_id');
 			roles.push({
-				'userRoleKey' :{
+				'key' :{
 					'userId' : userId,
 					'roleId' : roleId
 				}

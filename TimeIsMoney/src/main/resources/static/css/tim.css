@@ -389,5 +389,23 @@ div#recordControls_bottom_right{
     background-color: #3e8e41;
 }
 
+#schedule-editor-table th,td{
+	border: 1px solid black;
+	border-collapse: collapse;
+}
 
+#schedule-editor-thead-row-dates th{
+	font-size: 10px;
+}
 
+#schedule-editor-thead-row-weekdays th{
+	font-size: 16px;
+}
+
+.cell-schedule{
+	font-size: 14px;
+}
+
+.cell-schedule:hover{
+	background-color: yellow;
+}

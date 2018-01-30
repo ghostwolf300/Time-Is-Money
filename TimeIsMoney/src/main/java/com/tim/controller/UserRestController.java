@@ -196,7 +196,7 @@ public class UserRestController {
 		return new ResponseEntity<List<UserRole>>(r,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/delete")
+	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	public ResponseEntity<Integer> removeUser(@RequestParam(value="userId") Integer userId){
 		userService.removeUser(userId);
 		return new ResponseEntity<Integer>(1,HttpStatus.OK);

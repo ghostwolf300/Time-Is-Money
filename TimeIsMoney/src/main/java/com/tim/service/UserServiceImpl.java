@@ -216,11 +216,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int removeUser(int userId) {
-		userRepository.removeById(userId);
-		/*userRoleRepository.removeByKeyUserId(userId);
+	
 		userPersonalRepository.removeByKeyUserId(userId);
 		userContractRepository.removeByKeyUserId(userId);
-		userAssignmentRepository.removeByKeyUserId(userId);*/
+		userAssignmentRepository.removeByKeyUserId(userId);
+		userRoleRepository.removeByKeyUserId(userId);
+		userRepository.removeById(userId);
+		
 		return -1;
 	}
 
