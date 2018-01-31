@@ -732,6 +732,18 @@ var DAO = (function() {
 		});
 	}
 	
+	function loadSchedules(userId,startDate,endDate,_callback){
+		
+	}
+	
+	function saveSchedule(userId,schedule,_callback){
+		
+	}
+	
+	function saveSchedules(userId,schedules,_callback){
+		
+	}
+	
 	return{
 		STATUS : STATUS,
 		NEW_ID : NEW_ID,
@@ -754,7 +766,10 @@ var DAO = (function() {
 		loadAssignment : loadAssignment,
 		loadNextAssignment : loadNextAssignment,
 		loadPrevAssignment : loadPrevAssignment,
-		saveAssignment : saveAssignment
+		saveAssignment : saveAssignment,
+		loadSchedules : loadSchedules,
+		saveSchedule : saveSchedule,
+		saveSchedules : saveSchedules
 	}
 	
 })();
@@ -1968,6 +1983,7 @@ var ScheduleEditor=(function(){
 	
 	function _loadSchedules(){
 		console.log('Loading schedules...');
+		
 	}
 	
 	function _clearDateColumns(){
@@ -1976,20 +1992,55 @@ var ScheduleEditor=(function(){
 	}
 	
 	function _createDateColumns(){
-		console.log('Creating date range...');
 		var startDate=new Date($(fields.periodStart).val());
 		var endDate=new Date($(fields.periodEnd).val());
 		var d=new Date(startDate);
+		var b=new Date(endDate);
+		b.setDate(b.getDate()+1)
 		
-		console.log(startDate);
-		console.log(endDate);
-		console.log(d);
-		while(d<endDate.getDate()+1){
+		var thDateHtml;
+		var thWeekDayHtml;
+		var formattedDate;
+		
+		while(d < b){
 			console.log(d);
-			//create headers
+			formattedDate=$.format.date(d,'yyyy-MM-dd');;
+			thDateHtml='<th data-date="'+formattedDate+'">'+formattedDate+'</th>';
+			thWeekdayHtml='<th>'+_getWeekday(d)+'</th>';
+			$(headerRowDates).append(thDateHtml);
+			$(headerRowWeekdays).append(thWeekdayHtml);
 			d.setDate(d.getDate()+1);
 		}
-		
+	}
+	
+	function _getWeekday(date){
+		var n=date.getDay();
+		var day;
+		switch(n){
+			case 0:
+				day='Sun';
+				break;
+			case 1:
+				day='Mon';
+				break;
+			case 2:
+				day='Tue';
+				break;
+			case 3:
+				day='Wed';
+				break;
+			case 4:
+				day='Thu';
+				break;
+			case 5:
+				day='Fri';
+				break;
+			case 6:
+				day='Sat';
+				break;
+				
+		}
+		return day;
 	}
 	
 	
