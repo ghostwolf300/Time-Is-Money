@@ -126,6 +126,35 @@ INSERT INTO `role` VALUES (1,'ADMIN'),(2,'MANAGER'),(3,'CO-WORKER'),(4,'SHIFT PL
 UNLOCK TABLES;
 
 --
+-- Table structure for table `schedule`
+--
+
+DROP TABLE IF EXISTS `schedule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `schedule` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `schedule_date` date NOT NULL,
+  `schedule_type_id` int(11) NOT NULL,
+  `start` time DEFAULT NULL,
+  `end` time DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_schedule_user_id` (`user_id`),
+  CONSTRAINT `fk_schedule_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `schedule`
+--
+
+LOCK TABLES `schedule` WRITE;
+/*!40000 ALTER TABLE `schedule` DISABLE KEYS */;
+/*!40000 ALTER TABLE `schedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -152,7 +181,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (2,'admin','123456',NULL,1,2,'2018-01-12 07:47:26'),(3,'tester1','123456',NULL,1,2,'2018-01-12 07:49:39'),(4,'tester2','123456',NULL,1,2,'2018-01-12 07:49:39'),(5,'tester3','123456',NULL,1,2,'2018-01-12 07:49:39'),(6,'tester4','123456',NULL,1,2,'2018-01-12 07:49:41'),(7,'visus','123456',NULL,1,2,'2018-01-12 07:50:42');
+INSERT INTO `user` VALUES (2,'admin','123456',NULL,1,2,'2018-01-12 07:47:26'),(3,'tester1','123456',NULL,1,2,'2018-01-12 07:49:39'),(4,'tester2','123456','hfdhdfhfd',1,7,'2018-01-29 09:27:49'),(5,'tester3','123456',NULL,1,2,'2018-01-12 07:49:39'),(6,'tester4','123456','666d',1,7,'2018-01-29 10:04:56'),(7,'visus','123456','testgsk',1,7,'2018-01-29 07:49:27');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,7 +213,7 @@ CREATE TABLE `user_assignment` (
 
 LOCK TABLES `user_assignment` WRITE;
 /*!40000 ALTER TABLE `user_assignment` DISABLE KEYS */;
-INSERT INTO `user_assignment` VALUES (3,'2018-01-01',NULL,27,2,'2018-01-17 09:48:41'),(4,'2018-01-01',NULL,28,2,'2018-01-17 09:48:41'),(5,'2018-01-01',NULL,30,2,'2018-01-17 09:48:41'),(6,'2018-01-01',NULL,33,2,'2018-01-17 09:48:41'),(7,'2017-10-01','2017-12-31',27,2,'2018-01-18 18:21:20'),(7,'2018-01-01','2018-02-28',34,2,'2018-01-18 18:23:00'),(7,'2018-03-01',NULL,30,2,'2018-01-18 18:21:22');
+INSERT INTO `user_assignment` VALUES (3,'2018-01-01',NULL,27,2,'2018-01-17 09:48:41'),(4,'2018-01-01','2018-01-28',28,7,'2018-01-24 11:37:14'),(4,'2018-01-29',NULL,32,7,'2018-01-29 09:27:33'),(5,'2018-01-01',NULL,30,2,'2018-01-17 09:48:41'),(6,'2018-01-01',NULL,33,7,'2018-01-24 12:25:46'),(7,'2017-10-01','2017-12-31',30,7,'2018-01-22 08:01:20'),(7,'2018-01-01','2018-02-28',27,7,'2018-01-23 09:41:19'),(7,'2018-03-01',NULL,33,7,'2018-01-23 09:11:44');
 /*!40000 ALTER TABLE `user_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +245,7 @@ CREATE TABLE `user_contract` (
 
 LOCK TABLES `user_contract` WRITE;
 /*!40000 ALTER TABLE `user_contract` DISABLE KEYS */;
-INSERT INTO `user_contract` VALUES (3,'2018-01-01',NULL,1,0.00,0.00,2,'2018-01-12 08:27:30'),(4,'2018-01-01',NULL,2,0.00,0.00,2,'2018-01-12 08:30:06'),(5,'2018-01-01',NULL,4,0.00,0.00,2,'2018-01-12 08:30:06'),(6,'2018-01-01',NULL,5,0.00,0.00,2,'2018-01-12 08:30:06'),(7,'2017-01-01','2017-12-31',1,0.00,0.00,2,'2018-01-16 13:45:18'),(7,'2018-01-01','2018-02-28',5,0.00,0.00,2,'2018-01-16 13:47:04'),(7,'2018-03-01',NULL,3,0.00,0.00,2,'2018-01-16 13:45:58');
+INSERT INTO `user_contract` VALUES (0,'2018-01-01','2018-01-30',4,30.00,15.00,7,'2018-01-29 07:08:43'),(3,'2018-01-01',NULL,1,0.00,0.00,2,'2018-01-12 08:27:30'),(4,'2018-01-01','2018-01-28',2,30.00,0.00,7,'2018-01-29 09:23:10'),(4,'2018-01-29',NULL,1,40.00,40.00,7,'2018-01-29 09:26:54'),(5,'2018-01-01',NULL,4,0.00,0.00,2,'2018-01-12 08:30:06'),(6,'2018-01-01',NULL,5,0.00,0.00,2,'2018-01-12 08:30:06'),(7,'2017-01-01','2017-12-31',1,40.00,10.00,7,'2018-01-22 13:57:57'),(7,'2018-01-01','2018-01-30',4,30.00,10.00,7,'2018-01-23 11:36:01'),(7,'2018-01-31',NULL,4,30.00,10.00,7,'2018-01-22 11:50:46');
 /*!40000 ALTER TABLE `user_contract` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,7 +280,7 @@ CREATE TABLE `user_personal` (
 
 LOCK TABLES `user_personal` WRITE;
 /*!40000 ALTER TABLE `user_personal` DISABLE KEYS */;
-INSERT INTO `user_personal` VALUES (2,'2018-01-01',NULL,'Sheev','Palpatine',NULL,'1945-05-06',NULL,NULL,2,'2018-01-12 08:39:41'),(3,'2018-01-01',NULL,'Bill','Clinton',NULL,'1951-06-14',NULL,NULL,2,'2018-01-12 08:39:41'),(4,'2018-01-01',NULL,'Vladimir','Putin',NULL,'1968-09-02',NULL,NULL,2,'2018-01-12 08:39:41'),(5,'2018-01-01',NULL,'Tarja','Halonen',NULL,'1979-03-20',NULL,NULL,2,'2018-01-12 08:39:41'),(6,'2018-01-01',NULL,'Tony','Blair',NULL,'1995-07-10',NULL,NULL,2,'2018-01-12 08:39:41'),(7,'2017-10-01','2017-12-31','Ville','Susi',NULL,'1981-07-13','123456789','myemail@company.com',2,'2018-01-18 10:08:05'),(7,'2018-01-01','2018-01-31','Ville','Susi','Juhani','1981-07-13','666 666 666','hotmale@microhard.com',7,'2018-01-19 09:37:51'),(7,'2018-02-01','2018-02-28','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-01-18 10:09:09'),(7,'2018-03-01','2018-04-09','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-01-19 13:32:06'),(7,'2018-04-10',NULL,'Ville','Susi','Superfly','1981-07-13','555 222 333','new rec',7,'2018-01-19 13:55:00');
+INSERT INTO `user_personal` VALUES (0,'2018-01-01','2018-01-31','Ville','Susi','test','1981-07-13','666 666 666','hotmale@microhard.com',7,'2018-01-29 07:00:45'),(2,'2018-01-01',NULL,'Sheev','Palpatine',NULL,'1945-05-06',NULL,NULL,2,'2018-01-12 08:39:41'),(3,'2018-01-01',NULL,'Bill','Clinton',NULL,'1951-06-14',NULL,NULL,2,'2018-01-12 08:39:41'),(4,'2018-01-01','2018-01-28','Vladimir','Putin','','1968-09-02','','',7,'2018-01-24 11:36:50'),(4,'2018-01-29',NULL,'Vladimir','Putin','','1968-09-02','1234567','',7,'2018-01-29 09:26:32'),(5,'2018-01-01',NULL,'Tarja','Halonen',NULL,'1979-03-20',NULL,NULL,2,'2018-01-12 08:39:41'),(6,'2018-01-01',NULL,'Tony','Blair',NULL,'1995-07-10',NULL,NULL,2,'2018-01-12 08:39:41'),(7,'2017-10-01','2017-12-31','Ville','Susi',NULL,'1981-07-13','123456789','myemail@company.com',2,'2018-01-18 10:08:05'),(7,'2018-01-01','2018-01-31','Ville','Susi','My test','1981-07-13','666 666 666','hotmale@microhard.com',7,'2018-01-29 07:08:16'),(7,'2018-02-01','2018-02-28','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-01-18 10:09:09'),(7,'2018-03-01','2018-04-09','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-01-19 13:32:06'),(7,'2018-04-10',NULL,'Ville','Susi','Superfly','1981-07-13','555 222 333','new rec',7,'2018-01-19 13:55:00');
 /*!40000 ALTER TABLE `user_personal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -274,7 +303,7 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
-INSERT INTO `user_role` VALUES (2,1),(2,2),(2,3),(3,3),(4,3),(5,3),(6,3),(6,4),(7,1),(7,2),(7,3),(7,4);
+INSERT INTO `user_role` VALUES (2,1),(2,2),(2,3),(3,3),(5,3),(7,1),(7,2),(7,3),(4,2),(4,3),(6,3),(6,4),(-10,3);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -332,6 +361,37 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES ('emves','Emilia','Vesterinen','abcdef',1),('visus','Ville','Susi','123456',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `work_time`
+--
+
+DROP TABLE IF EXISTS `work_time`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `work_time` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `stamp_in` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `stamp_out` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_in` date DEFAULT NULL,
+  `date_out` date DEFAULT NULL,
+  `rounded_in_time` time DEFAULT NULL,
+  `rounded_out_time` time DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_work_time_user_id` (`user_id`),
+  CONSTRAINT `fk_work_time_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `work_time`
+--
+
+LOCK TABLES `work_time` WRITE;
+/*!40000 ALTER TABLE `work_time` DISABLE KEYS */;
+/*!40000 ALTER TABLE `work_time` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -342,4 +402,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-19 15:59:00
+-- Dump completed on 2018-01-31 15:58:04

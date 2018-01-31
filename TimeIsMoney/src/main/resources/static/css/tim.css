@@ -457,3 +457,14 @@ div#recordControls_bottom_right{
 	background-color: yellow;
 	border-color: #ff8d00;
 }
+
+#schedule-edit-dialog{
+	width: 300px;
+	height: 200px;
+	border: 1px solid black;
+	display: none;
+}
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}

@@ -16,13 +16,13 @@
 				<thead>
 					<tr id="schedule-editor-thead-row-dates">
 						<th rowspan="2">User</th>
-						<th>2018-01-01</th>
-						<th>2018-01-02</th>
-						<th>2018-01-03</th>
-						<th>2018-01-04</th>
-						<th>2018-01-05</th>
-						<th>2018-01-06</th>
-						<th>2018-01-07</th>
+						<th data-date="2018-01-01">2018-01-01</th>
+						<th data-date="2018-01-02">2018-01-02</th>
+						<th data-date="2018-01-03">2018-01-03</th>
+						<th data-date="2018-01-04">2018-01-04</th>
+						<th data-date="2018-01-05">2018-01-05</th>
+						<th data-date="2018-01-06">2018-01-06</th>
+						<th data-date="2018-01-07">2018-01-07</th>
 					</tr>
 					<tr id="schedule-editor-thead-row-weekdays">
 						<th>Mon</th>
@@ -35,27 +35,17 @@
 					</tr>
 				</thead>
 				<tbody id="schedule-editor-tbody">
-					<tr>
-<<<<<<< HEAD
-						<td class="cell-user" data-userId="6">User 1</td>
-						<td class="cell-schedule" data-start="9:00" data-end="17:00">9:00-17:00</td>
-						<td class="cell-schedule" data-start="9:00" data-end="17:00">9:00-17:00</td>
-						<td class="cell-schedule" data-start="9:00" data-end="17:00">9:00-17:00</td>
-						<td class="cell-schedule" data-start="9:00" data-end="17:00">9:00-17:00</td>
-						<td class="cell-schedule" data-start="9:00" data-end="17:00">9:00-17:00</td>
-						<td class="cell-schedule" data-start="9:00" data-end="17:00"></td>
-						<td class="cell-schedule" data-start="9:00" data-end="17:00"></td>
-=======
+					<tr data-userId="1">
 						<td class="cell-user"><input type="checkbox" class="scheduler-user-select"/>User 1</td>
-						<td class="cell-schedule">9:00-17:00</td>
-						<td class="cell-schedule">9:00-17:00</td>
-						<td class="cell-schedule">9:00-17:00</td>
-						<td class="cell-schedule">9:00-17:00</td>
-						<td class="cell-schedule">9:00-17:00</td>
-						<td class="cell-schedule"></td>
+						<td class="cell-schedule" data-start="09:00" data-end="17:00">9:00-17:00</td>
+						<td class="cell-schedule" data-start="09:00" data-end="17:00">9:00-17:00</td>
+						<td class="cell-schedule" data-start="09:00" data-end="17:00">9:00-17:00</td>
+						<td class="cell-schedule" data-start="09:00" data-end="17:00">9:00-17:00</td>
+						<td class="cell-schedule" data-start="09:00" data-end="17:00">9:00-17:00</td>
+						<td class="cell-schedule" data-start="09:00" data-end="17:00"></td>
 						<td class="cell-schedule"></td>
 					</tr>
-					<tr>
+					<tr data-userId="2">
 						<td class="cell-user"><input type="checkbox" class="scheduler-user-select"/>User 2</td>
 						<td class="cell-schedule">9:00-17:00</td>
 						<td class="cell-schedule">9:00-17:00</td>
@@ -65,7 +55,7 @@
 						<td class="cell-schedule"></td>
 						<td class="cell-schedule"></td>
 					</tr>
-					<tr>
+					<tr data-userId="3">
 						<td class="cell-user"><input type="checkbox" class="scheduler-user-select"/>User 3</td>
 						<td class="cell-schedule">9:00-17:00</td>
 						<td class="cell-schedule">9:00-17:00</td>
@@ -74,11 +64,11 @@
 						<td class="cell-schedule">9:00-17:00</td>
 						<td class="cell-schedule"></td>
 						<td class="cell-schedule"></td>
->>>>>>> branch 'master' of https://github.com/ghostwolf300/Time-Is-Money
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
+	<div id="schedule-edit-dialog" th:replace="fragments/dialogs :: schedule-edit-dialog"></div>
 </div>
 </html>

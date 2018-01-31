@@ -8,11 +8,16 @@ var csrf_token=$('meta[name="_csrf"]').attr('content');
 $(document).ready(initPage);
 
 function initPage(){
-	console.log('initializing page...'+$(document.body).data('viewId'));
+	console.log('initializing page...'+$('meta[name="viewId"]').attr('content'));
+	var view=$('meta[name="viewId"]').attr('content');
 	globalSetup();
-	UserSearch.init();
-	UserRecord.init();
-	ScheduleEditor.init();
+	if(view=='USER_RECORD'){
+		UserSearch.init();
+		UserRecord.init();
+	}
+	else if(view=='SHEDULE_PLANNER'){
+		ScheduleEditor.init();
+	}
 }
 
 function globalSetup(){
@@ -1934,23 +1939,139 @@ var ScheduleEditor=(function(){
 	function init(){
 		console.log('Initializing Module Schedule Editor');
 		_bindEventHandlers();
+		ScheduleEditDialog.init();
 	}
 	
 	function _bindEventHandlers(){
-		$(tbody).click(_edit);
+		$(controls.refresh).click(function(){
+			_clearDateColumns();
+			_createDateColumns();
+			_clearSchedules();
+			_loadSchedules();
+		});
+		_bindScheduleEditDialog();
 	}
 	
-	function _edit(event){
-		console.log('Click table cell');
-		var td=event.target;
-		var tr=event.target.parentNode;
-		//selected=$(tr).find('#user_id').text();
-		alert($(td).text());
+	function _bindScheduleEditDialog(){
+		$(tbody).find('td').each(function(){
+			$(this).click(ScheduleEditDialog.edit);
+		});
+	}
+	
+	function getDate(colIndex){
+		return $(headerRowDates).find('th').eq(colIndex).attr('data-date');
+	}
+	
+	function _clearSchedules(){
+		$(tbody+' tr').find('td:gt(0)').remove();
+	}
+	
+	function _loadSchedules(){
+		console.log('Loading schedules...');
+	}
+	
+	function _clearDateColumns(){
+		$(headerRowDates).find('th:gt(0)').remove();
+		$(headerRowWeekdays).find('th').remove();
+	}
+	
+	function _createDateColumns(){
+		console.log('Creating date range...');
+		var startDate=new Date($(fields.periodStart).val());
+		var endDate=new Date($(fields.periodEnd).val());
+		var d=new Date(startDate);
+		
+		console.log(startDate);
+		console.log(endDate);
+		console.log(d);
+		while(d<endDate.getDate()+1){
+			console.log(d);
+			//create headers
+			d.setDate(d.getDate()+1);
+		}
+		
+	}
+	
+	
+	
+	return{
+		init : init,
+		getDate : getDate
+	}
+	
+})();
+
+var ScheduleEditDialog=(function(){
+	
+	const dialog='#schedule-edit-dialog';
+	const fields={
+			start : '#start',
+			end : '#end'
+	}
+	
+	var td;
+	
+	function init(){
+		$(dialog).dialog({
+			modal: true,
+			dialogClass :'no-close',
+			autoOpen: false,
+			buttons: [
+				{
+					text: 'OK',
+					click: ScheduleEditDialog.save
+				},
+				{
+					text: 'Cancel',
+					click: ScheduleEditDialog.cancel
+				}
+			]
+		});
+	}
+	
+	function edit(event){
+		console.log('showing dialog...'+event.target);
+		td=event.target;
+		$(dialog).find(fields.start).val($(td).attr('data-start'));
+		$(dialog).find(fields.end).val($(td).attr('data-end'));
+		$(dialog).dialog('open');
+	}
+
+	function cancel(){
+		$(dialog).find(fields.start).val(null);
+		$(dialog).find(fields.end).val(null);
+		td=null;
+		$(dialog).dialog( "close" );
+	}
+
+	function save(event){
+		
+		var start=$(dialog).find(fields.start).val();
+		var end=$(dialog).find(fields.end).val();
+		var colIndex=$(td).index();
+		var date=ScheduleEditor.getDate(colIndex);
+		var userId=$(td.parentNode).attr('data-userId');
+		console.log('saving schedule...'+start+' - '+end+' '+date+' '+userId);
+		if(!start){
+			$(dialog).find(fields.start).focus();
+		}
+		else if(!end){
+			$(dialog).find(fields.end).focus();
+		}
+		else{
+			$(td).text(start+'-'+end);
+			$(td).attr('data-start',start);
+			$(td).attr('data-end',end);
+			$(dialog).dialog( "close" );
+		}
 		
 	}
 	
 	return{
-		init : init
+		init : init,
+		edit : edit,
+		save : save,
+		cancel : cancel
 	}
 	
 })();
