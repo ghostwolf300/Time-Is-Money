@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.entities.User;
-import com.tim.service.UserService;
+import com.tim.service.user.UserService;
 
 @RestController
 @RequestMapping("/users")

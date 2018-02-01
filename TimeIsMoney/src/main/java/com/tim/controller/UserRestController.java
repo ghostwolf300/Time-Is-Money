@@ -17,15 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.component.TIMSessionInfo;
-import com.tim.db.user.UserRepository;
-import com.tim.entities.Role;
 import com.tim.entities.User;
 import com.tim.entities.UserAssignment;
 import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
-import com.tim.service.UserPersonalService;
-import com.tim.service.UserService;
+import com.tim.service.user.UserPersonalService;
+import com.tim.service.user.UserService;
 
 @RestController
 @RequestMapping("/userrecord")

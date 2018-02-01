@@ -1,4 +1,4 @@
-package com.tim.service;
+package com.tim.service.orgunit;
 
 import com.tim.entities.OrgUnit;
 import com.tim.util.JsTreeNode;

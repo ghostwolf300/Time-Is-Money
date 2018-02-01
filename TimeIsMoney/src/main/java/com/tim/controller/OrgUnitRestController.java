@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.entities.OrgUnit;
-import com.tim.service.OrgUnitService;
+import com.tim.service.orgunit.OrgUnitService;
 import com.tim.util.JsTreeNode;
 import com.tim.util.TreeNode;
 

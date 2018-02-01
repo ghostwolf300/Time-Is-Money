@@ -31,6 +31,70 @@ function globalSetup(){
     });
 }
 
+var Util=(function(){
+	
+	function getWeekday(date){
+		var n=date.getDay();
+		var day;
+		switch(n){
+			case 0:
+				day='Sun';
+				break;
+			case 1:
+				day='Mon';
+				break;
+			case 2:
+				day='Tue';
+				break;
+			case 3:
+				day='Wed';
+				break;
+			case 4:
+				day='Thu';
+				break;
+			case 5:
+				day='Fri';
+				break;
+			case 6:
+				day='Sat';
+				break;
+				
+		}
+		return day;
+	}
+	
+	function getFormattedDate(date){
+		var formattedDate=$.format.date(date,'yyyy-MM-dd');
+		return formattedDate;
+	}
+	
+	function getTimeSQL(time){
+		var hours=time.split(':')[0];
+		var minutes=time.split(':')[1];
+		var formattedTime=hours+':'+minutes+':00';
+		return formattedTime;
+	}
+	
+	function getTimeHHmm(time){
+		var hours=time.split(':')[0];
+		var minutes=time.split(':')[1];
+		var formattedTime=hours+':'+minutes;
+		return formattedTime;
+	}
+	
+	function _checkTime(i) {
+        return (i < 10) ? "0" + i : i;
+    }
+	
+	return{
+		getWeekday : getWeekday,
+		getFormattedDate : getFormattedDate,
+		getTimeSQL : getTimeSQL,
+		getTimeHHmm : getTimeHHmm
+	}
+	
+})();
+
 var UserSearch=(function(){
 	
 	var divs={
@@ -733,11 +797,39 @@ var DAO = (function() {
 	}
 	
 	function loadSchedules(userId,startDate,endDate,_callback){
+		var url='/schedules/find?userId='+userId+'&startDate='+startDate+'&endDate='+endDate;
+		var schedules;
 		
+		$.getJSON(url,function(s,statusText,jqxhr){
+			
+		}).done(function(s,statusText,jqxhr){
+			schedules=s;
+			_callback(STATUS.DONE,schedules);
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
 	}
 	
 	function saveSchedule(userId,schedule,_callback){
+		var url='/schedules/save?userId='+userId;
 		
+		data=JSON.stringify(schedule);
+		
+		$.ajax({
+			url : url,
+			method : "POST",
+			data : data,
+			dataType : "json"
+		}).done(function(schd){
+			_callback(STATUS.DONE,schd);
+		}).fail(function(){
+			alert("ERROR: Couldn't save schedule!");
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
 	}
 	
 	function saveSchedules(userId,schedules,_callback){
@@ -1950,6 +2042,9 @@ var ScheduleEditor=(function(){
 	var headerRowDates='#schedule-editor-thead-row-dates';
 	var headerRowWeekdays='#schedule-editor-thead-row-weekdays';
 	var tbody='#schedule-editor-tbody';
+	var copy;
+	var paste;
+	var current;
 	
 	function init(){
 		console.log('Initializing Module Schedule Editor');
@@ -1964,17 +2059,97 @@ var ScheduleEditor=(function(){
 			_clearSchedules();
 			_loadSchedules();
 		});
-		_bindScheduleEditDialog();
+		_bindKeyListener();
+		_bindCells();
 	}
 	
-	function _bindScheduleEditDialog(){
+	function _bindKeyListener(){
+		$(document).keydown(function(event){
+			if(event.which==67 && event.ctrlKey){
+				_copy(event);
+			}
+			else if(event.which==86 && event.ctrlKey){
+				_paste(event);
+			}
+		});
+	}
+	
+	function _bindCells(){
 		$(tbody).find('td').each(function(){
-			$(this).click(ScheduleEditDialog.edit);
+			_bindSingleCell(this);
+		});
+	}
+	
+	function _bindSingleCell(td){
+		$(td).click(ScheduleEditDialog.edit);
+		$(td).mouseenter(function(event){
+			var cell=event.target;
+			if($(cell).index()>0){
+				current=cell;
+			}
 		});
 	}
 	
 	function getDate(colIndex){
 		return $(headerRowDates).find('th').eq(colIndex).attr('data-date');
+	}
+	
+	function getUserId(td){
+		var tr=$(td.parentNode);
+		console.log(tr.attr('data-userId'));
+		var userId=tr.attr('data-userId');
+		return userId;
+	}
+	
+	function _copy(event){
+		console.log('Copying cell');
+		copy=current;
+	}
+	
+	function _paste(event){
+		if(copy!=null && $(current).index()>0){
+			
+			//save this to DB...
+			var userId=getUserId(current);
+			console.log('user id: '+userId);
+			var schedule=_getJSON(userId,copy);
+			schedule.scheduleDate=getDate($(current).index());
+			paste=current;
+			DAO.saveSchedule(userId,schedule,function(s,status){
+				if(status==DAO.STATUS.DONE){
+					console.log('saved... now pasting');
+					_fillCell(paste,s);
+				}
+				else if(status==DAO.STATUS.FAIL){
+					//fail
+				}
+				paste=null;
+			})
+			
+		}
+	}
+	
+	function _fillCell(td,schd){
+		console.log('Pasting cell');
+		console.log(schd);
+		$(td).attr('data-id',schd.id);
+		$(td).attr('data-typeId',schd.typeId);
+		$(td).attr('data-date',schd.scheduleDate);
+		$(td).attr('data-start',schd.start);
+		$(td).attr('data-end',schd.end);
+		$(td).text(Util.getTimeHHmm(schd.start)+'-'+Util.getTimeHHmm(schd.end));
+	}
+	
+	function _getJSON(userId,td){
+		var schedule={
+			id : null,
+			userId : userId,
+			scheduleDate : null,
+			scheduleTypeId : $(td).attr('data-typeId'),
+			start : $(td).attr('data-start'),
+			end : $(td).attr('data-end')
+		}
+		return schedule;
 	}
 	
 	function _clearSchedules(){
@@ -1983,7 +2158,66 @@ var ScheduleEditor=(function(){
 	
 	function _loadSchedules(){
 		console.log('Loading schedules...');
+		$(tbody+' tr').each(function(){
+			var tr=$(this);
+			var userId=tr.attr('data-userId');
+			var startDate=$(fields.periodStart).val();
+			var endDate=$(fields.periodEnd).val();
+			console.log(userId+' '+startDate+' - '+endDate);
+			DAO.loadSchedules(userId,startDate,endDate,function(status,schedules){
+				if(status==DAO.STATUS.DONE){
+					_createScheduleRow(tr,schedules);
+				}
+				else if(status==DAO.STATUS.NA){
+					_createEmptyScheduleRow(tr);
+				}
+				else if(status==DAO.STATUS.FAIL){
+					
+				}
+			})
+			
+		});
 		
+	}
+	
+	function _createEmptyScheduleRow(tr){
+		var columnCount=$(headerRowDates+' > th').length-1;
+		for(var c=1;c<columnCount+1;c++){
+			var td=_getScheduleCell(null);
+			tr.append(td);
+		}
+	}
+	
+	function _createScheduleRow(tr,schedules){
+		var columnCount=$(headerRowDates+' > th').length-1;
+		var date;
+		var s;
+		var td;
+		
+		for(var c=1;c<columnCount+1;c++){
+			date=getDate(c);
+			s=schedules[date];
+			td=_getScheduleCell(s);
+			tr.append(td);
+		}
+		
+	}
+	
+	function _getScheduleCell(schedule){
+		var td;
+		if(schedule!=null){
+			td=$('<td class="cell-schedule" \
+					data-id="'+schedule.id+'" \
+					data-typeId="'+schedule.scheduleTypeId+'" \
+					data-date="'+schedule.scheduleDate+'" \
+					data-start="'+schedule.start+'" \
+					data-end="'+schedule.end+'">'+Util.getTimeHHmm(schedule.start)+'-'+Util.getTimeHHmm(schedule.end)+'</td>');
+		}
+		else{
+			td=$('<td class="cell-schedule"></td>');
+		}
+		_bindSingleCell(td);
+		return td;			
 	}
 	
 	function _clearDateColumns(){
@@ -2003,51 +2237,19 @@ var ScheduleEditor=(function(){
 		var formattedDate;
 		
 		while(d < b){
-			console.log(d);
-			formattedDate=$.format.date(d,'yyyy-MM-dd');;
+			formattedDate=Util.getFormattedDate(d);
 			thDateHtml='<th data-date="'+formattedDate+'">'+formattedDate+'</th>';
-			thWeekdayHtml='<th>'+_getWeekday(d)+'</th>';
+			thWeekdayHtml='<th>'+Util.getWeekday(d)+'</th>';
 			$(headerRowDates).append(thDateHtml);
 			$(headerRowWeekdays).append(thWeekdayHtml);
 			d.setDate(d.getDate()+1);
 		}
 	}
 	
-	function _getWeekday(date){
-		var n=date.getDay();
-		var day;
-		switch(n){
-			case 0:
-				day='Sun';
-				break;
-			case 1:
-				day='Mon';
-				break;
-			case 2:
-				day='Tue';
-				break;
-			case 3:
-				day='Wed';
-				break;
-			case 4:
-				day='Thu';
-				break;
-			case 5:
-				day='Fri';
-				break;
-			case 6:
-				day='Sat';
-				break;
-				
-		}
-		return day;
-	}
-	
-	
-	
 	return{
 		init : init,
-		getDate : getDate
+		getDate : getDate,
+		getUserId : getUserId
 	}
 	
 })();
@@ -2097,12 +2299,13 @@ var ScheduleEditDialog=(function(){
 
 	function save(event){
 		
-		var start=$(dialog).find(fields.start).val();
-		var end=$(dialog).find(fields.end).val();
+		var start=Util.getTimeSQL($(dialog).find(fields.start).val());
+		var end=Util.getTimeSQL($(dialog).find(fields.end).val());
+		
 		var colIndex=$(td).index();
 		var date=ScheduleEditor.getDate(colIndex);
-		var userId=$(td.parentNode).attr('data-userId');
-		console.log('saving schedule...'+start+' - '+end+' '+date+' '+userId);
+		var userId=ScheduleEditor.getUserId(td);
+		
 		if(!start){
 			$(dialog).find(fields.start).focus();
 		}
@@ -2110,12 +2313,30 @@ var ScheduleEditDialog=(function(){
 			$(dialog).find(fields.end).focus();
 		}
 		else{
-			$(td).text(start+'-'+end);
-			$(td).attr('data-start',start);
-			$(td).attr('data-end',end);
+			
+			var schedule={
+					id : $(td).attr('data-id'),
+					userId : userId,
+					scheduleDate : date,
+					scheduleTypeId : $(td).attr('data-typeId') || 1,
+					start : start,
+					end : end,
+			}
+			console.log(schedule);
+			DAO.saveSchedule(userId,schedule,function(status,schd){
+				if(status==DAO.STATUS.DONE){
+					$(td).attr('data-id',schd.id);
+					$(td).attr('data-typeId',schd.scheduleTypeId);
+					$(td).attr('data-start',schd.start);
+					$(td).attr('data-end',schd.end);
+					$(td).text(Util.getTimeHHmm(schedule.start)+'-'+Util.getTimeHHmm(schedule.end));
+				}
+				else if(status==DAO.STATUS.FAIL){
+					//add some error handling...
+				}
+			});
 			$(dialog).dialog( "close" );
 		}
-		
 	}
 	
 	return{

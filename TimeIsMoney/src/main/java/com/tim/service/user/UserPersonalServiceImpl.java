@@ -1,4 +1,4 @@
-package com.tim.service;
+package com.tim.service.user;
 
 import java.sql.Date;
 import java.util.List;
