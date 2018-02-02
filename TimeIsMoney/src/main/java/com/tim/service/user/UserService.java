@@ -10,6 +10,7 @@ import com.tim.entities.UserAssignment;
 import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
+import com.tim.pojo.AssignedResult;
 import com.tim.pojo.UserSearchResult;
 
 public interface UserService {
@@ -41,5 +42,7 @@ public interface UserService {
 	public UserAssignment saveAssignment(UserAssignment userAssignment);
 	
 	public int removeUser(int userId);
+	
+	public List<AssignedResult> findAssignedEmployees(int orgUnitId,Date startDate,Date endDate);
 	
 }

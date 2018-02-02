@@ -18,6 +18,7 @@ import com.tim.entities.UserAssignment;
 import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
+import com.tim.pojo.AssignedResult;
 import com.tim.pojo.UserSearchResult;
 
 @Service("userService")
@@ -224,6 +225,11 @@ public class UserServiceImpl implements UserService {
 		userRepository.removeById(userId);
 		
 		return -1;
+	}
+
+	@Override
+	public List<AssignedResult> findAssignedEmployees(int orgUnitId, Date startDate, Date endDate) {
+		return userAssignmentRepository.findAssignedTo(orgUnitId, startDate, endDate);
 	}
 
 }

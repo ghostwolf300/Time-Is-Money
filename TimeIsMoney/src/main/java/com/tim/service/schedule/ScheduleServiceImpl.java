@@ -40,6 +40,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 		}
 		return scheduleMap;
 	}
+
+	@Override
+	public int remove(int id) {
+		scheduleRepository.delete(id);
+		return 1;
+	}
 	
 
 }

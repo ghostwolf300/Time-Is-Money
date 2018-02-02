@@ -42,5 +42,11 @@ public class ScheduleRestController {
 		}
 		return new ResponseEntity<Map<String,Schedule>>(scheduleMap,HttpStatus.OK);
 	}
+	
+	@RequestMapping(value="/delete")
+	public ResponseEntity<Integer> removeSchedule(@RequestParam(value="id") Integer scheduleId){
+		scheduleService.remove(scheduleId);
+		return new ResponseEntity<Integer>(1,HttpStatus.OK);
+	}
 
 }

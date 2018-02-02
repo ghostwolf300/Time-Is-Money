@@ -1,4 +1,4 @@
-package com.tim.controller;
+ package com.tim.controller;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -22,6 +22,7 @@ import com.tim.entities.UserAssignment;
 import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
+import com.tim.pojo.AssignedResult;
 import com.tim.service.user.UserPersonalService;
 import com.tim.service.user.UserService;
 
@@ -199,6 +200,19 @@ public class UserRestController {
 		userService.removeUser(userId);
 		return new ResponseEntity<Integer>(1,HttpStatus.OK);
 	}
+	
+	@RequestMapping(value="/assignments")
+	public ResponseEntity<List<AssignedResult>> getAssignedUsers(
+			@RequestParam(value="orgUnitId") Integer orgUnitId,
+			@RequestParam(value="startDate") Date startDate,
+			@RequestParam(value="endDate") Date endDate){
+		List<AssignedResult> results=userService.findAssignedEmployees(orgUnitId, startDate, endDate);
+		if(results==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<List<AssignedResult>>(results,HttpStatus.OK);
+	}
+	
 	
 	private Date getDateObject(String dateString) {
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");

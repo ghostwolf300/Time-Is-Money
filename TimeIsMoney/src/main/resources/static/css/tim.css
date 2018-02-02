@@ -418,6 +418,14 @@ div#recordControls_bottom_right{
 	align-items: center;
 }
 
+#scheduler-org-unit-details{
+	width: 260px;
+}
+
+#scheduler-plan-details{
+	width: 160px;
+}
+
 .scheduler-button{
 	margin-left: 6px;
 }

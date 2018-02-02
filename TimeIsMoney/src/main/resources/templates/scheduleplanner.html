@@ -5,11 +5,18 @@
       layout:decorator="layouts/default">
 
 <div id="scheduler-wrapper" layout:fragment="content">
-	<div id="scheduler-search">
+	<div id="scheduler-org-structure">
+		<div id="scheduler-org-structure-tree">
+		</div>
 	</div>
 	<div id="scheduler-content">
 		<div id="scheduler-menubar">
-			<span><input id="scheduler-period-start" type="date"/>-<input id="scheduler-period-end" type="date"/></span><input id="scheduler-period-refresh-button" class="scheduler-button" type="button" value="Refresh"/>
+			<p id="scheduler-org-unit-details"></p>
+			<p id="scheduler-plan-details"></p>
+			<input id="scheduler-plan-change-button" class="scheduler-button" type="button" value="Change"/>
+			<input id="schedule-editor-key-date" type="date"/>
+<!-- 			<span><input id="scheduler-period-start" type="date"/>-<input id="scheduler-period-end" type="date"/></span> -->
+			<input id="scheduler-period-refresh-button" class="scheduler-button" type="button" value="Refresh"/>
 		</div>
 		<div id="scheduler-editor">
 			<table id="schedule-editor-table">

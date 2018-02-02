@@ -675,6 +675,29 @@ var DAO = (function() {
 		});
 	}
 	
+	function loadOrgUnit(id,_callback){
+		
+		var url='/organisation/?id='+id;
+		var orgUnit;
+		
+		$.getJSON(url,function(ou,statusText,jqxhr){
+			
+		}).done(function(ou,statusText,jqxhr){
+			if(jqxhr.status==200){
+				orgUnit=ou;
+				_callback(STATUS.DONE,orgUnit);
+			}
+			else if(jqxhr.status==204){
+				_callback(STATUS.NA);
+			}
+			else{
+				_callback(STATUS.UNKNOWN);
+			}
+		}).fail(function(jqxhr,statusText,error){
+			_callback(STATUS.FAIL);
+		});
+	}
+	
 	function loadAssignment(userId,keyDate,_callback){
 		
 		var url='/userrecord/show/'+userId+'/assignmentdetails/?keyDate='+keyDate;
@@ -812,6 +835,25 @@ var DAO = (function() {
 		});
 	}
 	
+	function deleteSchedule(id,_callback){
+		
+		var url='/schedules/delete?id='+id;
+		
+		$.ajax({
+			url : url,
+			method : "POST",
+		}).success(function(flag){
+			
+		}).done(function(flag){
+			_callback(STATUS.DONE);
+
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+	}
+	
 	function saveSchedule(userId,schedule,_callback){
 		var url='/schedules/save?userId='+userId;
 		
@@ -836,6 +878,49 @@ var DAO = (function() {
 		
 	}
 	
+	function loadActivePlan(orgUnitId,keyDate,_callback){
+		
+		var url='/plans/active?orgUnitId='+orgUnitId+'&keyDate='+keyDate;
+		var plan;
+		
+		$.getJSON(url,function(p,statusText,jqxhr){
+			
+		}).done(function(p,statusText,jqxhr){
+			if(jqxhr.status==200){
+				plan=p;
+				_callback(STATUS.DONE,plan);
+			}
+			else if(jqxhr.status==204){
+				_callback(STATUS.NA);
+			}
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+	}
+	
+	function loadAssignedEmployees(orgUnitId,startDate,endDate,_callback){
+		var url='/userrecord/assignments?orgUnitId='+orgUnitId+'&startDate='+startDate+'&endDate='+endDate;
+		var employees;
+		
+		$.getJSON(url,function(el,statusText,jqxhr){
+			
+		}).done(function(el,statusText,jqxhr){
+			if(jqxhr.status==200){
+				employees=el;
+				_callback(STATUS.DONE,employees);
+			}
+			else if(jqxhr.status==204){
+				_callback(STATUS.NA);
+			}
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+	}
+	
 	return{
 		STATUS : STATUS,
 		NEW_ID : NEW_ID,
@@ -843,6 +928,7 @@ var DAO = (function() {
 		findAllUsers : findAllUsers,
 		delUser : delUser,
 		loadOrgTree : loadOrgTree,
+		loadOrgUnit : loadOrgUnit,
 		loadCredentials : loadCredentials,
 		saveCredentials : saveCredentials,
 		loadRoles : loadRoles,
@@ -861,7 +947,10 @@ var DAO = (function() {
 		saveAssignment : saveAssignment,
 		loadSchedules : loadSchedules,
 		saveSchedule : saveSchedule,
-		saveSchedules : saveSchedules
+		saveSchedules : saveSchedules,
+		deleteSchedule : deleteSchedule,
+		loadActivePlan : loadActivePlan,
+		loadAssignedEmployees : loadAssignedEmployees
 	}
 	
 })();
@@ -2032,23 +2121,33 @@ var Credentials=(function(){
 
 var ScheduleEditor=(function(){
 	
+	var orgUnitId;
+	var plan;
+	
 	var controls={
-			refresh : '#scheduler-period-refresh-button'
+			refresh : '#scheduler-period-refresh-button',
+			changePlan : '#scheduler-plan-change-button'
+			
 	}
 	var fields={
+			unitDetails :'#scheduler-org-unit-details',
+			planDetails :'#scheduler-plan-details',
+			keyDate : '#schedule-editor-key-date',
 			periodStart : '#scheduler-period-start',
 			periodEnd : '#scheduler-period-end'
 	}
 	var headerRowDates='#schedule-editor-thead-row-dates';
 	var headerRowWeekdays='#schedule-editor-thead-row-weekdays';
 	var tbody='#schedule-editor-tbody';
-	var copy;
-	var paste;
-	var current;
+	var copyCell;
+	var pasteCell;
+	var currentCell;
+	var locked=false;
 	
 	function init(){
 		console.log('Initializing Module Schedule Editor');
 		_bindEventHandlers();
+		SEOrgStructure.init();
 		ScheduleEditDialog.init();
 	}
 	
@@ -2084,8 +2183,8 @@ var ScheduleEditor=(function(){
 		$(td).click(ScheduleEditDialog.edit);
 		$(td).mouseenter(function(event){
 			var cell=event.target;
-			if($(cell).index()>0){
-				current=cell;
+			if($(cell).index()>0 && !locked){
+				currentCell=cell;
 			}
 		});
 	}
@@ -2103,35 +2202,75 @@ var ScheduleEditor=(function(){
 	
 	function _copy(event){
 		console.log('Copying cell');
-		copy=current;
-	}
-	
-	function _paste(event){
-		if(copy!=null && $(current).index()>0){
-			
-			//save this to DB...
-			var userId=getUserId(current);
-			console.log('user id: '+userId);
-			var schedule=_getJSON(userId,copy);
-			schedule.scheduleDate=getDate($(current).index());
-			paste=current;
-			DAO.saveSchedule(userId,schedule,function(s,status){
-				if(status==DAO.STATUS.DONE){
-					console.log('saved... now pasting');
-					_fillCell(paste,s);
-				}
-				else if(status==DAO.STATUS.FAIL){
-					//fail
-				}
-				paste=null;
-			})
-			
+		if(!locked){
+			copyCell=currentCell;
 		}
 	}
 	
+	function _paste(event){
+		if(copyCell!=null && $(currentCell).index()>0){
+			
+			//lock, so currentCell & copyCell can't change
+			locked=true;
+			
+			//save this to DB...
+			var userId=getUserId(currentCell);
+			console.log('user id: '+userId);
+			var schedule=_getJSON(userId,copyCell);
+			schedule.scheduleDate=getDate($(currentCell).index());
+			
+			pasteCell=currentCell;
+			if($(currentCell).attr('data-id')){
+				console.log('existing schedule found... deleting');
+				_deleteCell(currentCell,function(isDeleted){
+					if(isDeleted){
+						_pasteCopiedCell();
+					}
+					else{
+						//release lock if delete failed;
+						locked=false;
+					}
+				})
+			}
+			else{
+				console.log('no existing schedule. saving.');
+				_pasteCopiedCell();
+			}
+		}
+	}
+	
+	function _deleteCell(cell,_callback){
+		var id=$(cell).attr('data-id');
+		
+		DAO.deleteSchedule(id,function(status){
+			var isDeleted=false;
+			if(status==DAO.STATUS.DONE){
+				isDeleted=true;
+			}
+			_callback(isDeleted);
+		});
+	}
+	
+	function _pasteCopiedCell(){
+		
+		var userId=getUserId(currentCell);
+		var schedule=_getJSON(userId,copyCell);
+		schedule.scheduleDate=getDate($(currentCell).index());
+		
+		DAO.saveSchedule(userId,schedule,function(status,s){
+			if(status==DAO.STATUS.DONE){
+				console.log('saved... now pasting');
+				_fillCell(currentCell,s);
+			}
+			else if(status==DAO.STATUS.FAIL){
+				//fail
+			}
+			//always release lock;
+			locked=false;
+		})
+	}
+	
 	function _fillCell(td,schd){
-		console.log('Pasting cell');
-		console.log(schd);
 		$(td).attr('data-id',schd.id);
 		$(td).attr('data-typeId',schd.typeId);
 		$(td).attr('data-date',schd.scheduleDate);
@@ -2145,7 +2284,7 @@ var ScheduleEditor=(function(){
 			id : null,
 			userId : userId,
 			scheduleDate : null,
-			scheduleTypeId : $(td).attr('data-typeId'),
+			scheduleTypeId : $(td).attr('data-typeId') || 1,
 			start : $(td).attr('data-start'),
 			end : $(td).attr('data-end')
 		}
@@ -2246,10 +2385,78 @@ var ScheduleEditor=(function(){
 		}
 	}
 	
+	function setOrgUnit(id){
+		orgUnitId=id;
+		DAO.loadOrgUnit(orgUnitId,function(status,ou){
+			if(status==DAO.STATUS.DONE){
+				_fillOrgUnitDetails(ou);
+				var keyDate=$(fields.keyDate).val();
+				if(keyDate==null || keyDate==''){
+					keyDate='2018-02-02';
+				}
+				console.log(keyDate);
+				DAO.loadActivePlan(orgUnitId,keyDate,function(status,p){
+					if(status==DAO.STATUS.DONE){
+						setPlan(p);
+					}
+					else if(status==DAO.STATUS.NA){
+						_fillPlanDetails(null);
+					}
+				});
+			}
+		});
+	}
+	
+	function _fillOrgUnitDetails(ou){
+		$(fields.unitDetails).text('ID: '+ou.id+' '+ou.name);
+	}
+	
+	function _fillPlanDetails(p){
+		if(p!=null && p!=''){
+			/*var start=$.format.date(p.startDate,'yyyy-MM-dd');
+			var end=$.format.date(p.endDate,'yyyy-MM-dd');*/
+			$(fields.planDetails).text('Plan: '+p.name);
+		}
+		else{
+			$(fields.planDetails).text('No plan found');
+		}
+	}
+	
+	function setPlan(p){
+		plan=p;
+		_fillPlanDetails(p);
+		_clearRows();
+		_loadEmployees();
+		_loadSchedules();
+	}
+	
+	function _clearRows(){
+		$(tbody).empty();
+	}
+	
+	function _loadEmployees(){
+		console.log('loading employees...'+orgUnitId+' '+plan.startDate);
+		//load employees assigned to org. unit between p.startDate and p.endDate
+		DAO.loadAssignedEmployees(orgUnitId,plan.startDate,plan.endDate,function(status,el){
+			if(status==DAO.STATUS.DONE){
+				console.log(el);
+			}
+			else if(status==DAO.STATUS.NA){
+				
+			}
+			else{
+				
+			}
+		});
+		
+	}
+	
 	return{
 		init : init,
 		getDate : getDate,
-		getUserId : getUserId
+		getUserId : getUserId,
+		setOrgUnit : setOrgUnit,
+		setPlan : setPlan
 	}
 	
 })();
@@ -2344,6 +2551,49 @@ var ScheduleEditDialog=(function(){
 		edit : edit,
 		save : save,
 		cancel : cancel
+	}
+	
+})();
+
+var SEOrgStructure=(function(){
+	
+	const rootDiv='#scheduler-org-structure';
+	const treeDiv='#scheduler-org-structure-tree';
+	
+	function init(){
+		_loadOrgTree();
+		_bindTreeChangeHandler();
+	}
+	
+	function _bindTreeChangeHandler(){
+		$(treeDiv).on('changed.jstree', _treeChangeHandler);
+	}
+	
+	function _treeChangeHandler(e,data){
+		var orgUnitId=data.selected;
+		console.log('Org unit '+orgUnitId+' selected');
+		ScheduleEditor.setOrgUnit(orgUnitId);
+	}
+	
+	function _loadOrgTree(){
+		var tree;
+		DAO.loadOrgTree(function(status,tree){
+			if(status==DAO.STATUS.DONE){
+				_fillOrgTree(tree);
+			}
+		});
+	}
+	
+	function _fillOrgTree(data){
+		$(treeDiv).jstree({ 
+			'core' : {
+				'data' : data
+			} 
+		});
+	}
+	
+	return{
+		init : init
 	}
 	
 })();
