@@ -26,6 +26,8 @@ public class Schedule implements Serializable {
 	@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	@Column(name="plan_id")
+	private Integer planId;
 	@Column(name="user_id")
 	private Integer userId;
 	@Column(name="schedule_date")
@@ -41,8 +43,9 @@ public class Schedule implements Serializable {
 		
 	}
 
-	public Schedule(Integer userId, Date scheduleDate, Integer scheduleTypeId, Time start, Time end) {
+	public Schedule(Integer userId,Integer planId,Date scheduleDate, Integer scheduleTypeId, Time start, Time end) {
 		this.userId = userId;
+		this.planId=planId;
 		this.scheduleDate = scheduleDate;
 		this.scheduleTypeId = scheduleTypeId;
 		this.start = start;
@@ -63,6 +66,14 @@ public class Schedule implements Serializable {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public Integer getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(Integer planId) {
+		this.planId = planId;
 	}
 
 	public Date getScheduleDate() {

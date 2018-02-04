@@ -29,8 +29,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public Map<String, Schedule> findMap(int userId, Date startDate, Date endDate) {
-		List<Schedule> schedules=scheduleRepository.findSchedules(userId, startDate, endDate);
+	public Map<String, Schedule> findMap(int userId,int planId) {
+		List<Schedule> schedules=scheduleRepository.findByUserIdAndPlanId(userId, planId);
 		Map<String,Schedule> scheduleMap=null;
 		if(schedules!=null) {
 			scheduleMap=new HashMap<String,Schedule>();
