@@ -2292,57 +2292,6 @@ var ScheduleEditor=(function(){
 		return schedule;
 	}
 	
-	/*function _clearSchedules(){
-		$(tbody+' tr').find('td:gt(0)').remove();
-	}
-	
-	function _loadSchedules(){
-		console.log('Loading schedules...');
-		$(tbody+' tr').each(function(){
-			var tr=$(this);
-			var userId=tr.attr('data-userId');
-			var startDate=$(fields.periodStart).val();
-			var endDate=$(fields.periodEnd).val();
-			console.log(userId+' '+startDate+' - '+endDate);
-			DAO.loadSchedules(userId,startDate,endDate,function(status,schedules){
-				if(status==DAO.STATUS.DONE){
-					_createScheduleRow(tr,schedules);
-				}
-				else if(status==DAO.STATUS.NA){
-					_createEmptyScheduleRow(tr);
-				}
-				else if(status==DAO.STATUS.FAIL){
-					
-				}
-			});
-			
-		});
-		
-	}
-	
-	function _createEmptyScheduleRow(tr){
-		var columnCount=$(headerRowDates+' > th').length-1;
-		for(var c=1;c<columnCount+1;c++){
-			var td=_getScheduleCell(null);
-			tr.append(td);
-		}
-	}
-	
-	function _createScheduleRow(tr,schedules){
-		var columnCount=$(headerRowDates+' > th').length-1;
-		var date;
-		var s;
-		var td;
-		
-		for(var c=1;c<columnCount+1;c++){
-			date=getDate(c);
-			s=schedules[date];
-			td=_getScheduleCell(s);
-			tr.append(td);
-		}
-		
-	}*/
-	
 	function _getScheduleCell(schedule){
 		var td;
 		if(schedule!=null){
@@ -2362,6 +2311,22 @@ var ScheduleEditor=(function(){
 	
 	function _getInactiveCell(){
 		var td=$('<td class="cell-inactive"></td>');
+		return td;
+	}
+	
+	function _getPastDateCell(){
+		var td;
+		if(schedule!=null){
+			td=$('<td class="cell-schedule-pastdate" \
+					data-id="'+schedule.id+'" \
+					data-typeId="'+schedule.scheduleTypeId+'" \
+					data-date="'+schedule.scheduleDate+'" \
+					data-start="'+schedule.start+'" \
+					data-end="'+schedule.end+'">'+Util.getTimeHHmm(schedule.start)+'-'+Util.getTimeHHmm(schedule.end)+'</td>');
+		}
+		else{
+			td=$('<td class="cell-schedule-pastdate"></td>');
+		}
 		return td;
 	}
 	
@@ -2502,7 +2467,12 @@ var ScheduleEditor=(function(){
 			date=getDate(c);
 			s=schedules[date];
 			if(_isActive(employee,date)){
-				td=_getScheduleCell(s);
+				if(_isPastDate(s,date)){
+					td=_getPastDateCell(s);
+				}
+				else{
+					td=_getScheduleCell(s);
+				}
 			}
 			else{
 				td=_getInactiveCell();
@@ -2523,6 +2493,16 @@ var ScheduleEditor=(function(){
 			}
 		}
 		return active;
+	}
+	
+	function _isPastDate(s,date){
+		datePassed=false;
+		var d=new Date(date);
+		var sd=new Date(s.scheduleDate);
+		if(sd.getTime()<=d.getTime()){
+			datePassed=true;
+		}
+		return datePassed;
 	}
 	
 	return{
