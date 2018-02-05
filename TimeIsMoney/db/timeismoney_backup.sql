@@ -70,6 +70,59 @@ INSERT INTO `cost_center` VALUES (1,'0371001','Sales',1,2,'2018-01-17 09:07:39')
 UNLOCK TABLES;
 
 --
+-- Table structure for table `forecast`
+--
+
+DROP TABLE IF EXISTS `forecast`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `forecast` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL,
+  `org_unit_id` int(11) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_forecast_org_unit_id` (`org_unit_id`),
+  CONSTRAINT `fk_forecast_org_unit_id` FOREIGN KEY (`org_unit_id`) REFERENCES `org_unit` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `forecast`
+--
+
+LOCK TABLES `forecast` WRITE;
+/*!40000 ALTER TABLE `forecast` DISABLE KEYS */;
+/*!40000 ALTER TABLE `forecast` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `forecast_hours`
+--
+
+DROP TABLE IF EXISTS `forecast_hours`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `forecast_hours` (
+  `forecast_id` int(10) unsigned NOT NULL,
+  `forecast_date` date NOT NULL,
+  `hours` decimal(2,2) DEFAULT NULL,
+  PRIMARY KEY (`forecast_id`,`forecast_date`),
+  CONSTRAINT `fk_forecast_hours_forecast_id` FOREIGN KEY (`forecast_id`) REFERENCES `forecast` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `forecast_hours`
+--
+
+LOCK TABLES `forecast_hours` WRITE;
+/*!40000 ALTER TABLE `forecast_hours` DISABLE KEYS */;
+/*!40000 ALTER TABLE `forecast_hours` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `org_unit`
 --
 
@@ -99,6 +152,36 @@ LOCK TABLES `org_unit` WRITE;
 /*!40000 ALTER TABLE `org_unit` DISABLE KEYS */;
 INSERT INTO `org_unit` VALUES (1,'Company',NULL,NULL,2,'2018-01-17 09:17:36'),(2,'Store 001',NULL,1,2,'2018-01-17 09:22:59'),(3,'Store 002',NULL,1,2,'2018-01-17 09:22:59'),(4,'Store 003',NULL,1,2,'2018-01-17 09:22:59'),(5,'Store 004',NULL,1,2,'2018-01-17 09:22:59'),(6,'Store 005',NULL,1,2,'2018-01-17 09:23:02'),(7,'Sales',1,2,2,'2018-01-17 09:32:07'),(8,'Projects',2,2,2,'2018-01-17 09:32:07'),(9,'Logistics',3,2,2,'2018-01-17 09:32:07'),(10,'Restaurant',4,2,2,'2018-01-17 09:32:07'),(11,'Management',5,2,2,'2018-01-17 09:32:07'),(12,'Sales',1,3,2,'2018-01-17 09:32:07'),(13,'Projects',2,3,2,'2018-01-17 09:32:07'),(14,'Logistics',3,3,2,'2018-01-17 09:32:07'),(15,'Restaurant',4,3,2,'2018-01-17 09:32:07'),(16,'Management',5,3,2,'2018-01-17 09:32:07'),(17,'Sales',1,4,2,'2018-01-17 09:32:07'),(18,'Projects',2,4,2,'2018-01-17 09:32:07'),(19,'Logistics',3,4,2,'2018-01-17 09:32:07'),(20,'Restaurant',4,4,2,'2018-01-17 09:32:07'),(21,'Management',5,4,2,'2018-01-17 09:32:07'),(22,'Sales',1,5,2,'2018-01-17 09:32:07'),(23,'Projects',2,5,2,'2018-01-17 09:32:07'),(24,'Logistics',3,5,2,'2018-01-17 09:32:07'),(25,'Restaurant',4,5,2,'2018-01-17 09:32:07'),(26,'Management',5,5,2,'2018-01-17 09:32:09'),(27,'Department 01',1,7,2,'2018-01-17 09:36:48'),(28,'Department 02',1,7,2,'2018-01-17 09:36:48'),(29,'Department 03',1,7,2,'2018-01-17 09:36:48'),(30,'Department 01',3,9,2,'2018-01-17 09:36:48'),(31,'Department 02',3,9,2,'2018-01-17 09:36:48'),(32,'Department 03',3,9,2,'2018-01-17 09:36:49'),(33,'Sub-department 01',3,31,2,'2018-01-17 09:37:44'),(34,'Sub-department 02',3,31,2,'2018-01-17 09:37:46');
 /*!40000 ALTER TABLE `org_unit` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `plan`
+--
+
+DROP TABLE IF EXISTS `plan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `plan` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL,
+  `org_unit_id` int(11) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_plan_org_unit_id` (`org_unit_id`),
+  CONSTRAINT `fk_plan_org_unit_id` FOREIGN KEY (`org_unit_id`) REFERENCES `org_unit` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `plan`
+--
+
+LOCK TABLES `plan` WRITE;
+/*!40000 ALTER TABLE `plan` DISABLE KEYS */;
+INSERT INTO `plan` VALUES (1,'Feb 2018',27,'2018-02-01','2018-02-28',1),(2,'Mar 2018',27,'2018-03-01','2018-03-31',1),(3,'Dec 2017',27,'2017-12-01','2017-12-31',1),(4,'Feb 2018 - alternative',27,'2017-02-01','2017-02-28',0);
+/*!40000 ALTER TABLE `plan` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -134,6 +217,7 @@ DROP TABLE IF EXISTS `schedule`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `schedule` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `plan_id` int(10) unsigned DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `schedule_date` date NOT NULL,
   `schedule_type_id` int(11) NOT NULL,
@@ -141,8 +225,10 @@ CREATE TABLE `schedule` (
   `end` time DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_schedule_user_id` (`user_id`),
+  KEY `fk_schedule_plan_id` (`plan_id`),
+  CONSTRAINT `fk_schedule_plan_id` FOREIGN KEY (`plan_id`) REFERENCES `plan` (`id`),
   CONSTRAINT `fk_schedule_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,6 +237,7 @@ CREATE TABLE `schedule` (
 
 LOCK TABLES `schedule` WRITE;
 /*!40000 ALTER TABLE `schedule` DISABLE KEYS */;
+INSERT INTO `schedule` VALUES (1,1,3,'2018-02-01',1,'08:00:00','16:00:00'),(2,1,3,'2018-02-02',1,'08:00:00','16:00:00'),(3,1,3,'2018-02-05',1,'08:00:00','16:00:00'),(4,1,3,'2018-02-06',1,'08:00:00','16:00:00'),(5,1,3,'2018-02-07',1,'08:00:00','16:00:00'),(6,1,3,'2018-02-08',1,'08:00:00','16:00:00'),(7,1,3,'2018-02-09',1,'08:00:00','16:00:00'),(8,NULL,5,'2018-02-05',1,'08:00:00','16:00:00'),(9,NULL,5,'2018-02-06',1,'08:00:00','16:00:00'),(10,NULL,5,'2018-02-07',1,'08:00:00','16:00:00'),(11,NULL,5,'2018-02-08',1,'08:00:00','16:00:00'),(12,NULL,5,'2018-02-09',1,'08:00:00','16:00:00'),(21,1,3,'2018-02-12',1,'08:00:00','16:00:00'),(22,1,3,'2018-02-13',1,'08:00:00','16:00:00'),(23,1,3,'2018-02-14',1,'08:00:00','16:00:00'),(24,1,3,'2018-02-15',1,'08:00:00','16:00:00'),(25,1,3,'2018-02-16',1,'08:00:00','16:00:00'),(28,NULL,5,'2018-02-19',1,'08:00:00','16:00:00'),(29,NULL,5,'2018-02-20',1,'08:00:00','16:00:00'),(30,NULL,5,'2018-02-21',1,'08:00:00','16:00:00'),(31,NULL,5,'2018-02-22',1,'08:00:00','16:00:00'),(32,NULL,5,'2018-02-23',1,'08:00:00','16:00:00'),(41,1,3,'2018-02-19',1,'08:00:00','16:00:00'),(42,1,3,'2018-02-20',1,'08:00:00','16:00:00'),(43,1,3,'2018-02-21',1,'08:00:00','16:00:00'),(44,1,3,'2018-02-22',1,'08:00:00','16:00:00'),(45,1,3,'2018-02-23',1,'08:00:00','16:00:00'),(46,1,3,'2018-02-26',1,'08:00:00','16:00:00'),(47,1,3,'2018-02-27',1,'08:00:00','16:00:00'),(48,1,3,'2018-02-28',1,'08:00:00','16:00:00'),(51,NULL,5,'2018-02-12',1,'15:00:00','21:00:00'),(52,NULL,5,'2018-02-13',1,'15:00:00','21:00:00'),(55,1,7,'2018-02-06',1,'06:00:00','12:00:00'),(56,1,7,'2018-02-07',1,'06:00:00','12:00:00'),(57,1,7,'2018-02-08',1,'06:00:00','12:00:00'),(58,1,7,'2018-02-01',1,'06:00:00','12:00:00'),(59,1,7,'2018-02-02',1,'06:00:00','12:00:00'),(60,1,7,'2018-02-05',1,'08:00:00','16:00:00'),(61,1,5,'2018-02-03',1,'07:00:00','15:00:00'),(62,1,6,'2018-02-03',1,'07:00:00','15:00:00'),(63,1,5,'2018-02-04',1,'07:00:00','15:00:00'),(64,1,6,'2018-02-04',1,'07:00:00','15:00:00'),(65,1,5,'2018-02-05',1,'07:00:00','15:00:00'),(66,1,6,'2018-02-05',1,'07:00:00','15:00:00'),(67,1,7,'2018-02-20',1,'06:00:00','12:00:00'),(68,1,7,'2018-02-21',1,'06:00:00','12:00:00');
 /*!40000 ALTER TABLE `schedule` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -213,7 +300,7 @@ CREATE TABLE `user_assignment` (
 
 LOCK TABLES `user_assignment` WRITE;
 /*!40000 ALTER TABLE `user_assignment` DISABLE KEYS */;
-INSERT INTO `user_assignment` VALUES (3,'2018-01-01',NULL,27,2,'2018-01-17 09:48:41'),(4,'2018-01-01','2018-01-28',28,7,'2018-01-24 11:37:14'),(4,'2018-01-29',NULL,32,7,'2018-01-29 09:27:33'),(5,'2018-01-01',NULL,30,2,'2018-01-17 09:48:41'),(6,'2018-01-01',NULL,33,7,'2018-01-24 12:25:46'),(7,'2017-10-01','2017-12-31',30,7,'2018-01-22 08:01:20'),(7,'2018-01-01','2018-02-28',27,7,'2018-01-23 09:41:19'),(7,'2018-03-01',NULL,33,7,'2018-01-23 09:11:44');
+INSERT INTO `user_assignment` VALUES (3,'2018-01-01',NULL,27,2,'2018-01-17 09:48:41'),(4,'2018-01-01','2018-01-28',28,7,'2018-01-24 11:37:14'),(4,'2018-01-29',NULL,32,7,'2018-01-29 09:27:33'),(5,'2018-01-01',NULL,27,7,'2018-02-03 22:55:55'),(6,'2018-01-01',NULL,27,7,'2018-02-03 22:55:36'),(7,'2017-10-01','2017-12-31',30,7,'2018-01-22 08:01:20'),(7,'2018-01-01','2018-02-10',27,7,'2018-02-02 17:04:18'),(7,'2018-02-11','2018-02-19',32,2,'2018-02-02 17:06:58'),(7,'2018-02-20','2018-02-28',27,2,'2018-02-02 17:07:55'),(7,'2018-03-01',NULL,33,7,'2018-01-23 09:11:44');
 /*!40000 ALTER TABLE `user_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,7 +367,7 @@ CREATE TABLE `user_personal` (
 
 LOCK TABLES `user_personal` WRITE;
 /*!40000 ALTER TABLE `user_personal` DISABLE KEYS */;
-INSERT INTO `user_personal` VALUES (0,'2018-01-01','2018-01-31','Ville','Susi','test','1981-07-13','666 666 666','hotmale@microhard.com',7,'2018-01-29 07:00:45'),(2,'2018-01-01',NULL,'Sheev','Palpatine',NULL,'1945-05-06',NULL,NULL,2,'2018-01-12 08:39:41'),(3,'2018-01-01',NULL,'Bill','Clinton',NULL,'1951-06-14',NULL,NULL,2,'2018-01-12 08:39:41'),(4,'2018-01-01','2018-01-28','Vladimir','Putin','','1968-09-02','','',7,'2018-01-24 11:36:50'),(4,'2018-01-29',NULL,'Vladimir','Putin','','1968-09-02','1234567','',7,'2018-01-29 09:26:32'),(5,'2018-01-01',NULL,'Tarja','Halonen',NULL,'1979-03-20',NULL,NULL,2,'2018-01-12 08:39:41'),(6,'2018-01-01',NULL,'Tony','Blair',NULL,'1995-07-10',NULL,NULL,2,'2018-01-12 08:39:41'),(7,'2017-10-01','2017-12-31','Ville','Susi',NULL,'1981-07-13','123456789','myemail@company.com',2,'2018-01-18 10:08:05'),(7,'2018-01-01','2018-01-31','Ville','Susi','My test','1981-07-13','666 666 666','hotmale@microhard.com',7,'2018-01-29 07:08:16'),(7,'2018-02-01','2018-02-28','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-01-18 10:09:09'),(7,'2018-03-01','2018-04-09','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-01-19 13:32:06'),(7,'2018-04-10',NULL,'Ville','Susi','Superfly','1981-07-13','555 222 333','new rec',7,'2018-01-19 13:55:00');
+INSERT INTO `user_personal` VALUES (0,'2018-01-01','2018-01-31','Ville','Susi','test','1981-07-13','666 666 666','hotmale@microhard.com',7,'2018-01-29 07:00:45'),(2,'2018-01-01',NULL,'Sheev','Palpatine',NULL,'1945-05-06',NULL,NULL,2,'2018-01-12 08:39:41'),(3,'2018-01-01',NULL,'Bill','Clinton',NULL,'1951-06-14',NULL,NULL,2,'2018-01-12 08:39:41'),(4,'2018-01-01','2018-01-28','Vladimir','Putin','','1968-09-02','','',7,'2018-01-24 11:36:50'),(4,'2018-01-29',NULL,'Vladimir','Putin','','1968-09-02','1234567','',7,'2018-01-29 09:26:32'),(5,'2018-01-01',NULL,'Tarja','Halonen',NULL,'1979-03-20',NULL,NULL,2,'2018-01-12 08:39:41'),(6,'2018-01-01',NULL,'Tony','Blair',NULL,'1995-07-10',NULL,NULL,2,'2018-01-12 08:39:41'),(7,'2017-10-01','2017-12-31','Ville','Susi',NULL,'1981-07-13','123456789','myemail@company.com',2,'2018-01-18 10:08:05'),(7,'2018-01-01','2018-01-31','Ville','Susi','My test','1981-07-13','666 666 666','hotmale@microhard.com',7,'2018-01-29 07:08:16'),(7,'2018-02-01','2018-02-15','Ville','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-02-02 17:17:26'),(7,'2018-02-16','2018-04-09','Wille','Susi','Juhani','1981-07-13','+358 555 111 20','myemail@company.com',7,'2018-02-02 17:20:12'),(7,'2018-04-10',NULL,'Ville','Susi','Superfly','1981-07-13','555 222 333','new rec',7,'2018-01-19 13:55:00');
 /*!40000 ALTER TABLE `user_personal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -402,4 +489,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-31 15:58:04
+-- Dump completed on 2018-02-05 22:00:04

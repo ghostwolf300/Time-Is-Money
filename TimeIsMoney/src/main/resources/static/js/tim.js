@@ -2310,11 +2310,11 @@ var ScheduleEditor=(function(){
 	}
 	
 	function _getInactiveCell(){
-		var td=$('<td class="cell-inactive"></td>');
+		var td=$('<td class="cell-schedule-inactive"></td>');
 		return td;
 	}
 	
-	function _getPastDateCell(){
+	function _getPastDateCell(schedule){
 		var td;
 		if(schedule!=null){
 			td=$('<td class="cell-schedule-pastdate" \
@@ -2467,7 +2467,7 @@ var ScheduleEditor=(function(){
 			date=getDate(c);
 			s=schedules[date];
 			if(_isActive(employee,date)){
-				if(_isPastDate(s,date)){
+				if(_isPastDate(date)){
 					td=_getPastDateCell(s);
 				}
 				else{
@@ -2495,11 +2495,11 @@ var ScheduleEditor=(function(){
 		return active;
 	}
 	
-	function _isPastDate(s,date){
+	function _isPastDate(date){
 		datePassed=false;
 		var d=new Date(date);
-		var sd=new Date(s.scheduleDate);
-		if(sd.getTime()<=d.getTime()){
+		var currentDate=new Date();
+		if(d.getTime()<=currentDate.getTime()){
 			datePassed=true;
 		}
 		return datePassed;
