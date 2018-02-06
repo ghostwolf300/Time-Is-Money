@@ -1,6 +1,7 @@
 package com.tim.controller;
 
 import java.sql.Date;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tim.entities.Plan;
+import com.tim.pojo.DateStatistics;
 import com.tim.service.plan.PlanService;
 
 @RestController
@@ -28,6 +30,12 @@ public class PlanRestController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<Plan>(p,HttpStatus.OK);
+	}
+	
+	public ResponseEntity<Map<String,DateStatistics>> getStatistics(@RequestParam(value="planId") Integer planId){
+		//TODO: test this
+		planService.getPlanStatistics(planId);
+		return null;
 	}
 	
 	

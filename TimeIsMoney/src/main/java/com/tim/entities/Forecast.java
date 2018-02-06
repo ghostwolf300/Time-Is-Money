@@ -12,36 +12,35 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name="plan")
+@Table(name="forecast")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Plan implements Serializable {
+public class Forecast implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	@Column(name="name")
 	private String name;
+	@Column(name="org_unit_id")
+	private Integer orgUnitId;
 	@Column(name="start_date")
 	private Date startDate;
 	@Column(name="end_date")
 	private Date endDate;
-	@Column(name="active")
-	private boolean active;
 	
-	@OneToMany(mappedBy="key.plan")
-	@JsonBackReference
-	private List<PlanOrgUnit> orgUnits;
+	@OneToMany(mappedBy="forecast")
+	private List<ForecastHours> hoursNeeded;
 	
-	public Plan() {
+	public Forecast() {
 		
 	}
 
@@ -61,6 +60,14 @@ public class Plan implements Serializable {
 		this.name = name;
 	}
 
+	public Integer getOrgUnitId() {
+		return orgUnitId;
+	}
+
+	public void setOrgUnitId(Integer orgUnitId) {
+		this.orgUnitId = orgUnitId;
+	}
+
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -77,20 +84,14 @@ public class Plan implements Serializable {
 		this.endDate = endDate;
 	}
 
-	public boolean isActive() {
-		return active;
+	public List<ForecastHours> getHoursNeeded() {
+		return hoursNeeded;
 	}
 
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setHoursNeeded(List<ForecastHours> hoursNeeded) {
+		this.hoursNeeded = hoursNeeded;
 	}
-
-	public List<PlanOrgUnit> getOrgUnits() {
-		return orgUnits;
-	}
-
-	public void setOrgUnits(List<PlanOrgUnit> orgUnits) {
-		this.orgUnits = orgUnits;
-	}
+	
+	
 
 }

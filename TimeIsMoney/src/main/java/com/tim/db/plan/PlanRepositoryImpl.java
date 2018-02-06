@@ -23,9 +23,9 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom {
 
 	@Override
 	public Plan findActivePlan(int orgUnitId, Date keyDate) {
-		String qryStr="SELECT p FROM Plan p "
+		String qryStr="SELECT p FROM Plan p JOIN p.orgUnits po "
 					+ "WHERE p.active=true "
-					+ "AND p.orgUnitId=:orgUnitId "
+					+ "AND po.key.orgUnit.id=:orgUnitId "
 					+ "AND p.startDate<=:keyDate "
 					+ "AND p.endDate>=:keyDate";
 		TypedQuery<Plan> qry=em.createQuery(qryStr,Plan.class);

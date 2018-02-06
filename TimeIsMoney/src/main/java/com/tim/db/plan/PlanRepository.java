@@ -7,5 +7,6 @@ import com.tim.entities.Plan;
 
 @Repository
 public interface PlanRepository extends JpaRepository<Plan, Integer>, PlanRepositoryCustom {
-
+	
+	public Plan findById(int id);
 }

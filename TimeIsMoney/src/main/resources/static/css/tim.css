@@ -120,6 +120,9 @@ div#bar.header{
 div#container.content{
 	width: 100%;
 	height: 100%;
+	position: relative;
+    float: left;
+    /* margin-top: 100px; */
 }
 
 
@@ -396,26 +399,53 @@ div#recordControls_bottom_right{
     height: inherit;
     margin-top: 10px;
     margin-left: 4px;
-    display: flex;
+/*     display: flex; */
 }
 
-#scheduler-search{
-	width: 300px;
-    height: inherit;
-    border: 1px solid black;
-}
-
-#scheduler-content{
-	margin-left: 2px;
-}
-
-#scheduler-menubar{
+#scheduler-plan-menubar{
 	display: flex;
 	height: 36px;
 	border: 1px solid black;
 	padding-left: 10px;
 	background-color: lightgrey;
 	align-items: center;
+}
+
+#scheduler-plan{
+	position: relative;
+    width: inherit;
+    min-width: inherit;
+    height: inherit;
+    margin-top: 10px;
+    margin-left: 4px;
+    display: flex;
+}
+
+#scheduler-org-structure{
+	width: 25%;
+    min-width: 25%;
+	height:50%;
+	overflow: auto;
+}
+
+#scheduler-content{
+	width: 74%;
+	height: 50%;
+	margin-left: 2px;
+}
+
+#scheduler-content-menubar{
+	display: flex;
+	height: 36px;
+	border: 1px solid black;
+	padding-left: 10px;
+	background-color: lightgrey;
+	align-items: center;
+}
+
+#scheduler-editor{
+	overflow: auto;
+    height: 90%;
 }
 
 #scheduler-org-unit-details{
@@ -430,17 +460,6 @@ div#recordControls_bottom_right{
 	margin-left: 6px;
 }
 
-#schedule-editor-table th,td{
-	border: 1px solid black;
-	border-collapse: collapse;
-	
-}
-
-#schedule-editor-table tbody tr:hover{
-	background-color:#e8e87a; 
-	
-}
-
 #schedule-editor-thead-row-dates th{
 	font-size: 10px;
 	width: 80px;
@@ -453,10 +472,33 @@ div#recordControls_bottom_right{
 	min-width: 80px;
 }
 
+#schedule-editor-table th,td{
+	border: 1px solid black;
+	border-collapse: collapse;
+	
+}
+
+#schedule-editor-table tbody tr:hover {
+	background-color:#e8e87a; 
+}
+
+#schedule-editor-table tbody tr:hover td.cell-schedule-pastdate{
+	background-color:blue;
+}
+
+#schedule-editor-table tbody tr:hover td.cell-schedule-inactive{
+	background-color:blue;
+}
+
 .cell-schedule{
 	font-size: 14px;
 	width: 80px;
 	text-align:center;
+}
+
+.cell-schedule:hover{
+	background-color: yellow;
+	border-color: #ff8d00;
 }
 
 .cell-schedule-pastdate{
@@ -477,21 +519,6 @@ div#recordControls_bottom_right{
 	font-size: 14px;
 	width: 200px;
 	min-width: 200px;
-}
-
-.cell-schedule:hover{
-	background-color: yellow;
-	border-color: #ff8d00;
-}
-
-.cell-schedule-pastdate:hover{
-	background-color: yellow;
-	border-color: #ff8d00;
-}
-
-.cell-schedule-inactive:hover{
-	background-color: yellow;
-	border-color: #ff8d00;
 }
 
 #schedule-edit-dialog{

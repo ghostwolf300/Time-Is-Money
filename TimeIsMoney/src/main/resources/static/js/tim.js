@@ -2165,10 +2165,13 @@ var ScheduleEditor=(function(){
 	function _bindKeyListener(){
 		$(document).keydown(function(event){
 			if(event.which==67 && event.ctrlKey){
-				_copy(event);
+				_copyEvent(event);
 			}
 			else if(event.which==86 && event.ctrlKey){
-				_paste(event);
+				_pasteEvent(event);
+			}
+			else if(event.which==46){
+				_deleteEvent(event);
 			}
 		});
 	}
@@ -2200,15 +2203,17 @@ var ScheduleEditor=(function(){
 		return userId;
 	}
 	
-	function _copy(event){
+	function _copyEvent(event){
 		console.log('Copying cell');
 		if(!locked){
 			copyCell=currentCell;
 		}
 	}
 	
-	function _paste(event){
-		if(copyCell!=null && $(currentCell).index()>0){
+	function _pasteEvent(event){
+		if(copyCell!=null 
+				&& $(currentCell).index()>0 
+				&& $(currentCell).attr('class')=='cell-schedule'){
 			
 			//lock, so currentCell & copyCell can't change
 			locked=true;
@@ -2236,6 +2241,20 @@ var ScheduleEditor=(function(){
 				console.log('no existing schedule. saving.');
 				_pasteCopiedCell();
 			}
+		}
+	}
+	
+	function _deleteEvent(event){
+		if(!locked && 
+				$(currentCell).index()>0 
+				&& $(currentCell).attr('class')=='cell-schedule'){
+			locked=true;
+			_deleteCell(currentCell,function(isDeleted){
+				if(isDeleted){
+					_clearCell(currentCell);
+				}
+				locked=false;
+			});
 		}
 	}
 	
@@ -2277,6 +2296,10 @@ var ScheduleEditor=(function(){
 		$(td).attr('data-start',schd.start);
 		$(td).attr('data-end',schd.end);
 		$(td).text(Util.getTimeHHmm(schd.start)+'-'+Util.getTimeHHmm(schd.end));
+	}
+	
+	function _clearCell(td){
+		$(td).replaceWith('<td class="cell-schedule"></td>');
 	}
 	
 	function _getJSON(userId,td){
