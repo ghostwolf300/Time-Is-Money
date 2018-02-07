@@ -900,6 +900,27 @@ var DAO = (function() {
 		});
 	}
 	
+	function loadPlan(planId,_callback){
+		var url='/plans/find?planId='+planId;
+		var plan;
+		
+		$.getJSON(url,function(p,statusText,jqxhr){
+			
+		}).done(function(p,statusText,jqxhr){
+			if(jqxhr.status==200){
+				plan=p;
+				_callback(STATUS.DONE,plan);
+			}
+			else if(jqxhr.status==204){
+				_callback(STATUS.NA);
+			}
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+	}
+	
 	function loadAssignedEmployees(orgUnitId,startDate,endDate,_callback){
 		var url='/userrecord/assignments?orgUnitId='+orgUnitId+'&startDate='+startDate+'&endDate='+endDate;
 		var employees;
@@ -950,6 +971,7 @@ var DAO = (function() {
 		saveSchedules : saveSchedules,
 		deleteSchedule : deleteSchedule,
 		loadActivePlan : loadActivePlan,
+		loadPlan : loadPlan,
 		loadAssignedEmployees : loadAssignedEmployees
 	}
 	
@@ -2121,10 +2143,12 @@ var Credentials=(function(){
 
 var ScheduleEditor=(function(){
 	
-	var orgUnitId;
+	//var orgUnitId;
 	var plan;
+	var orgTree;
 	
 	var controls={
+			planSelect : '#scheduler-plan-select',
 			refresh : '#scheduler-period-refresh-button',
 			changePlan : '#scheduler-plan-change-button'
 			
@@ -2146,8 +2170,9 @@ var ScheduleEditor=(function(){
 	
 	function init(){
 		console.log('Initializing Module Schedule Editor');
+		orgTree=new OrgTree('#scheduler-org-structure-tree',_orgTreeChangeListener)
 		_bindEventHandlers();
-		SEOrgStructure.init();
+		//SEOrgStructure.init();
 		ScheduleEditDialog.init();
 	}
 	
@@ -2158,6 +2183,7 @@ var ScheduleEditor=(function(){
 			_clearSchedules();
 			_loadSchedules();
 		});
+		_bindPlanChangeListener();
 		_bindKeyListener();
 		_bindCells();
 	}
@@ -2176,6 +2202,15 @@ var ScheduleEditor=(function(){
 		});
 	}
 	
+	function _bindPlanChangeListener(){
+		$(controls.planSelect).change(function(event){
+			//var oid=SEOrgStructure.getSelectedOrgUnitId();
+			var oid=orgTree.selectedValue;
+			var pid=$(controls.planSelect).val();
+			showSchedules(oid,pid);
+		})
+	}
+	
 	function _bindCells(){
 		$(tbody).find('td').each(function(){
 			_bindSingleCell(this);
@@ -2190,6 +2225,12 @@ var ScheduleEditor=(function(){
 				currentCell=cell;
 			}
 		});
+	}
+	
+	function _orgTreeChangeListener(e,data){
+		var oid=orgTree.selectedValue;
+		var pid=$('#scheduler-plan-select').val();
+		showSchedules(oid,pid);
 	}
 	
 	function getDate(colIndex){
@@ -2379,18 +2420,13 @@ var ScheduleEditor=(function(){
 		}
 	}
 	
-	function setOrgUnit(id){
+	function showSchedules(oid,pid){
 		
-		orgUnitId=id;
+		orgUnitId=oid;
 		DAO.loadOrgUnit(orgUnitId,function(status,ou){
 			if(status==DAO.STATUS.DONE){
 				_fillOrgUnitDetails(ou);
-				var keyDate=$(fields.keyDate).val();
-				if(keyDate==null || keyDate==''){
-					keyDate='2018-02-02';
-				}
-				console.log(keyDate);
-				DAO.loadActivePlan(orgUnitId,keyDate,function(status,p){
+				DAO.loadPlan(pid,function(status,p){
 					if(status==DAO.STATUS.DONE){
 						setPlan(p);
 					}
@@ -2532,7 +2568,7 @@ var ScheduleEditor=(function(){
 		init : init,
 		getDate : getDate,
 		getUserId : getUserId,
-		setOrgUnit : setOrgUnit,
+		showSchedules : showSchedules,
 		setPlan : setPlan,
 		getPlan : getPlan
 	}
@@ -2635,45 +2671,46 @@ var ScheduleEditDialog=(function(){
 	
 })();
 
-var SEOrgStructure=(function(){
+
+class OrgTree{
 	
-	const rootDiv='#scheduler-org-structure';
-	const treeDiv='#scheduler-org-structure-tree';
-	
-	function init(){
-		_loadOrgTree();
-		_bindTreeChangeHandler();
+	constructor(tree,changeHandler){
+		this.tree=tree;
+		this._loadTree();
+		this._bindTreeChangeHandler(changeHandler);
 	}
 	
-	function _bindTreeChangeHandler(){
-		$(treeDiv).on('changed.jstree', _treeChangeHandler);
+	set tree(val){
+		this._tree=val;
 	}
 	
-	function _treeChangeHandler(e,data){
-		var orgUnitId=data.selected;
-		console.log('Org unit '+orgUnitId+' selected');
-		ScheduleEditor.setOrgUnit(orgUnitId);
+	get tree(){
+		return this._tree;
 	}
 	
-	function _loadOrgTree(){
-		var tree;
-		DAO.loadOrgTree(function(status,tree){
+	get selectedValue(){
+		return $(this._tree).jstree('get_selected');
+	}
+	
+	_bindTreeChangeHandler(changeHandler){
+		$(this._tree).on('changed.jstree', changeHandler);
+	}
+	
+	_loadTree(){
+		var treeData;
+		var me=this;
+		DAO.loadOrgTree(function(status,treeData){
 			if(status==DAO.STATUS.DONE){
-				_fillOrgTree(tree);
+				me._fillTree(treeData);
 			}
 		});
 	}
 	
-	function _fillOrgTree(data){
-		$(treeDiv).jstree({ 
+	_fillTree(treeData){
+		$(this._tree).jstree({ 
 			'core' : {
-				'data' : data
+				'data' : treeData
 			} 
 		});
 	}
-	
-	return{
-		init : init
-	}
-	
-})();
+}

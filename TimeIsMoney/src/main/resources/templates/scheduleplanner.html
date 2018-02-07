@@ -6,7 +6,14 @@
 
 <div id="scheduler-wrapper" layout:fragment="content">
 	<div id="scheduler-plan-menubar">
-		<p>Select plan to show here!</p>
+		<label for="scheduler-plan-select">Plan </label>
+		<select id="scheduler-plan-select">
+			<option value="1">Feb 2018</option>
+			<option value="2">Mar 2018</option>
+			<option value="3">Dec 2017</option>
+			<option value="4">Feb 2018 - alternative</option>
+		</select>
+		<input id="scheduler-new-plan-button" type="button" value="New plan"/>
 	</div>
 	<div id="scheduler-plan">
 		<div id="scheduler-org-structure">

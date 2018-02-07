@@ -1,6 +1,7 @@
 package com.tim.service.plan;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import com.tim.entities.Forecast;
 import com.tim.entities.ForecastHours;
 import com.tim.entities.Plan;
 import com.tim.pojo.DateStatistics;
+import com.tim.pojo.HourStatistics;
 
 @Service("planService")
 public class PlanServiceImpl implements PlanService {
@@ -31,17 +33,28 @@ public class PlanServiceImpl implements PlanService {
 
 	@Override
 	public Map<String, DateStatistics> getPlanStatistics(int planId) {
-		Plan plan=planRepository.findById(planId);
 		//get forecasted hours (test forecast has id 1)
-		Forecast forecast=forecastRepository.findById(1);
+		Forecast forecast=forecastRepository.findById(planId);
 		List<ForecastHours> hoursNeeded=forecast.getHoursNeeded();
+		Map<String,DateStatistics> stats=new HashMap<String,DateStatistics>();
 		for(ForecastHours fh : hoursNeeded) {
-			System.out.println(fh.getForecastDate()+" "+fh.getForecastTime()+" : "+fh.getHoursNeeded());
+			DateStatistics ds=stats.get(fh.getForecastDate().toString());
+			if(ds==null) {
+				ds=new DateStatistics(fh.getForecastDate());
+				stats.put(ds.getDate().toString(), ds);
+			}
+			ds.addHourStatistics(new HourStatistics(fh.getForecastTime(),fh.getHoursNeeded(),0,0), fh.getForecastTime());
+			
 		}
 		//get scheduled hours
 		//get worked hours
 		
-		return null;
+		return stats;
+	}
+
+	@Override
+	public Plan find(int planId) {
+		return planRepository.findById(planId);
 	}
 
 }

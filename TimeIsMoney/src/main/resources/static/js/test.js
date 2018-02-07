@@ -3,120 +3,127 @@
  */
 
 $(document).ready(function(){
-	/*ScheduleEditDialog.init();
-	$('#schedule1').on('click',ScheduleEditDialog.edit);
-	$('#schedule2').on('click',ScheduleEditDialog.edit);*/
+	$('#test-forecast').on('click',loadForecast);
+	$('#test-js-button').on('click',testApproach);
+	$('#get-tree-value-button').on('click',testTreeValue);
 });
+
+/*var test1;
+var test2;
 
 function testApproach(){
 	console.log('Testing module approach...');
-	//console.log(Module);
-	//console.log(Module.testLocal());
-	//console.log(Module.testConnection());
-	//Module.testConnection();
+	var changeHandlerOne=function(){
+		console.log('change one');
+	}
+	var changeHandlerTwo=function(){
+		console.log('change two');
+	}
+	test1=new OrgTree('#mytree',changeHandlerOne);
+	test2=new OrgTree('#myothertree',changeHandlerTwo);
 }
 
-/*function initDialog(){
-	$( "#schedule-edit-dialog" ).dialog({
-		dialogClass :'no-close',
-		autoOpen: false,
-		buttons: [
-			{
-				text: 'OK',
-				click: saveSchedule
-			},
-			{
-				text: 'Cancel',
-				click: cancelEdit
-			}
-		]
+function testTreeValue(){
+	console.log(test1.selectedValue);
+	console.log(test2.selectedValue);
+}*/
+
+function loadForecast(){
+	var url='/forecast/test?planId='+1;
+	var schedules;
+	
+	$.getJSON(url,function(stats,statusText,jqxhr){
+		
+	}).done(function(stats,statusText,jqxhr){
+		console.log(stats);
+		createChart(stats);
+	}).fail(function(){
+		console.log('failed');
+	}).always(function(){
+		
 	});
 }
 
-function scheduleEdit(event){
-	console.log('showing dialog...'+event.target);
-	td=event.target;
-	$('#schedule-edit-dialog').find('#start').val($(td).data('start'));
-	$('#schedule-edit-dialog').find('#end').val($(td).data('end'));
-	$('#schedule-edit-dialog').dialog('open');
-}
-
-function cancelEdit(){
-	$('#schedule-edit-dialog').find('#start').val(null);
-	$('#schedule-edit-dialog').find('#end').val(null);
-	$('#schedule-edit-dialog').dialog( "close" );
-}
-
-function saveSchedule(event){
-	console.log('saving schedule...');
-	var start=$('#schedule-edit-dialog').find('#start').val();
-	var end=$('#schedule-edit-dialog').find('#end').val();
-	$(td).text(start+'-'+end);
-	$(td).data('start',start);
-	$(td).data('end',end);
-	$('#schedule-edit-dialog').dialog( "close" );
-}*/
-
-/*var ScheduleEditDialog=(function(){
+function createChart(stats){
 	
-	const dialog='#schedule-edit-dialog';
-	const fields={
-			start : '#start',
-			end : '#end'
+	var dates=Object.keys(stats);
+	
+	var ctx=$('#forecast-chart')[0].getContext('2d');
+	var forecastChart=new Chart(ctx,{
+		type : 'bar',
+		data: {
+	        labels: ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23'],
+	        datasets: [createDataSet(stats)]
+	    },
+	    options: {
+	    	maintainAspectRatio:false,
+	        scales: {
+	            yAxes: [{
+	                ticks: {
+	                    beginAtZero:true
+	                }
+	            }]
+	        }
+	    }
+	});
+}
+
+function createDataSet(stats){
+	var hourStats=stats['2018-03-01'].hourStatistics;
+	var forecastHours=[];
+	for(var h=0;h<24;h++){
+		forecastHours[h]=hourStats[h].hoursForecasted;
+	}
+	var forecastSet={
+			label : 'Forecast hours',
+			data : forecastHours
+	}
+	return forecastSet;
+	
+}
+
+/*class OrgTree{
+	
+	constructor(tree,changeHandler){
+		this.tree=tree;
+		this._loadTree();
+		this._bindTreeChangeHandler(changeHandler);
 	}
 	
-	var td;
+	set tree(val){
+		this._tree=val;
+	}
 	
-	function init(){
-		$(dialog).dialog({
-			dialogClass :'no-close',
-			autoOpen: false,
-			buttons: [
-				{
-					text: 'OK',
-					click: ScheduleEditDialog.save
-				},
-				{
-					text: 'Cancel',
-					click: ScheduleEditDialog.cancel
-				}
-			]
+	get tree(){
+		return this._tree;
+	}
+	
+	get selectedValue(){
+		return $(this._tree).jstree('get_selected');
+	}
+	
+	_bindTreeChangeHandler(changeHandler){
+		$(this._tree).on('changed.jstree', changeHandler);
+	}
+	
+	_loadTree(){
+		var treeData;
+		var me=this;
+		DAO.loadOrgTree(function(status,treeData){
+			if(status==DAO.STATUS.DONE){
+				me._fillTree(treeData);
+			}
 		});
 	}
 	
-	function edit(event){
-		console.log('showing dialog...'+event.target);
-		td=event.target;
-		$(dialog).find(fields.start).val($(td).attr('data-start'));
-		$(dialog).find(fields.end).val($(td).attr('data-end'));
-		$(dialog).dialog('open');
+	_fillTree(treeData){
+		$(this._tree).jstree({ 
+			'core' : {
+				'data' : treeData
+			} 
+		});
 	}
-
-	function cancel(){
-		$(dialog).find(fields.start).val(null);
-		$(dialog).find(fields.end).val(null);
-		td=null;
-		$(dialog).dialog( "close" );
-	}
-
-	function save(event){
-		console.log('saving schedule...');
-		var start=$(dialog).find(fields.start).val();
-		var end=$(dialog).find(fields.end).val();
-		$(td).text(start+'-'+end);
-		$(td).attr('data-start',start);
-		$(td).attr('data-end',end);
-		$(dialog).dialog( "close" );
-	}
-	
-	return{
-		init : init,
-		edit : edit,
-		save : save,
-		cancel : cancel
-	}
-	
-})();*/
+}*/
 
 
 

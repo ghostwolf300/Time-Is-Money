@@ -32,10 +32,15 @@ public class PlanRestController {
 		return new ResponseEntity<Plan>(p,HttpStatus.OK);
 	}
 	
-	public ResponseEntity<Map<String,DateStatistics>> getStatistics(@RequestParam(value="planId") Integer planId){
-		//TODO: test this
-		planService.getPlanStatistics(planId);
-		return null;
+	@RequestMapping(value="/find")
+	public ResponseEntity<Plan> getPlan(
+			@RequestParam(value="planId") Integer planId) {
+		Plan p=planService.find(planId);
+		
+		if(p==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<Plan>(p,HttpStatus.OK);
 	}
 	
 	
