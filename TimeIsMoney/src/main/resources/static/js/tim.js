@@ -2707,10 +2707,20 @@ var ManagerView=(function(){
 			periodSelect : '#mgrview-period-select'
 	}
 	
+	var tables={
+			timerecords : "#mgrview-details-timerecords-table",
+			schedules :  "#mgrview-details-timerecords-table"
+	}
+	
+	var controls={
+			periodShow : '#mgrview-period-refresh-button'
+	}
+	
 	function init(){
 		orgTree=new OrgTree('#mgrview-orgstructure',_orgTreeChangeListener);
 		employeeList=new EmployeeList('#mgrview-worker-table',_employeeListClickListener);
 		$(fields.periodSelect).change(_periodSelectListener);
+		$(controls.periodShow).click(_periodShowClickListener);
 	}
 	
 	function _periodSelectListener(e){
@@ -2726,18 +2736,75 @@ var ManagerView=(function(){
 		console.log('list clicked');
 		var tr=event.target.parentNode;
 		selected=$(tr).attr('data-userId');
+		_showEmployee(selected);
 	}
 	
-	function _showEmployee(id){
-		_showWorkTime(id);
-		_showSchedules(id);
-	}
-	
-	function _showWorkTime(id){
+	function _periodShowClickListener(e){
+		var periodStart=$(fields.periodStart).val();
+		var periodEnd=$(fields.periodEnd).val();
 		
 	}
 	
-	function _showSchedules(id){
+	function _showEmployee(id){
+		var periodStart=$(fields.periodStart).val();
+		var periodEnd=$(fields.periodEnd).val();
+		_showWorkTime(id,periodStart,periodEnd);
+		_showSchedules(id,periodStart,periodEnd);
+	}
+	
+	function _showWorkTime(eeId,periodStart,periodEnd){
+		_clearWorkTimeView();
+		_createWorkTimeView(periodStart,periodEnd);
+	}
+	
+	function _clearWorkTimeView(){
+		$(tables.timerecords+' > tbody').empty();
+	}
+	
+	function _createWorkTimeView(periodStart,periodEnd){
+		var d=new Date(periodStart);
+		var e=new Date(periodEnd);
+		e.setDate(e.getDate()+1);
+		var html='';
+		var row;
+		console.log(periodStart+ ' - ' +periodEnd)
+		while(d < e){
+			row=_createWorkTimeRow(d);
+			//console.log(row);
+			html+=row;
+			d.setDate(d.getDate()+1);
+		}
+		//console.log(html);
+		console.log(tables.timerecords);
+		$(tables.timerecords+' > tbody').append(html);
+	}
+	
+	function _createWorkTimeRow(date){
+		var html='<tr>\
+					<td>'+Util.getFormattedDate(date)+'</td>\
+					<td>'+Util.getWeekday(date)+'</td>\
+					<td>07:55</td>\
+					<td>16:07</td>\
+					<td>08:00</td>\
+					<td>16:00</td>\
+				</tr>';
+		return html;
+	}
+	
+	function _showSchedules(eeId,periodStart,periodEnd){
+		_clearSchedulesView();
+		_createSchedulesView(periodStart,periodEnd);
+	}
+	
+	function _clearSchedulesView(){
+		$(tables.schedules+' > tbody').empty();
+	}
+	
+	function _createSchedulesView(periodStart,periodEnd){
+		
+	}
+	
+	function _createSchedulesRow(date){
 		
 	}
 	

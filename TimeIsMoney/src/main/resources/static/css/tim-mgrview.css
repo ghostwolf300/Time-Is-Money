@@ -57,7 +57,7 @@
 }
 
 #mgrview-details-wrapper{
-	
+	display: flex;
 }
 
 .mgrview-bottom{
