@@ -232,4 +232,9 @@ public class UserServiceImpl implements UserService {
 		return userAssignmentRepository.findAssignedTo(orgUnitId, startDate, endDate);
 	}
 
+	@Override
+	public List<UserSearchResult> findAssignedTo(int orgUnitId, Date keyDate) {
+		return userAssignmentRepository.findAssignedTo(orgUnitId, keyDate);
+	}
+
 }

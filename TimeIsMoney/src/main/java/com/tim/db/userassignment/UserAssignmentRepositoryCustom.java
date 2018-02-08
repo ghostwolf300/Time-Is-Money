@@ -12,5 +12,6 @@ public interface UserAssignmentRepositoryCustom extends DateEffectiveRepository<
 	
 	public UserAssignment save(UserAssignment userAssignment);
 	public List<AssignedResult> findAssignedTo(int orgUnitId,Date startDate,Date endDate);
+	public List<UserSearchResult> findAssignedTo(int orgUnitId,Date keyDate);
 	
 }

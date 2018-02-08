@@ -17,6 +17,8 @@ public interface UserService {
 	
 	public List<User> findAll();
 	public List<UserSearchResult> findAllCustom();
+	public List<UserSearchResult> findAssignedTo(int orgUnitId,Date keyDate);
+	
 	public User findByUsername(String username);
 	public User findByUserId(int id);
 	public User currentRecord(String username);

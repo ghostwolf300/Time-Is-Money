@@ -18,6 +18,9 @@ function initPage(){
 	else if(view=='SHEDULE_PLANNER'){
 		ScheduleEditor.init();
 	}
+	else if(view=='MANAGER_VIEW'){
+		ManagerView.init();
+	}
 }
 
 function globalSetup(){
@@ -942,6 +945,27 @@ var DAO = (function() {
 		});
 	}
 	
+	function loadEmployeesAssignedTo(orgUnitId,keyDate,_callback){
+		var url='/userrecord/assignedto?orgUnitId='+orgUnitId+'&keyDate='+keyDate;
+		var employees;
+		
+		$.getJSON(url,function(el,statusText,jqxhr){
+			
+		}).done(function(el,statusText,jqxhr){
+			if(jqxhr.status==200){
+				employees=el;
+				_callback(STATUS.DONE,employees);
+			}
+			else if(jqxhr.status==204){
+				_callback(STATUS.NA);
+			}
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+	}
+	
 	return{
 		STATUS : STATUS,
 		NEW_ID : NEW_ID,
@@ -972,7 +996,8 @@ var DAO = (function() {
 		deleteSchedule : deleteSchedule,
 		loadActivePlan : loadActivePlan,
 		loadPlan : loadPlan,
-		loadAssignedEmployees : loadAssignedEmployees
+		loadAssignedEmployees : loadAssignedEmployees,
+		loadEmployeesAssignedTo : loadEmployeesAssignedTo
 	}
 	
 })();
@@ -2671,6 +2696,118 @@ var ScheduleEditDialog=(function(){
 	
 })();
 
+var ManagerView=(function(){
+	
+	var orgTree;
+	var employeeList;
+	
+	var fields={
+			periodStart : '#mgrview-period-start',
+			periodEnd : '#mgrview-period-end',
+			periodSelect : '#mgrview-period-select'
+	}
+	
+	function init(){
+		orgTree=new OrgTree('#mgrview-orgstructure',_orgTreeChangeListener);
+		employeeList=new EmployeeList('#mgrview-worker-table',_employeeListClickListener);
+		$(fields.periodSelect).change(_periodSelectListener);
+	}
+	
+	function _periodSelectListener(e){
+		console.log('period changed...');
+	}
+	
+	function _orgTreeChangeListener(e,data){
+		var oid=orgTree.selectedValue;
+		employeeList.showEmployees(oid);
+	}
+	
+	function _employeeListClickListener(e){
+		console.log('list clicked');
+		var tr=event.target.parentNode;
+		selected=$(tr).attr('data-userId');
+	}
+	
+	function _showEmployee(id){
+		_showWorkTime(id);
+		_showSchedules(id);
+	}
+	
+	function _showWorkTime(id){
+		
+	}
+	
+	function _showSchedules(id){
+		
+	}
+	
+	return{
+		init : init
+	}
+	
+})();
+
+
+class EmployeeList{
+	
+	constructor(table,clickEventListener){
+		this.table=table;
+		$(this._table+' > tbody').click(clickEventListener);
+	}
+	
+	set table(val){
+		this._table=val;
+	}
+	
+	get table(){
+		return this._table;
+	}
+	
+	showEmployees(orgUnitId){
+		var me=this;
+		console.log('loading org unit '+orgUnitId);
+		me._clearTable();
+		DAO.loadEmployeesAssignedTo(orgUnitId,Util.getFormattedDate(new Date()),function(status,el){
+			if(status==DAO.STATUS.DONE){
+				console.log('got results');
+				console.log(el);
+				me._fillTable(el);
+			}
+			else if(status==DAO.STATUS.NA){
+				console.log('no results');
+			}
+			else if(status==DAO.STATUS.FAIL){
+				console.log('no results');
+			}
+		});
+	}
+	
+	_fillTable(employees){
+		var html='';
+		for(var i=0;i<employees.length;i++){
+			html+=this._addRow(employees[i]);
+			console.log('appending row '+i);
+		}
+		$(this._table+' > tbody').append(html);
+		
+	}
+	
+	_clearTable(){
+		$(this._table+' > tbody').empty();
+	}
+	
+	_addRow(employee){
+		var html='<tr data-userId="'+employee.id+'">\
+			<td>'+employee.id+'</td>\
+			<td>'+employee.firstName+'</td>\
+			<td>'+employee.lastName+'</td>\
+			</tr>';
+		var tr=$(html);
+		return html;
+	}
+	
+	
+}
 
 class OrgTree{
 	

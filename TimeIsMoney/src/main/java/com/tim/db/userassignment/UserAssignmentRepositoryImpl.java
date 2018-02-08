@@ -13,6 +13,7 @@ import com.tim.entities.UserAssignment;
 
 import com.tim.pojo.AssignedResult;
 import com.tim.pojo.Period;
+import com.tim.pojo.UserSearchResult;
 
 public class UserAssignmentRepositoryImpl extends AbstractDateEffectiveRepository<UserAssignment> implements UserAssignmentRepositoryCustom {
 	
@@ -93,6 +94,23 @@ public class UserAssignmentRepositoryImpl extends AbstractDateEffectiveRepositor
 		}
 		System.out.println("Employees found: "+assignedList.size());
 		return assignedList;
+	}
+
+	@Override
+	public List<UserSearchResult> findAssignedTo(int orgUnitId, Date keyDate) {
+		String queryString="SELECT u.id,u.username,up.first_name,up.last_name FROM user u "
+				+ "LEFT JOIN user_personal up ON u.id=up.user_id "
+				+ "INNER JOIN user_assignment ua ON u.id=ua.user_id " + 
+				"WHERE "
+				+ "(up.start_date IS NULL OR (up.start_date<=:keyDate AND (up.end_date>:keyDate OR up.end_date IS NULL))) "
+				+ "AND (ua.start_date<=:keyDate AND (ua.end_date>:keyDate OR ua.end_date IS NULL)) "
+				+ "AND ua.org_unit_id=:orgUnitId";
+		Query query=em.createNativeQuery(queryString, "UserSearchResults");
+		query.setParameter("keyDate", keyDate);
+		query.setParameter("orgUnitId", orgUnitId);
+		@SuppressWarnings("unchecked")
+		List<UserSearchResult> results=query.getResultList();
+		return results;
 	}
 	
 	/*public UserAssignment save(UserAssignment ua) {

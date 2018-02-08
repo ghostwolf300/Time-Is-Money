@@ -41,7 +41,7 @@ public class NavController {
 	@RequestMapping("/managerview")
 	public String managerView(Model m) {
 		m.addAttribute("viewName", "Manager View");
-		m.addAttribute("viewId",Views.MY_WORK_TIME);
+		m.addAttribute("viewId",Views.MANAGER_VIEW);
 		return VIEW_MAP.get(Views.MANAGER_VIEW);
 	}
 	

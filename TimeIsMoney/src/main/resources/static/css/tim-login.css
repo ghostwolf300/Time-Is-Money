@@ -1,0 +1,70 @@
+@charset "ISO-8859-1";
+
+html, body{
+	width:100%;
+	height:100%;
+	padding:0;
+	margin:0;	
+}
+
+/*-----Login------*/
+
+.centered-wrapper{
+	position:relative;
+	text-align:center;
+}
+
+.centered-wrapper:before{
+	content:"";
+	position:relative;
+	display:inline-block;
+	width:0;
+	height:100%;
+	vertical-align:middle;
+}
+
+.centered-content{
+	display:inline-block;
+	vertical-align:middle;
+}
+
+#login-box{
+	width: 25%;
+	heght: 22%;
+	border: 2px solid yellow;
+	background:blue;
+	padding: 6px;
+}
+
+#username-box{
+	width:100%;
+	height:33%;
+	float: left;
+	margin-top: 6px;
+}
+
+#password-box{
+	width:100%;
+	height:33%;
+	float: right;
+	margin-bottom:6px;
+}
+
+#sign-in-button-box{
+	width:100%;
+	height:34%;
+	margin:auto;
+}
+
+#username-label-box,#password-label-box{
+	text-align: left;
+	width:50%;
+	float: left;
+}
+
+#username-input-box,#password-input-box{
+	width:50%;
+	float: right;
+}
+
+/*-----End Login-----*/

@@ -1,0 +1,65 @@
+@charset "ISO-8859-1";
+
+.mgrview-wrapper{
+	width: inherit;
+    height: inherit;
+    margin-top: 2px;
+    margin-left: 4px;
+}
+
+.mgrview-top{
+	width: inherit;
+    height: 36px;
+    border: 1px solid black;
+    background: lightgrey;
+    display: flex;
+    align-items: center;
+}
+
+.mgrview-middle-wrapper{
+	margin-top: 2px;
+    width: inherit;
+    height: 80%;
+    display: flex;
+}
+
+.mgrview-middle-element{
+	border: 1px solid black;
+}
+
+#mgrview-middle-first{
+	width: 280px;
+    min-width: 280px;
+}
+
+#mgrview-middle-second{
+	width: 280px;
+    min-width: 280px;
+    margin-left: 4px;
+	
+}
+
+#mgrview-worker-table{
+	width: inherit;
+}
+
+#mgrview-worker-table thead{
+	text-align: left;
+}
+
+#mgrview-worker-table tbody tr:hover {
+	background-color:#e8e87a; 
+}
+
+#mgrview-middle-third{
+	width: 75%;
+    margin-left: 4px;
+}
+
+#mgrview-details-wrapper{
+	
+}
+
+.mgrview-bottom{
+	
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups xmlns="http://www.isdc.ro/wro">
+	<group name="tim">
+    	<css>classpath:static/css/tim-common.css</css>
+    	<css>classpath:static/css/tim-mgrview.css</css>
+ 	</group>
+</groups>

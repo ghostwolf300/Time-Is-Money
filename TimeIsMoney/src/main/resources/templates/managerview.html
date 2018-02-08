@@ -4,28 +4,51 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layouts/default">
 
-<div id="mgrview-wrapper" layout:fragment="content">
-	<div id="mgrview-top">
+<div id="mgrview-wrapper" class="mgrview-wrapper" layout:fragment="content">
+	<div id="mgrview-top" class="mgrview-top">
+		<label for="mgrview-period-select">Show: </label>
+		<select id="mgrview-period-select">
+			<option value="0"></option>
+			<option value="1">Last week</option>
+			<option value="2">Current week</option>
+			<option value="3">Current PY period</option>
+			<option value="4">Previous PY period</option>
+		</select>
+		<label for="mgrview-period-start">Period from:</label>
+		<input id="mgrview-period-start" type="date"/>
+		<label for="mgrview-period-end">to:</label>
+		<input id="mgrview-period-end" type="date"/>
 	</div>
-	<div id="mgrview-middle">
-		<div id="mgrview-middle-orgstructure">
+	<div id="mgrview-middle" class="mgrview-middle-wrapper">
+		<div id="mgrview-middle-first" class="mgrview-middle-element">
+			<div id="mgrview-orgstructure" class="org-structure-div">
+			</div>
 		</div>
-		<div id="mgrview-middle-workers">
-			<table id="mgrview-middle-worker-table">
+		<div id="mgrview-middle-second" class="mgrview-middle-element">
+			<table id="mgrview-worker-table" class="worker-search-results-table">
 				<thead>
 					<tr>
 						<th>ID</th>
-						<th>Name</th>
+						<th>First Name</th>
+						<th>Last Name</th>
 					</tr>
 				</thead>
 				<tbody>
 				</tbody>
 			</table>
 		</div>
-		<div id="mgrview-middle-details">
+		<div id="mgrview-middle-third" class="mgrview-middle-element">
+			<div id="mgrview-details-wrapper">
+				<div th:replace="fragments/worktime :: timerecords">
+				</div>
+				<div th:replace="fragments/worktime :: schedules">
+				</div>
+			</div>
+			<div id="mgrview-time-summary">
+			</div>
 		</div>
 	</div>
-	<div id="mgrview-bottom">
+	<div id="mgrview-bottom" class="mgrview-bottom">
 	</div>
 </div>
 </html>

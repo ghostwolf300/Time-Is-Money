@@ -23,6 +23,7 @@ import com.tim.entities.UserContract;
 import com.tim.entities.UserPersonal;
 import com.tim.entities.UserRole;
 import com.tim.pojo.AssignedResult;
+import com.tim.pojo.UserSearchResult;
 import com.tim.service.user.UserPersonalService;
 import com.tim.service.user.UserService;
 
@@ -211,6 +212,17 @@ public class UserRestController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<List<AssignedResult>>(results,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/assignedto")
+	public ResponseEntity<List<UserSearchResult>> getUsersAssignedTo(
+			@RequestParam(value="orgUnitId") Integer orgUnitId,
+			@RequestParam(value="keyDate") Date keyDate){
+		List<UserSearchResult> users=userService.findAssignedTo(orgUnitId, keyDate);
+		if(users==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<List<UserSearchResult>>(users,HttpStatus.OK);
 	}
 	
 	
