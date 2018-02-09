@@ -85,6 +85,53 @@ var Util=(function(){
 		return formattedTime;
 	}
 	
+	function getTimeFromDate(date){
+		var hours='00'+date.getHours();
+		hours=hours.substring(hours.length-2);
+		var minutes='00'+date.getMinutes();
+		minutes=minutes.substring(minutes.length-2);
+		var time=hours+':'+minutes;
+		return time;
+	}
+	
+	function getLastWeek(){
+		var s=new Date();
+		var e=new Date();
+		var day=s.getDay();
+		var offset=-day-6;
+		s.setDate(s.getDate()+offset);
+		e.setDate(e.getDate()+offset+6);
+		var period={
+				start : getFormattedDate(s),
+				end : getFormattedDate(e)
+		}
+		return period;
+	}
+	
+	function getCurrentWeek(){
+		var s=new Date();
+		var e=new Date();
+		var day=s.getDay();
+		var offset=-day+1;
+		s.setDate(s.getDate()+offset);
+		e.setDate(e.getDate()+offset+6);
+		var period={
+				start : getFormattedDate(s),
+				end : getFormattedDate(e)
+		}
+		return period;
+	}
+	
+	function getCurrentPYPeriod(){
+		var period;
+		return period;
+	}
+	
+	function getPreviousPYPeriod(){
+		var period;
+		return period;
+	}
+	
 	function _checkTime(i) {
         return (i < 10) ? "0" + i : i;
     }
@@ -93,7 +140,12 @@ var Util=(function(){
 		getWeekday : getWeekday,
 		getFormattedDate : getFormattedDate,
 		getTimeSQL : getTimeSQL,
-		getTimeHHmm : getTimeHHmm
+		getTimeHHmm : getTimeHHmm,
+		getTimeFromDate : getTimeFromDate,
+		getLastWeek : getLastWeek,
+		getCurrentWeek : getCurrentWeek,
+		getPreviousPYPeriod : getPreviousPYPeriod,
+		getCurrentPYPeriod : getCurrentPYPeriod
 	}
 	
 })();
@@ -966,6 +1018,27 @@ var DAO = (function() {
 		});
 	}
 	
+	function loadWorkTimes(userId,startDate,endDate,_callback){
+		var url='/worktimes/show?userId='+userId+'&startDate='+startDate+'&endDate='+endDate;
+		var worktimes;
+		
+		$.getJSON(url,function(wts,statusText,jqxhr){
+			
+		}).done(function(wts,statusText,jqxhr){
+			if(jqxhr.status==200){
+				worktimes=wts;
+				_callback(STATUS.DONE,worktimes);
+			}
+			else if(jqxhr.status==204){
+				_callback(STATUS.NA);
+			}
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+	}
+	
 	return{
 		STATUS : STATUS,
 		NEW_ID : NEW_ID,
@@ -997,7 +1070,8 @@ var DAO = (function() {
 		loadActivePlan : loadActivePlan,
 		loadPlan : loadPlan,
 		loadAssignedEmployees : loadAssignedEmployees,
-		loadEmployeesAssignedTo : loadEmployeesAssignedTo
+		loadEmployeesAssignedTo : loadEmployeesAssignedTo,
+		loadWorkTimes : loadWorkTimes
 	}
 	
 })();
@@ -2709,7 +2783,7 @@ var ManagerView=(function(){
 	
 	var tables={
 			timerecords : "#mgrview-details-timerecords-table",
-			schedules :  "#mgrview-details-timerecords-table"
+			schedules :  "#mgrview-details-schedules-table"
 	}
 	
 	var controls={
@@ -2725,6 +2799,33 @@ var ManagerView=(function(){
 	
 	function _periodSelectListener(e){
 		console.log('period changed...');
+		var p=$(fields.periodSelect).val();
+		console.log(p);
+		var period=null;
+		
+		switch(parseInt(p)){
+		case 0:
+			break;
+		case 1:
+			period=Util.getLastWeek();
+			console.log(period);
+			break;
+		case 2:
+			period=Util.getCurrentWeek();
+			console.log(period);
+			break;
+		case 3:
+			period=Util.getCurrentPYPeriod();
+			break;
+		case 4:
+			period=Util.getPreviousPYPeriod();
+			break;
+		}
+	
+		if(period!=null){
+			$(fields.periodStart).val(period.start);
+			$(fields.periodEnd).val(period.end);
+		}
 	}
 	
 	function _orgTreeChangeListener(e,data){
@@ -2754,41 +2855,122 @@ var ManagerView=(function(){
 	
 	function _showWorkTime(eeId,periodStart,periodEnd){
 		_clearWorkTimeView();
-		_createWorkTimeView(periodStart,periodEnd);
+		DAO.loadWorkTimes(eeId,periodStart,periodEnd,function(status,worktimes){
+			if(status==DAO.STATUS.DONE){
+				console.log(worktimes);
+				_createWorkTimeView(worktimes,periodStart,periodEnd);
+			}
+			else if(status==DAO.STATUS.NA){
+				
+			}
+		});
 	}
 	
 	function _clearWorkTimeView(){
 		$(tables.timerecords+' > tbody').empty();
 	}
 	
-	function _createWorkTimeView(periodStart,periodEnd){
+	function _createWorkTimeView(worktimes,periodStart,periodEnd){
 		var d=new Date(periodStart);
 		var e=new Date(periodEnd);
 		e.setDate(e.getDate()+1);
 		var html='';
 		var row;
-		console.log(periodStart+ ' - ' +periodEnd)
+		var eewt
 		while(d < e){
-			row=_createWorkTimeRow(d);
-			//console.log(row);
-			html+=row;
+			console.log(d);
+			eewt=worktimes[Util.getFormattedDate(d)];
+			if(eewt){
+				console.log(eewt);
+				row=_createFilledWorkTimeRow(d,eewt);
+			}
+			else{
+				row=_createEmptyWorkTimeRow(d);
+			}
+			
+			$(tables.timerecords+' > tbody').append(row);
 			d.setDate(d.getDate()+1);
 		}
-		//console.log(html);
-		console.log(tables.timerecords);
-		$(tables.timerecords+' > tbody').append(html);
+		
 	}
 	
-	function _createWorkTimeRow(date){
-		var html='<tr>\
-					<td>'+Util.getFormattedDate(date)+'</td>\
-					<td>'+Util.getWeekday(date)+'</td>\
-					<td>07:55</td>\
-					<td>16:07</td>\
-					<td>08:00</td>\
-					<td>16:00</td>\
-				</tr>';
+	function _createFilledWorkTimeRow(date,wts){
+		var wt;
+		var row;
+		var weekday;
+		var rowClass;
+		
+		for(var i=0;i<wts.length;i++){
+			wt=wts[i];
+			weekday=Util.getWeekday(date);
+			if(weekday=="Sat" || weekday=="Sun"){
+				rowClass="row-worktime-weekend";
+			}
+			else{
+				rowClass="row-worktime-normal";
+			}
+			row=$('<tr class="'+rowClass+'" data-id="'+wt.id+'" data-userId="'+wt.user+'"></tr>');
+			$(row).append('<td class="cell-worktime-add"></td>');
+			$(row).append('<td class="cell-worktime-date">'+Util.getFormattedDate(date)+'</td>');
+			$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
+			$(row).append(_getActualTimeCell(wt.stampIn,'in'));
+			$(row).append(_getActualTimeCell(wt.stampOut,'out'));
+			$(row).append('<td class="cell-worktime-time"></td>');
+			$(row).append('<td class="cell-worktime-time"></td>');
+		}
+		return row;
+	}
+	
+	function _createEmptyWorkTimeRow(date){
+		var weekday=Util.getWeekday(date);
+		var rowClass;
+		if(weekday=='Sat' || weekday=='Sun'){
+			rowClass="row-worktime-weekend";
+		}
+		else{
+			rowClass="row-worktime-normal";
+		}
+		var html='<tr class="'+rowClass+'">'
+		+'<td class="cell-worktime-add"></td>'
+		+'<td class="cell-worktime-date">'+Util.getFormattedDate(date)+'</td>'
+		+'<td class="cell-worktime-day">'+Util.getWeekday(date)+'</td>'
+		+'<td class="cell-worktime-time"></td>'
+		+'<td class="cell-worktime-time"></td>'
+		+'<td class="cell-worktime-time"></td>'
+		+'<td class="cell-worktime-time"></td></tr>';
 		return html;
+	}
+	
+	function _getActualTimeCell(ts,direction){
+		var td;
+		var time=Util.getTimeFromDate(new Date(ts));
+		if(ts){
+			td=$('<td class="cell-worktime-time" data-stamp="'+ts+'">'+time+'</td>');
+		}
+		else{
+			td=$('<td class="cell-worktime-time"></td>');
+		}
+		_bindTimeCellListener(td);
+		return td;			
+	}
+	
+	function _bindTimeCellListener(td){
+		$(td).click(function(event){
+			console.log('click event');
+			var cell=event.target;
+			if($(cell).find('#timeInput').length>0){
+				console.log('already has input!');
+			}
+			else{
+				console.log('adding time input');
+				var timeInput=$('<input id="timeInput" type="time"/>');
+				$(timeInput).val($(cell).text());
+				$(cell).empty();
+				$(cell).append(timeInput);
+			}
+			
+		});
+		
 	}
 	
 	function _showSchedules(eeId,periodStart,periodEnd){

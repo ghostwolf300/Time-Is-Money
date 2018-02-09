@@ -63,3 +63,79 @@
 .mgrview-bottom{
 	
 }
+
+#mgrview-details-timerecords-table thead tr {
+	font-size: 12px;
+    text-align: left;
+    border: 1px solid black;
+    background: lightblue;
+}
+
+.header-worktime-date{
+	width: 90px;
+    min-width: 90px;
+}
+
+.header-worktime-day{
+	min-width: 40px;
+    width: 40px;
+}
+
+.header-worktime-time{
+	min-width: 60px;
+    width: 60px;
+}
+
+.row-worktime-normal{
+	
+}
+
+.row-worktime-weekend{
+	background: lightgrey;
+}
+
+.row-worktime-ph{
+	
+}
+
+.cell-worktime-add{
+	width: 20px;
+	min-width: 20px;
+	background: lightblue;
+}
+
+.cell-worktime-add:hover{
+	background: lightgreen;
+}
+
+.cell-worktime-date{
+	width: 90px;
+    min-width: 90px;
+}
+
+.cell-worktime-day{
+	min-width: 40px;
+    width: 40px;
+}
+
+.cell-worktime-time{
+	min-width: 60px;
+    width: 60px;
+    text-align: center;
+}
+
+.cell-worktime-time:hover{
+	background-color: yellow;
+	border-color: #ff8d00;
+}
+
+.cell-worktime-rounded-time{
+	min-width: 60px;
+    width: 60px;
+    text-align: center;
+}
+
+#mgrview-details-timerecords-table tbody tr:hover {
+	background-color:#e8e87a; 
+}
+
