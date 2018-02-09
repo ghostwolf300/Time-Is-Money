@@ -124,6 +124,10 @@
     text-align: center;
 }
 
+.input-worktime{
+	background: inherit;
+}
+
 .cell-worktime-time:hover{
 	background-color: yellow;
 	border-color: #ff8d00;

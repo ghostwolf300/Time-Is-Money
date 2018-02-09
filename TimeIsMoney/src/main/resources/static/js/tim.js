@@ -2923,6 +2923,7 @@ var ManagerView=(function(){
 	
 	function _createEmptyWorkTimeRow(date){
 		var weekday=Util.getWeekday(date);
+		var row;
 		var rowClass;
 		if(weekday=='Sat' || weekday=='Sun'){
 			rowClass="row-worktime-weekend";
@@ -2930,47 +2931,39 @@ var ManagerView=(function(){
 		else{
 			rowClass="row-worktime-normal";
 		}
-		var html='<tr class="'+rowClass+'">'
-		+'<td class="cell-worktime-add"></td>'
-		+'<td class="cell-worktime-date">'+Util.getFormattedDate(date)+'</td>'
-		+'<td class="cell-worktime-day">'+Util.getWeekday(date)+'</td>'
-		+'<td class="cell-worktime-time"></td>'
-		+'<td class="cell-worktime-time"></td>'
-		+'<td class="cell-worktime-time"></td>'
-		+'<td class="cell-worktime-time"></td></tr>';
-		return html;
+		row=$('<tr class="'+rowClass+'"></tr>');
+		$(row).append('<td class="cell-worktime-add"></td>');
+		$(row).append('<td class="cell-worktime-date">'+Util.getFormattedDate(date)+'</td>');
+		$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
+		$(row).append(_getActualTimeCell(null,'in'));
+		$(row).append(_getActualTimeCell(null,'out'));
+		$(row).append('<td class="cell-worktime-time"></td>');
+		$(row).append('<td class="cell-worktime-time"></td>');
+		return row;
 	}
 	
 	function _getActualTimeCell(ts,direction){
 		var td;
+		var timeInput;
 		var time=Util.getTimeFromDate(new Date(ts));
+		timeInput=$('<input class="input-worktime" type="time"/>')
 		if(ts){
-			td=$('<td class="cell-worktime-time" data-stamp="'+ts+'">'+time+'</td>');
+			td=$('<td class="cell-worktime-time" data-stamp="'+ts+'"></td>');
+			$(timeInput).val(time);
 		}
 		else{
 			td=$('<td class="cell-worktime-time"></td>');
 		}
-		_bindTimeCellListener(td);
+		$(td).append(timeInput);
+		_bindTimeInputListener(timeInput);
 		return td;			
 	}
 	
-	function _bindTimeCellListener(td){
-		$(td).click(function(event){
-			console.log('click event');
-			var cell=event.target;
-			if($(cell).find('#timeInput').length>0){
-				console.log('already has input!');
-			}
-			else{
-				console.log('adding time input');
-				var timeInput=$('<input id="timeInput" type="time"/>');
-				$(timeInput).val($(cell).text());
-				$(cell).empty();
-				$(cell).append(timeInput);
-			}
-			
+	function _bindTimeInputListener(input){
+		$(input).change(function(event){
+			input=event.target;
+			console.log('time changed '+$(input).val());
 		});
-		
 	}
 	
 	function _showSchedules(eeId,periodStart,periodEnd){
