@@ -874,8 +874,8 @@ var DAO = (function() {
 		});
 	}
 	
-	function loadSchedules(userId,planId,_callback){
-		var url='/schedules/find?userId='+userId+'&planId='+planId;
+	function loadSchedules(userId,planId,orgUnitId,_callback){
+		var url='/schedules/find?userId='+userId+'&planId='+planId+'&orgUnitId='+orgUnitId;
 		var schedules;
 		
 		$.getJSON(url,function(s,statusText,jqxhr){
@@ -912,6 +912,8 @@ var DAO = (function() {
 	function saveSchedule(userId,schedule,_callback){
 		var url='/schedules/save?userId='+userId;
 		
+		console.log(schedule);
+		
 		data=JSON.stringify(schedule);
 		
 		$.ajax({
@@ -931,6 +933,28 @@ var DAO = (function() {
 	
 	function saveSchedules(userId,schedules,_callback){
 		
+	}
+	
+	function saveWorkTime(workTime,_callback){
+		var url='/worktimes/save';
+		
+		console.log(workTime);
+		
+		data=JSON.stringify(workTime);
+		
+		$.ajax({
+			url : url,
+			method : "POST",
+			data : data,
+			dataType : "json"
+		}).done(function(wt){
+			_callback(STATUS.DONE,wt);
+		}).fail(function(){
+			alert("ERROR: Couldn't save work time!");
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
 	}
 	
 	function loadActivePlan(orgUnitId,keyDate,_callback){
@@ -1071,7 +1095,8 @@ var DAO = (function() {
 		loadPlan : loadPlan,
 		loadAssignedEmployees : loadAssignedEmployees,
 		loadEmployeesAssignedTo : loadEmployeesAssignedTo,
-		loadWorkTimes : loadWorkTimes
+		loadWorkTimes : loadWorkTimes,
+		saveWorkTime : saveWorkTime
 	}
 	
 })();
@@ -2271,7 +2296,6 @@ var ScheduleEditor=(function(){
 		console.log('Initializing Module Schedule Editor');
 		orgTree=new OrgTree('#scheduler-org-structure-tree',_orgTreeChangeListener)
 		_bindEventHandlers();
-		//SEOrgStructure.init();
 		ScheduleEditDialog.init();
 	}
 	
@@ -2447,6 +2471,7 @@ var ScheduleEditor=(function(){
 			id : null,
 			planId : plan.id,
 			userId : userId,
+			orgUnitId : parseInt(orgTree.selectedValue[0]),
 			scheduleDate : null,
 			scheduleTypeId : $(td).attr('data-typeId') || 1,
 			start : $(td).attr('data-start'),
@@ -2567,6 +2592,10 @@ var ScheduleEditor=(function(){
 		return plan;
 	}
 	
+	function getOrgUnitId(){
+		return orgTree.selectedValue;
+	}
+	
 	function _clearRows(){
 		$(tbody).empty();
 	}
@@ -2595,7 +2624,8 @@ var ScheduleEditor=(function(){
 	
 	function _createRow(tr,employee){
 		_createEmployeeCells(tr,employee);
-		DAO.loadSchedules(employee.userId,plan.id,function(status,schedules){
+		var orgUnitId=orgTree.selectedValue;
+		DAO.loadSchedules(employee.userId,plan.id,orgUnitId,function(status,schedules){
 			if(status==DAO.STATUS.DONE){
 				_createScheduleCells(tr,employee,schedules);
 			}
@@ -2669,7 +2699,8 @@ var ScheduleEditor=(function(){
 		getUserId : getUserId,
 		showSchedules : showSchedules,
 		setPlan : setPlan,
-		getPlan : getPlan
+		getPlan : getPlan,
+		getOrgUnitId : getOrgUnitId
 	}
 	
 })();
@@ -2726,6 +2757,7 @@ var ScheduleEditDialog=(function(){
 		var date=ScheduleEditor.getDate(colIndex);
 		var userId=ScheduleEditor.getUserId(td);
 		var planId=ScheduleEditor.getPlan().id;
+		var orgUnitId=parseInt(ScheduleEditor.getOrgUnitId()[0]);
 		
 		if(!start){
 			$(dialog).find(fields.start).focus();
@@ -2739,6 +2771,7 @@ var ScheduleEditDialog=(function(){
 					id : $(td).attr('data-id'),
 					planId : planId,
 					userId : userId,
+					orgUnitId : orgUnitId, 
 					scheduleDate : date,
 					scheduleTypeId : $(td).attr('data-typeId') || 1,
 					start : start,
@@ -2774,6 +2807,10 @@ var ManagerView=(function(){
 	
 	var orgTree;
 	var employeeList;
+	var orgUnitSelectDialog;
+	var selectedOrgUnitId;
+	var selectedEmployeeId;
+	var selectedTimeRow;
 	
 	var fields={
 			periodStart : '#mgrview-period-start',
@@ -2795,6 +2832,7 @@ var ManagerView=(function(){
 		employeeList=new EmployeeList('#mgrview-worker-table',_employeeListClickListener);
 		$(fields.periodSelect).change(_periodSelectListener);
 		$(controls.periodShow).click(_periodShowClickListener);
+		orgUnitSelectDialog=new OrgUnitSelectDialog(_orgUnitSelectListener);
 	}
 	
 	function _periodSelectListener(e){
@@ -2829,21 +2867,25 @@ var ManagerView=(function(){
 	}
 	
 	function _orgTreeChangeListener(e,data){
-		var oid=orgTree.selectedValue;
-		employeeList.showEmployees(oid);
+		selectedOrgUnitId=orgTree.selectedValue;		
+		employeeList.showEmployees(selectedOrgUnitId);
 	}
 	
 	function _employeeListClickListener(e){
-		console.log('list clicked');
 		var tr=event.target.parentNode;
-		selected=$(tr).attr('data-userId');
-		_showEmployee(selected);
+		selectedEmployeeId=$(tr).attr('data-userId');
+		_showEmployee(selectedEmployeeId);
 	}
 	
 	function _periodShowClickListener(e){
 		var periodStart=$(fields.periodStart).val();
 		var periodEnd=$(fields.periodEnd).val();
 		
+	}
+	
+	function _orgUnitSelectListener(e){
+		var oid=parseInt(orgUnitSelectDialog.selectedValue[0]);
+		orgUnitSelectDialog.close();
 	}
 	
 	function _showEmployee(id){
@@ -2878,7 +2920,6 @@ var ManagerView=(function(){
 		var row;
 		var eewt
 		while(d < e){
-			console.log(d);
 			eewt=worktimes[Util.getFormattedDate(d)];
 			if(eewt){
 				console.log(eewt);
@@ -2917,6 +2958,7 @@ var ManagerView=(function(){
 			$(row).append(_getActualTimeCell(wt.stampOut,'out'));
 			$(row).append('<td class="cell-worktime-time"></td>');
 			$(row).append('<td class="cell-worktime-time"></td>');
+			$(row).append(_getOrgUnitCell(wt.orgUnit));
 		}
 		return row;
 	}
@@ -2939,6 +2981,7 @@ var ManagerView=(function(){
 		$(row).append(_getActualTimeCell(null,'out'));
 		$(row).append('<td class="cell-worktime-time"></td>');
 		$(row).append('<td class="cell-worktime-time"></td>');
+		$(row).append(_getOrgUnitCell(null));
 		return row;
 	}
 	
@@ -2960,9 +3003,78 @@ var ManagerView=(function(){
 	}
 	
 	function _bindTimeInputListener(input){
-		$(input).change(function(event){
-			input=event.target;
-			console.log('time changed '+$(input).val());
+		$(input).change(_timeInputListener);
+	}
+	
+	function _timeInputListener(e){
+		var tr=$(e.target.parentNode.parentNode);
+		/*console.log('1: '+$(tr).find('td').eq(1).text());
+		console.log('2: '+$(tr).find('td').eq(2).text());
+		console.log('3: '+$(tr).find('td').eq(3).find('input').val());
+		console.log('4: '+$(tr).find('td').eq(4).find('input').val());*/
+		saveWorkTime(e.target.parentNode.parentNode);
+	}
+	
+	function saveWorkTime(tr){
+		
+		var id=$(tr).attr('data-id');
+		var date=new Date($(tr).find('td').eq(1).text());
+		var startTime=$(tr).find('td').eq(3).find('input').val();
+		var endTime=$(tr).find('td').eq(4).find('input').val();
+		var oid=$(tr).find('td').eq(7).attr('data-orgUnitId');
+		var tsIn=null;
+		var tsOut=null;
+		
+		console.log(date);
+		console.log(startTime+' - '+endTime);
+		
+		if(startTime){
+			tsIn=new Date(startTime).getTime();
+		}
+		if(endTime){
+			tsOut=new Date(endTime).getTime();
+		}
+		
+		var worktime={
+				id : id || null,
+				userId : selectedEmployeeId,
+				orgUnitId : oid || selectedOrgUnitId,
+				stampIn : tsIn,
+				stampOut : tsOut,
+				dateIn : date,
+				dateOut : date,
+				roundedInTime : null,
+				roundedOutTime : null
+		}
+		
+		console.log(worktime);
+		
+		DAO.saveWorkTime(worktime,function(status,wt){
+			if(status==DAO.STATUS.DONE){
+				console.log(wt);
+			}
+			else if(status==DAO.STATUS.FAIL){
+				
+			}
+		});
+		
+	}
+	
+	function _getOrgUnitCell(ou){
+		var cell;
+		if(ou){
+			cell=$('<td class="cell-worktime-orgunit">'+ou.id+'/'+ou.costCenter.id+'</td>');
+		}
+		else{
+			cell=$('<td class="cell-worktime-orgunit"></td>');
+		}
+		_bindOrgUnitCellListener(cell);
+		return cell;
+	}
+	
+	function _bindOrgUnitCellListener(cell){
+		$(cell).click(function(){
+			orgUnitSelectDialog.show();
 		});
 	}
 	
@@ -3047,9 +3159,50 @@ class EmployeeList{
 		var tr=$(html);
 		return html;
 	}
+}
+
+class OrgUnitSelectDialog{
 	
+	constructor(selectListener){
+		this.dialog='#org-unit-dialog';
+		this._init(selectListener);
+		this.orgTree=new OrgTree('#org-unit-dialog-tree',this._changeListener);
+		console.log('dialog initialized...');
+	}
+	
+	_init(selectListener){
+		$(this.dialog).dialog({
+			modal: true,
+			autoOpen: false,
+			buttons: [
+				{
+					text: 'OK',
+					click: selectListener
+				}
+			]
+		});
+		
+	}
+	
+	_changeListener(event){
+		console.log('dialog tree value changed');
+	}
+	
+	get selectedValue(){
+		return $(this.orgTree).selectedValue;
+	}
+	
+	show(){
+		console.log('opening dialog...');
+		$(this.dialog).dialog('open');
+	}
+	
+	close(){
+		$(this.dialog).dialog('close');
+	}
 	
 }
+
 
 class OrgTree{
 	

@@ -34,8 +34,9 @@ public class ScheduleRestController {
 	@RequestMapping(value="/find")
 	public ResponseEntity<Map<String,Schedule>> getSchedules(
 			@RequestParam(value="userId") Integer userId,
-			@RequestParam(value="planId") Integer planId){
-		Map<String,Schedule> scheduleMap=scheduleService.findMap(userId, planId);
+			@RequestParam(value="planId") Integer planId,
+			@RequestParam(value="orgUnitId") Integer orgUnitId){
+		Map<String,Schedule> scheduleMap=scheduleService.findMap(userId, planId,orgUnitId);
 		if(scheduleMap==null) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}

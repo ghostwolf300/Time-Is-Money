@@ -43,6 +43,10 @@ public class WorkTime implements Serializable{
 	@JoinColumn(name="user_id")
 	private User user;
 	
+	@ManyToOne
+	@JoinColumn(name="org_unit_id")
+	private OrgUnit orgUnit;
+	
 	public WorkTime() {
 		
 	}
@@ -120,6 +124,14 @@ public class WorkTime implements Serializable{
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public OrgUnit getOrgUnit() {
+		return orgUnit;
+	}
+
+	public void setOrgUnit(OrgUnit orgUnit) {
+		this.orgUnit = orgUnit;
 	}
 	
 	

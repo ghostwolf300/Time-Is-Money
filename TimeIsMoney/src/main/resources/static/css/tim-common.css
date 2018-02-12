@@ -471,3 +471,7 @@ div#recordControls_bottom_right{
 .no-close .ui-dialog-titlebar-close {
   display: none;
 }
+
+.ui-dialog {
+	clear: both;
+}

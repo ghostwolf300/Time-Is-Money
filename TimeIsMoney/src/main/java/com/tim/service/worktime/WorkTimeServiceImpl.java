@@ -43,8 +43,8 @@ public class WorkTimeServiceImpl implements WorkTimeService {
 
 	@Override
 	public WorkTime saveEmployeeWorkTime(WorkTime workTime) {
-		// TODO Auto-generated method stub
-		return null;
+		WorkTime wt=workTimeRepository.save(workTime);
+		return wt;
 	}
 
 }

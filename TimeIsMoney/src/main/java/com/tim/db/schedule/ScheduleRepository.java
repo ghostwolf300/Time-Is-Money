@@ -10,5 +10,6 @@ import com.tim.entities.Schedule;
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer>,ScheduleRepositoryCustom {
 	
 	public List<Schedule> findByUserIdAndPlanId(int userId,int planId);
+	public List<Schedule> findByUserIdAndPlanIdAndOrgUnitId(int userId,int planId,int orgUnitId);
 	
 }

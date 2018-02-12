@@ -28,6 +28,8 @@ public class Schedule implements Serializable {
 	private Integer id;
 	@Column(name="plan_id")
 	private Integer planId;
+	@Column(name="org_unit_id")
+	private Integer orgUnitId;
 	@Column(name="user_id")
 	private Integer userId;
 	@Column(name="schedule_date")
@@ -74,6 +76,14 @@ public class Schedule implements Serializable {
 
 	public void setPlanId(Integer planId) {
 		this.planId = planId;
+	}
+
+	public Integer getOrgUnitId() {
+		return orgUnitId;
+	}
+
+	public void setOrgUnitId(Integer orgUnitId) {
+		this.orgUnitId = orgUnitId;
 	}
 
 	public Date getScheduleDate() {

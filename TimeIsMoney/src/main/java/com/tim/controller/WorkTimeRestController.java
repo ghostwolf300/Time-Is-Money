@@ -7,7 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +33,16 @@ public class WorkTimeRestController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Map<String,List<WorkTime>>>(workTimeMap,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/save",method=RequestMethod.POST)
+	public ResponseEntity<WorkTime> saveWorkTime(
+			@RequestBody WorkTime workTime){
+		WorkTime saved=workTimeService.saveEmployeeWorkTime(workTime);
+		if(saved==null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<WorkTime>(saved,HttpStatus.OK);
 	}
 	
 
