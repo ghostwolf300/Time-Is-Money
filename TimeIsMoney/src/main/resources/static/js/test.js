@@ -5,28 +5,22 @@
 $(document).ready(function(){
 	$('#test-forecast').on('click',loadForecast);
 	$('#test-js-button').on('click',testApproach);
-	$('#get-tree-value-button').on('click',testTreeValue);
 });
 
-/*var test1;
-var test2;
-
 function testApproach(){
-	console.log('Testing module approach...');
-	var changeHandlerOne=function(){
-		console.log('change one');
-	}
-	var changeHandlerTwo=function(){
-		console.log('change two');
-	}
-	test1=new OrgTree('#mytree',changeHandlerOne);
-	test2=new OrgTree('#myothertree',changeHandlerTwo);
+	var timeStr='09:20';
+	var timeArr=timeStr.split(':');
+	var hours=parseInt(timeArr[0]);
+	var minutes=parseInt(timeArr[1]);
+	var date=new Date();
+	var year=date.getFullYear();
+	var month=date.getMonth();
+	var day=date.getDate();
+	
+	var dateTime=new Date(year,month,day,hours,minutes);
+	console.log(dateTime);
+	console.log(dateTime.getTime());
 }
-
-function testTreeValue(){
-	console.log(test1.selectedValue);
-	console.log(test2.selectedValue);
-}*/
 
 function loadForecast(){
 	var url='/forecast/test?planId='+1;
@@ -81,49 +75,3 @@ function createDataSet(stats){
 	return forecastSet;
 	
 }
-
-/*class OrgTree{
-	
-	constructor(tree,changeHandler){
-		this.tree=tree;
-		this._loadTree();
-		this._bindTreeChangeHandler(changeHandler);
-	}
-	
-	set tree(val){
-		this._tree=val;
-	}
-	
-	get tree(){
-		return this._tree;
-	}
-	
-	get selectedValue(){
-		return $(this._tree).jstree('get_selected');
-	}
-	
-	_bindTreeChangeHandler(changeHandler){
-		$(this._tree).on('changed.jstree', changeHandler);
-	}
-	
-	_loadTree(){
-		var treeData;
-		var me=this;
-		DAO.loadOrgTree(function(status,treeData){
-			if(status==DAO.STATUS.DONE){
-				me._fillTree(treeData);
-			}
-		});
-	}
-	
-	_fillTree(treeData){
-		$(this._tree).jstree({ 
-			'core' : {
-				'data' : treeData
-			} 
-		});
-	}
-}*/
-
-
-

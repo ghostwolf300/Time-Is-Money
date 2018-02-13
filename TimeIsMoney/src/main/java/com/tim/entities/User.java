@@ -41,7 +41,7 @@ classes= {
 @Entity
 @Table(name="user")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope=User.class)
 public class User implements Serializable {
 	
 	/**

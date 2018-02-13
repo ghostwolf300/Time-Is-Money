@@ -10,7 +10,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tim.component.TIMSessionInfo;
+import com.tim.db.orgunit.OrgUnitRepository;
 import com.tim.db.worktime.WorkTimeRepository;
+import com.tim.entities.User;
 import com.tim.entities.WorkTime;
 
 @Service("workTimeService")
@@ -18,6 +21,12 @@ public class WorkTimeServiceImpl implements WorkTimeService {
 	
 	@Autowired
 	private WorkTimeRepository workTimeRepository;
+	
+	@Autowired
+	private OrgUnitRepository orgUnitRepository;
+	
+	@Autowired
+	private TIMSessionInfo sessionInfo;
 	
 	@Override
 	public Map<String, List<WorkTime>> getEmployeeWorkTime(int userId, Date startDate, Date endDate) {
@@ -43,7 +52,10 @@ public class WorkTimeServiceImpl implements WorkTimeService {
 
 	@Override
 	public WorkTime saveEmployeeWorkTime(WorkTime workTime) {
+		User u=sessionInfo.getCurrentUser();
+		workTime.setChangedBy(u);
 		WorkTime wt=workTimeRepository.save(workTime);
+		wt.setOrgUnit(orgUnitRepository.findById(wt.getOrgUnit().getId()));
 		return wt;
 	}
 

@@ -4,15 +4,24 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Null;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 
 @Entity
 @Table(name="work_time")
@@ -25,7 +34,10 @@ public class WorkTime implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name="id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	@Column(name="user_id")
+	private Integer userId;
 	@Column(name="stamp_in")
 	private Timestamp stampIn;
 	@Column(name="stamp_out")
@@ -38,14 +50,16 @@ public class WorkTime implements Serializable{
 	private Time roundedInTime;
 	@Column(name="rounded_out_time")
 	private Time roundedOutTime;
-	
-	@ManyToOne
-	@JoinColumn(name="user_id")
-	private User user;
+	@Column(name="change_ts")
+	private Timestamp changeTs;
 	
 	@ManyToOne
 	@JoinColumn(name="org_unit_id")
 	private OrgUnit orgUnit;
+	
+	@ManyToOne
+	@JoinColumn(name="changed_by")
+	private User changedBy;
 	
 	public WorkTime() {
 		
@@ -68,6 +82,14 @@ public class WorkTime implements Serializable{
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public Timestamp getStampIn() {
@@ -118,14 +140,6 @@ public class WorkTime implements Serializable{
 		this.roundedOutTime = roundedOutTime;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 	public OrgUnit getOrgUnit() {
 		return orgUnit;
 	}
@@ -133,6 +147,26 @@ public class WorkTime implements Serializable{
 	public void setOrgUnit(OrgUnit orgUnit) {
 		this.orgUnit = orgUnit;
 	}
+
+	public Timestamp getChangeTs() {
+		return changeTs;
+	}
+
+	public void setChangeTs(Timestamp changeTs) {
+		this.changeTs = changeTs;
+	}
+
+	public User getChangedBy() {
+		return changedBy;
+	}
+
+	public void setChangedBy(User changedBy) {
+		this.changedBy = changedBy;
+	}
 	
+	@JsonProperty
+	public String getChangedByText() {
+		return changedBy.getUsername()+": "+new SimpleDateFormat("yyyy-MM-dd HH:mm").format(changeTs);
+	}
 	
 }

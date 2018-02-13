@@ -94,6 +94,22 @@ var Util=(function(){
 		return time;
 	}
 	
+	function getTimestamp(date,time){
+		var timeArr=time.split(':');
+		var hours=parseInt(timeArr[0]);
+		var minutes=parseInt(timeArr[1]);
+		var year=date.getFullYear();
+		var month=date.getMonth();
+		var day=date.getDate();
+		var dateTime=new Date(year,month,day,hours,minutes);
+		return dateTime.getTime();
+	}
+	
+	function getFormattedDateTime(date){
+		var dateTime=$.format.date(date,'yyyy-MM-dd HH:mm');
+		return dateTime;
+	}
+	
 	function getLastWeek(){
 		var s=new Date();
 		var e=new Date();
@@ -123,12 +139,24 @@ var Util=(function(){
 	}
 	
 	function getCurrentPYPeriod(){
-		var period;
+		var date=new Date();
+		var s=new Date(date.getFullYear(),date.getMonth(),1);
+		var e=new Date(date.getFullYear(),date.getMonth()+1,1);
+		var period={
+				start : getFormattedDate(s),
+				end : getFormattedDate(e)
+		}
 		return period;
 	}
 	
 	function getPreviousPYPeriod(){
-		var period;
+		var date=new Date();
+		var s=new Date(date.getFullYear(),date.getMonth()-1,1);
+		var e=new Date(date.getFullYear(),date.getMonth(),1);
+		var period={
+				start : getFormattedDate(s),
+				end : getFormattedDate(e)
+		}
 		return period;
 	}
 	
@@ -145,7 +173,9 @@ var Util=(function(){
 		getLastWeek : getLastWeek,
 		getCurrentWeek : getCurrentWeek,
 		getPreviousPYPeriod : getPreviousPYPeriod,
-		getCurrentPYPeriod : getCurrentPYPeriod
+		getCurrentPYPeriod : getCurrentPYPeriod,
+		getTimestamp : getTimestamp,
+		getFormattedDateTime : getFormattedDateTime
 	}
 	
 })();
@@ -935,7 +965,7 @@ var DAO = (function() {
 		
 	}
 	
-	function saveWorkTime(workTime,_callback){
+	function saveWorkTime(workTime,tr,_callback){
 		var url='/worktimes/save';
 		
 		console.log(workTime);
@@ -948,7 +978,7 @@ var DAO = (function() {
 			data : data,
 			dataType : "json"
 		}).done(function(wt){
-			_callback(STATUS.DONE,wt);
+			_callback(STATUS.DONE,wt,tr);
 		}).fail(function(){
 			alert("ERROR: Couldn't save work time!");
 			_callback(STATUS.FAIL);
@@ -1098,10 +1128,6 @@ var DAO = (function() {
 		loadWorkTimes : loadWorkTimes,
 		saveWorkTime : saveWorkTime
 	}
-	
-})();
-
-var DateEffective=(function(){
 	
 })();
 
@@ -2884,7 +2910,7 @@ var ManagerView=(function(){
 	}
 	
 	function _orgUnitSelectListener(e){
-		var oid=parseInt(orgUnitSelectDialog.selectedValue[0]);
+		var oid=parseInt(orgUnitSelectDialog.selectedValue);
 		orgUnitSelectDialog.close();
 	}
 	
@@ -2950,15 +2976,17 @@ var ManagerView=(function(){
 			else{
 				rowClass="row-worktime-normal";
 			}
-			row=$('<tr class="'+rowClass+'" data-id="'+wt.id+'" data-userId="'+wt.user+'"></tr>');
+			row=$('<tr class="'+rowClass+'" data-id="'+wt.id+'" data-userId="'+wt.userId+'"></tr>');
 			$(row).append('<td class="cell-worktime-add"></td>');
-			$(row).append('<td class="cell-worktime-date">'+Util.getFormattedDate(date)+'</td>');
+			$(row).append('<td class="cell-worktime-date" data-date="'+date+'">'+Util.getFormattedDate(date)+'</td>');
 			$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
 			$(row).append(_getActualTimeCell(wt.stampIn,'in'));
 			$(row).append(_getActualTimeCell(wt.stampOut,'out'));
 			$(row).append('<td class="cell-worktime-time"></td>');
 			$(row).append('<td class="cell-worktime-time"></td>');
 			$(row).append(_getOrgUnitCell(wt.orgUnit));
+			$(row).append('<td class="cell-worktime-changed">'+wt.changedByText+'</td>');
+			//$(row).append(_getChangedByCell(wt.changedBy.username,wt.changeTs));
 		}
 		return row;
 	}
@@ -2975,13 +3003,14 @@ var ManagerView=(function(){
 		}
 		row=$('<tr class="'+rowClass+'"></tr>');
 		$(row).append('<td class="cell-worktime-add"></td>');
-		$(row).append('<td class="cell-worktime-date">'+Util.getFormattedDate(date)+'</td>');
+		$(row).append('<td class="cell-worktime-date" data-date="'+date+'">'+Util.getFormattedDate(date)+'</td>');
 		$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
 		$(row).append(_getActualTimeCell(null,'in'));
 		$(row).append(_getActualTimeCell(null,'out'));
 		$(row).append('<td class="cell-worktime-time"></td>');
 		$(row).append('<td class="cell-worktime-time"></td>');
 		$(row).append(_getOrgUnitCell(null));
+		$(row).append('<td class="cell-worktime-changed"></td>');
 		return row;
 	}
 	
@@ -3002,43 +3031,50 @@ var ManagerView=(function(){
 		return td;			
 	}
 	
+	function _getChangedByCell(user,ts){
+		var td;
+		if(user && ts){
+			var date=new Date(ts);
+			td=$('<td class="cell-worktime-changed" data-stamp="'+ts+'">'+user+': '+Util.getFormattedDateTime(date)+'</td>');
+		}
+		else{
+			td=$('<td class="cell-worktime-changed"></td>');
+		}
+		return td;
+	}
+	
 	function _bindTimeInputListener(input){
 		$(input).change(_timeInputListener);
 	}
 	
 	function _timeInputListener(e){
 		var tr=$(e.target.parentNode.parentNode);
-		/*console.log('1: '+$(tr).find('td').eq(1).text());
-		console.log('2: '+$(tr).find('td').eq(2).text());
-		console.log('3: '+$(tr).find('td').eq(3).find('input').val());
-		console.log('4: '+$(tr).find('td').eq(4).find('input').val());*/
 		saveWorkTime(e.target.parentNode.parentNode);
 	}
 	
 	function saveWorkTime(tr){
 		
 		var id=$(tr).attr('data-id');
-		var date=new Date($(tr).find('td').eq(1).text());
+		var date=new Date($(tr).find('td').eq(1).attr('data-date'));
 		var startTime=$(tr).find('td').eq(3).find('input').val();
 		var endTime=$(tr).find('td').eq(4).find('input').val();
 		var oid=$(tr).find('td').eq(7).attr('data-orgUnitId');
 		var tsIn=null;
 		var tsOut=null;
 		
-		console.log(date);
-		console.log(startTime+' - '+endTime);
-		
 		if(startTime){
-			tsIn=new Date(startTime).getTime();
+			tsIn=Util.getTimestamp(date,startTime);
 		}
 		if(endTime){
-			tsOut=new Date(endTime).getTime();
+			tsOut=Util.getTimestamp(date,endTime);
 		}
 		
 		var worktime={
 				id : id || null,
-				userId : selectedEmployeeId,
-				orgUnitId : oid || selectedOrgUnitId,
+				userId : parseInt(selectedEmployeeId),
+				orgUnit : {
+					id : oid || parseInt(selectedOrgUnitId[0])
+				},
 				stampIn : tsIn,
 				stampOut : tsOut,
 				dateIn : date,
@@ -3049,21 +3085,43 @@ var ManagerView=(function(){
 		
 		console.log(worktime);
 		
-		DAO.saveWorkTime(worktime,function(status,wt){
-			if(status==DAO.STATUS.DONE){
-				console.log(wt);
-			}
-			else if(status==DAO.STATUS.FAIL){
-				
-			}
-		});
+		var wt;
+		DAO.saveWorkTime(worktime,tr,_handleSaveResponse);
 		
+	}
+	
+	function _handleSaveResponse(status,wt,tr){
+		var cell;
+		if(status==DAO.STATUS.DONE){
+			console.log(wt);
+			$(tr).attr('data-id',wt.id);
+			
+			if(wt.stampIn){
+				cell=$(tr).find('td').eq(3);
+				$(cell).attr('data-ts',wt.stampIn);
+				$(cell).find('input').val(Util.getTimeFromDate(new Date(wt.stampIn)));
+			}
+			
+			if(wt.stampOut){
+				cell=$(tr).find('td').eq(4);
+				$(cell).attr('data-ts',wt.stampOut);
+				$(cell).find('input').val(Util.getTimeFromDate(new Date(wt.stampOut)));
+			}
+			
+			cell=$(tr).find('td').eq(7);
+			$(cell).attr('data-orgUnitId',wt.orgUnit.id);
+			$(cell).text(wt.orgUnit.id+'/'+wt.orgUnit.costCenter.id);
+			
+		}
+		else if(status==DAO.STATUS.FAIL){
+			
+		}
 	}
 	
 	function _getOrgUnitCell(ou){
 		var cell;
 		if(ou){
-			cell=$('<td class="cell-worktime-orgunit">'+ou.id+'/'+ou.costCenter.id+'</td>');
+			cell=$('<td class="cell-worktime-orgunit" data-orgUnitId="'+ou.id+'">'+ou.id+'/'+ou.costCenter.id+'</td>');
 		}
 		else{
 			cell=$('<td class="cell-worktime-orgunit"></td>');
