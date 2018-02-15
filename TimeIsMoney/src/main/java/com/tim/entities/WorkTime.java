@@ -21,11 +21,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.tim.json.WorkTimeSerializer;
 
 
 @Entity
 @Table(name="work_time")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonSerialize(using=WorkTimeSerializer.class)
 public class WorkTime implements Serializable{
 	
 	/**
@@ -164,9 +167,9 @@ public class WorkTime implements Serializable{
 		this.changedBy = changedBy;
 	}
 	
-	@JsonProperty
-	public String getChangedByText() {
-		return changedBy.getUsername()+": "+new SimpleDateFormat("yyyy-MM-dd HH:mm").format(changeTs);
+	public String toString() {
+		return null;
 	}
+
 	
 }

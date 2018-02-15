@@ -1,4 +1,4 @@
-package com.tim.controller;
+package com.tim.controller.rest;
 
 import java.sql.Date;
 import java.util.List;
@@ -22,6 +22,15 @@ public class WorkTimeRestController {
 	
 	@Autowired
 	private WorkTimeService workTimeService;
+	
+	@RequestMapping("/test")
+	public ResponseEntity<WorkTime> test(){
+		WorkTime wt=workTimeService.getEmployeeWorkTime(31);
+		if(wt==null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<WorkTime>(wt,HttpStatus.OK);
+	}
 	
 	@RequestMapping("/show")
 	public ResponseEntity<Map<String,List<WorkTime>>> getWorkTime(

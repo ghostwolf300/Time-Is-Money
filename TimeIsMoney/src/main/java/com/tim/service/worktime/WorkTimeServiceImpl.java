@@ -1,6 +1,7 @@
 package com.tim.service.worktime;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,9 +55,15 @@ public class WorkTimeServiceImpl implements WorkTimeService {
 	public WorkTime saveEmployeeWorkTime(WorkTime workTime) {
 		User u=sessionInfo.getCurrentUser();
 		workTime.setChangedBy(u);
+		workTime.setChangeTs(new Timestamp(System.currentTimeMillis()));
 		WorkTime wt=workTimeRepository.save(workTime);
 		wt.setOrgUnit(orgUnitRepository.findById(wt.getOrgUnit().getId()));
 		return wt;
+	}
+
+	@Override
+	public WorkTime getEmployeeWorkTime(int id) {
+		return workTimeRepository.findById(id);
 	}
 
 }

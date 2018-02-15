@@ -8,6 +8,7 @@ import com.tim.entities.WorkTime;
 
 public interface WorkTimeService {
 	
+	public WorkTime getEmployeeWorkTime(int id);
 	public Map<String,List<WorkTime>> getEmployeeWorkTime(int userId,Date startDate,Date endDate);
 	public WorkTime saveEmployeeWorkTime(WorkTime workTime);
 

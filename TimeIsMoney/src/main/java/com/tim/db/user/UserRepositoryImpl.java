@@ -37,7 +37,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	
 	public List<UserSearchResult> findAllCustom(){
 		String queryString="SELECT u.id,u.username,up.first_name,up.last_name FROM user u LEFT JOIN user_personal up ON u.id=up.user_id " + 
-				"WHERE up.start_date IS NULL OR (up.start_date<=:keyDate AND (up.end_date>:keyDate OR up.end_date IS NULL))";
+				"WHERE up.start_date IS NULL OR (up.start_date<=:keyDate AND (up.end_date>=:keyDate OR up.end_date IS NULL))";
 		Query query=em.createNativeQuery(queryString, "UserSearchResults");
 		query.setParameter("keyDate", new Date(System.currentTimeMillis()));
 		@SuppressWarnings("unchecked")

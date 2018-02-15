@@ -1,4 +1,4 @@
-package com.tim.controller;
+package com.tim.controller.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

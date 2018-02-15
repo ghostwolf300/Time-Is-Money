@@ -20,7 +20,7 @@ public class UserPersonalRepositoryImpl extends AbstractDateEffectiveRepository<
 		String sqlStr="SELECT up FROM UserPersonal up "
 				+ "WHERE up.key.userId=:userId "
 				+ "AND up.key.startDate<=:keyDate "
-				+ "AND (up.endDate>:keyDate OR up.endDate IS NULL)";
+				+ "AND (up.endDate>=:keyDate OR up.endDate IS NULL)";
 		TypedQuery<UserPersonal> query=em.createQuery(sqlStr, UserPersonal.class);
 		query.setParameter("userId",userId);
 		query.setParameter("keyDate", date);

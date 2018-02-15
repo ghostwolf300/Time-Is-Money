@@ -27,7 +27,7 @@ public class UserAssignmentRepositoryImpl extends AbstractDateEffectiveRepositor
 		String sqlStr="SELECT ua FROM UserAssignment ua "
 				+ "WHERE ua.key.userId=:userId "
 				+ "AND ua.key.startDate<=:keyDate "
-				+ "AND (ua.endDate>:keyDate OR ua.endDate IS NULL)";
+				+ "AND (ua.endDate>=:keyDate OR ua.endDate IS NULL)";
 		TypedQuery<UserAssignment> query=em.createQuery(sqlStr, UserAssignment.class);
 		query.setParameter("userId",userId);
 		query.setParameter("keyDate", date);
@@ -102,8 +102,8 @@ public class UserAssignmentRepositoryImpl extends AbstractDateEffectiveRepositor
 				+ "LEFT JOIN user_personal up ON u.id=up.user_id "
 				+ "INNER JOIN user_assignment ua ON u.id=ua.user_id " + 
 				"WHERE "
-				+ "(up.start_date IS NULL OR (up.start_date<=:keyDate AND (up.end_date>:keyDate OR up.end_date IS NULL))) "
-				+ "AND (ua.start_date<=:keyDate AND (ua.end_date>:keyDate OR ua.end_date IS NULL)) "
+				+ "(up.start_date IS NULL OR (up.start_date<=:keyDate AND (up.end_date>=:keyDate OR up.end_date IS NULL))) "
+				+ "AND (ua.start_date<=:keyDate AND (ua.end_date>=:keyDate OR ua.end_date IS NULL)) "
 				+ "AND ua.org_unit_id=:orgUnitId";
 		Query query=em.createNativeQuery(queryString, "UserSearchResults");
 		query.setParameter("keyDate", keyDate);

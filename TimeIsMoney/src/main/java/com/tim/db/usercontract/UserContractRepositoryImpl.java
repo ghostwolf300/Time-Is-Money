@@ -26,7 +26,7 @@ public class UserContractRepositoryImpl extends AbstractDateEffectiveRepository<
 		String sqlStr="SELECT uc FROM UserContract uc "
 		+ "WHERE uc.key.userId=:userId "
 		+ "AND uc.key.startDate<=:keyDate "
-		+ "AND (uc.endDate>:keyDate OR uc.endDate IS NULL)";
+		+ "AND (uc.endDate>=:keyDate OR uc.endDate IS NULL)";
 		TypedQuery<UserContract> query=em.createQuery(sqlStr, UserContract.class);
 		query.setParameter("userId",userId);
 		query.setParameter("keyDate", date);

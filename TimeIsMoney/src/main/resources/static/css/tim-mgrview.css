@@ -118,6 +118,16 @@
 	background: lightgreen;
 }
 
+.cell-worktime-del{
+	width: 20px;
+	min-width: 20px;
+	background: lightgrey;
+}
+
+.cell-worktime-del:hover{
+	background: red;
+}
+
 .cell-worktime-date{
 	width: 90px;
     min-width: 90px;
@@ -157,6 +167,12 @@
 .cell-worktime-orgunit:hover{
 	background-color: yellow;
 	border-color: #ff8d00;
+}
+
+.cell-worktime-changed{
+	width: 100px;
+	min-width: 140px;
+	font-size : 12px;
 }
 
 #mgrview-details-timerecords-table tbody tr:hover {

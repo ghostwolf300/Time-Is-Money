@@ -1,4 +1,4 @@
-package com.tim.controller;
+package com.tim.controller.view;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1093,6 +1093,27 @@ var DAO = (function() {
 		});
 	}
 	
+	function loadWorkTimeTest(_callback){
+		var url='/worktimes/test';
+		var worktime;
+		
+		$.getJSON(url,function(wt,statusText,jqxhr){
+			
+		}).done(function(wt,statusText,jqxhr){
+			if(jqxhr.status==200){
+				worktime=wt;
+				_callback(STATUS.DONE,worktime);
+			}
+			else if(jqxhr.status==204){
+				_callback(STATUS.NA);
+			}
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+	}
+	
 	return{
 		STATUS : STATUS,
 		NEW_ID : NEW_ID,
@@ -1126,7 +1147,8 @@ var DAO = (function() {
 		loadAssignedEmployees : loadAssignedEmployees,
 		loadEmployeesAssignedTo : loadEmployeesAssignedTo,
 		loadWorkTimes : loadWorkTimes,
-		saveWorkTime : saveWorkTime
+		saveWorkTime : saveWorkTime,
+		loadWorkTimeTest : loadWorkTimeTest
 	}
 	
 })();
@@ -2911,7 +2933,11 @@ var ManagerView=(function(){
 	
 	function _orgUnitSelectListener(e){
 		var oid=parseInt(orgUnitSelectDialog.selectedValue);
+		console.log('selected org unit: '+oid);
+		$(selectedTimeRow).find('td').eq(8).attr('data-orgUnitId',oid);
+		saveWorkTime(selectedTimeRow);
 		orgUnitSelectDialog.close();
+		selectedTimeRow=null;
 	}
 	
 	function _showEmployee(id){
@@ -2945,49 +2971,50 @@ var ManagerView=(function(){
 		var html='';
 		var row;
 		var eewt
+		var tbody=$(tables.timerecords+' > tbody');
 		while(d < e){
 			eewt=worktimes[Util.getFormattedDate(d)];
 			if(eewt){
-				console.log(eewt);
-				row=_createFilledWorkTimeRow(d,eewt);
+				for(var i=0;i<eewt.length;i++){
+					row=_createFilledWorkTimeRow(d,eewt[i]);
+					tbody.append(row);
+				}
 			}
 			else{
 				row=_createEmptyWorkTimeRow(d);
+				tbody.append(row);
 			}
-			
-			$(tables.timerecords+' > tbody').append(row);
 			d.setDate(d.getDate()+1);
 		}
 		
 	}
 	
-	function _createFilledWorkTimeRow(date,wts){
-		var wt;
+	function _createFilledWorkTimeRow(date,wt){
+		
 		var row;
 		var weekday;
 		var rowClass;
 		
-		for(var i=0;i<wts.length;i++){
-			wt=wts[i];
-			weekday=Util.getWeekday(date);
-			if(weekday=="Sat" || weekday=="Sun"){
-				rowClass="row-worktime-weekend";
-			}
-			else{
-				rowClass="row-worktime-normal";
-			}
-			row=$('<tr class="'+rowClass+'" data-id="'+wt.id+'" data-userId="'+wt.userId+'"></tr>');
-			$(row).append('<td class="cell-worktime-add"></td>');
-			$(row).append('<td class="cell-worktime-date" data-date="'+date+'">'+Util.getFormattedDate(date)+'</td>');
-			$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
-			$(row).append(_getActualTimeCell(wt.stampIn,'in'));
-			$(row).append(_getActualTimeCell(wt.stampOut,'out'));
-			$(row).append('<td class="cell-worktime-time"></td>');
-			$(row).append('<td class="cell-worktime-time"></td>');
-			$(row).append(_getOrgUnitCell(wt.orgUnit));
-			$(row).append('<td class="cell-worktime-changed">'+wt.changedByText+'</td>');
-			//$(row).append(_getChangedByCell(wt.changedBy.username,wt.changeTs));
+		weekday=Util.getWeekday(date);
+		if(weekday=="Sat" || weekday=="Sun"){
+			rowClass="row-worktime-weekend";
 		}
+		else{
+			rowClass="row-worktime-normal";
+		}
+		row=$('<tr class="'+rowClass+'" data-id="'+wt.id+'" data-userId="'+wt.userId+'"></tr>');
+		$(row).append(_getRowDelCell());
+		$(row).append(_getRowAddCell());
+		$(row).append('<td class="cell-worktime-date" data-date="'+date+'">'+Util.getFormattedDate(date)+'</td>');
+		$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
+		$(row).append(_getActualTimeCell(wt.stampIn,'in'));
+		$(row).append(_getActualTimeCell(wt.stampOut,'out'));
+		$(row).append('<td class="cell-worktime-rounded-time"></td>');
+		$(row).append('<td class="cell-worktime-rounded-time"></td>');
+		$(row).append(_getOrgUnitCell(wt.orgUnit));
+		$(row).append('<td class="cell-worktime-changed">'+wt.changedByText+'</td>');
+
+		
 		return row;
 	}
 	
@@ -3002,16 +3029,29 @@ var ManagerView=(function(){
 			rowClass="row-worktime-normal";
 		}
 		row=$('<tr class="'+rowClass+'"></tr>');
-		$(row).append('<td class="cell-worktime-add"></td>');
+		$(row).append(_getRowDelCell());
+		$(row).append(_getRowAddCell());
 		$(row).append('<td class="cell-worktime-date" data-date="'+date+'">'+Util.getFormattedDate(date)+'</td>');
 		$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
 		$(row).append(_getActualTimeCell(null,'in'));
 		$(row).append(_getActualTimeCell(null,'out'));
-		$(row).append('<td class="cell-worktime-time"></td>');
-		$(row).append('<td class="cell-worktime-time"></td>');
+		$(row).append('<td class="cell-worktime-rounded-time"></td>');
+		$(row).append('<td class="cell-worktime-rounded-time"></td>');
 		$(row).append(_getOrgUnitCell(null));
 		$(row).append('<td class="cell-worktime-changed"></td>');
 		return row;
+	}
+	
+	function _getRowDelCell(){
+		var td=$('<td class="cell-worktime-del"></td>');
+		$(td).click(_rowDelListener);
+		return td;
+	}
+	
+	function _getRowAddCell(){
+		var td=$('<td class="cell-worktime-add"></td>');
+		$(td).click(_rowAddListener);
+		return td;
 	}
 	
 	function _getActualTimeCell(ts,direction){
@@ -3031,18 +3071,6 @@ var ManagerView=(function(){
 		return td;			
 	}
 	
-	function _getChangedByCell(user,ts){
-		var td;
-		if(user && ts){
-			var date=new Date(ts);
-			td=$('<td class="cell-worktime-changed" data-stamp="'+ts+'">'+user+': '+Util.getFormattedDateTime(date)+'</td>');
-		}
-		else{
-			td=$('<td class="cell-worktime-changed"></td>');
-		}
-		return td;
-	}
-	
 	function _bindTimeInputListener(input){
 		$(input).change(_timeInputListener);
 	}
@@ -3055,10 +3083,10 @@ var ManagerView=(function(){
 	function saveWorkTime(tr){
 		
 		var id=$(tr).attr('data-id');
-		var date=new Date($(tr).find('td').eq(1).attr('data-date'));
-		var startTime=$(tr).find('td').eq(3).find('input').val();
-		var endTime=$(tr).find('td').eq(4).find('input').val();
-		var oid=$(tr).find('td').eq(7).attr('data-orgUnitId');
+		var date=new Date($(tr).find('td').eq(2).attr('data-date'));
+		var startTime=$(tr).find('td').eq(4).find('input').val();
+		var endTime=$(tr).find('td').eq(5).find('input').val();
+		var oid=$(tr).find('td').eq(8).attr('data-orgUnitId');
 		var tsIn=null;
 		var tsOut=null;
 		
@@ -3097,20 +3125,22 @@ var ManagerView=(function(){
 			$(tr).attr('data-id',wt.id);
 			
 			if(wt.stampIn){
-				cell=$(tr).find('td').eq(3);
+				cell=$(tr).find('td').eq(4);
 				$(cell).attr('data-ts',wt.stampIn);
 				$(cell).find('input').val(Util.getTimeFromDate(new Date(wt.stampIn)));
 			}
 			
 			if(wt.stampOut){
-				cell=$(tr).find('td').eq(4);
+				cell=$(tr).find('td').eq(5);
 				$(cell).attr('data-ts',wt.stampOut);
 				$(cell).find('input').val(Util.getTimeFromDate(new Date(wt.stampOut)));
 			}
 			
-			cell=$(tr).find('td').eq(7);
+			cell=$(tr).find('td').eq(8);
 			$(cell).attr('data-orgUnitId',wt.orgUnit.id);
 			$(cell).text(wt.orgUnit.id+'/'+wt.orgUnit.costCenter.id);
+			cell=$(tr).find('td').eq(9);
+			$(cell).text(wt.changedByText);
 			
 		}
 		else if(status==DAO.STATUS.FAIL){
@@ -3126,14 +3156,32 @@ var ManagerView=(function(){
 		else{
 			cell=$('<td class="cell-worktime-orgunit"></td>');
 		}
-		_bindOrgUnitCellListener(cell);
+		$(cell).click(_orgUnitCellListener);
 		return cell;
 	}
 	
-	function _bindOrgUnitCellListener(cell){
-		$(cell).click(function(){
-			orgUnitSelectDialog.show();
-		});
+	function _orgUnitCellListener(e){
+		selectedTimeRow=e.target.parentNode;
+		orgUnitSelectDialog.show();
+	}
+	
+	function _rowAddListener(e){
+		var row=e.target.parentNode;
+		var id=$(row).attr('data-id');
+		if(id){
+			console.log('add row '+id);
+			var date=new Date($(row).find('td').eq(2).attr('data-date'));
+			var newRow=_createEmptyWorkTimeRow(date);
+			$(row).after(newRow);
+		}
+	}
+	
+	function _rowDelListener(e){
+		var row=e.target.parentNode;
+		var id=$(row).attr('data-id');
+		if(id){
+			console.log('del row '+id);
+		}
 	}
 	
 	function _showSchedules(eeId,periodStart,periodEnd){
@@ -3247,7 +3295,7 @@ class OrgUnitSelectDialog{
 	}
 	
 	get selectedValue(){
-		return $(this.orgTree).selectedValue;
+		return this.orgTree.selectedValue;
 	}
 	
 	show(){

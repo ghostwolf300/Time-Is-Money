@@ -8,18 +8,14 @@ $(document).ready(function(){
 });
 
 function testApproach(){
-	var timeStr='09:20';
-	var timeArr=timeStr.split(':');
-	var hours=parseInt(timeArr[0]);
-	var minutes=parseInt(timeArr[1]);
-	var date=new Date();
-	var year=date.getFullYear();
-	var month=date.getMonth();
-	var day=date.getDate();
-	
-	var dateTime=new Date(year,month,day,hours,minutes);
-	console.log(dateTime);
-	console.log(dateTime.getTime());
+	DAO.loadWorkTimeTest(function(status,wt){
+		if(status==DAO.STATUS.DONE){
+			console.log(wt);
+		}
+		else{
+			console.log('failed or no content');
+		}
+	});
 }
 
 function loadForecast(){

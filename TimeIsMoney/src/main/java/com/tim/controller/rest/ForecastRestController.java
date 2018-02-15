@@ -1,4 +1,4 @@
-package com.tim.controller;
+package com.tim.controller.rest;
 
 import java.util.Map;
 
