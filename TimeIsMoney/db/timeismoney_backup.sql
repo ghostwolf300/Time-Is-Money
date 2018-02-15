@@ -241,6 +241,33 @@ INSERT INTO `role` VALUES (1,'ADMIN'),(2,'MANAGER'),(3,'CO-WORKER'),(4,'SHIFT PL
 UNLOCK TABLES;
 
 --
+-- Table structure for table `rounding_rule`
+--
+
+DROP TABLE IF EXISTS `rounding_rule`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rounding_rule` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `direction` tinyint(3) unsigned NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `seconds_before` int(11) NOT NULL DEFAULT '0',
+  `seconds_after` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rounding_rule`
+--
+
+LOCK TABLES `rounding_rule` WRITE;
+/*!40000 ALTER TABLE `rounding_rule` DISABLE KEYS */;
+INSERT INTO `rounding_rule` VALUES (1,1,'Stamp in - default',300,300),(2,2,'Stamp out - default',300,300);
+/*!40000 ALTER TABLE `rounding_rule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `schedule`
 --
 
@@ -493,18 +520,22 @@ CREATE TABLE `work_time` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `org_unit_id` int(11) NOT NULL,
-  `stamp_in` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `stamp_out` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `stamp_in` timestamp NULL DEFAULT NULL,
+  `stamp_out` timestamp NULL DEFAULT NULL,
   `date_in` date DEFAULT NULL,
   `date_out` date DEFAULT NULL,
   `rounded_in_time` time DEFAULT NULL,
   `rounded_out_time` time DEFAULT NULL,
+  `changed_by` int(11) NOT NULL,
+  `change_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_work_time_user_id` (`user_id`),
   KEY `fk_work_time_org_unit_id` (`org_unit_id`),
+  KEY `fk_work_time_changed_by` (`changed_by`),
+  CONSTRAINT `fk_work_time_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_work_time_org_unit_id` FOREIGN KEY (`org_unit_id`) REFERENCES `org_unit` (`id`),
   CONSTRAINT `fk_work_time_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -513,7 +544,7 @@ CREATE TABLE `work_time` (
 
 LOCK TABLES `work_time` WRITE;
 /*!40000 ALTER TABLE `work_time` DISABLE KEYS */;
-INSERT INTO `work_time` VALUES (1,7,27,'2018-02-12 07:46:11','2018-01-29 14:05:00','2018-01-29','2018-01-29',NULL,NULL),(2,7,27,'2018-02-12 07:46:11','2018-01-30 14:14:00','2018-01-30','2018-01-30',NULL,NULL),(3,7,27,'2018-02-12 07:46:11','2018-01-31 14:35:00','2018-01-31','2018-01-31',NULL,NULL),(4,7,27,'2018-02-12 07:46:11','2018-02-01 14:01:00','2018-02-01','2018-02-01',NULL,NULL),(5,7,27,'2018-02-12 07:46:11','2018-02-02 14:22:00','2018-02-02','2018-02-02',NULL,NULL);
+INSERT INTO `work_time` VALUES (31,7,29,'2018-02-05 05:59:00','2018-02-05 14:57:00','2018-02-05','2018-02-05',NULL,NULL,7,'2018-02-15 08:50:00'),(32,7,27,'2018-02-07 06:00:00','2018-02-07 13:04:00','2018-02-07','2018-02-07',NULL,NULL,7,'2018-02-15 08:09:52'),(33,7,27,NULL,NULL,NULL,NULL,NULL,NULL,7,'2018-02-15 08:30:46'),(34,7,27,NULL,NULL,NULL,NULL,NULL,NULL,7,'2018-02-15 08:32:39'),(35,7,27,NULL,NULL,NULL,NULL,NULL,NULL,7,'2018-02-15 08:38:18'),(36,7,27,'2018-02-07 15:00:00','2018-02-07 19:00:00','2018-02-07','2018-02-07',NULL,NULL,7,'2018-02-15 09:58:53'),(37,7,27,'2018-02-12 05:54:00','2018-02-12 14:03:00','2018-02-12','2018-02-12','07:54:00','16:03:00',7,'2018-02-15 13:50:40'),(38,7,27,'2018-02-13 05:49:00','2018-02-13 13:56:00','2018-02-13','2018-02-13','07:49:00','15:56:00',7,'2018-02-15 13:50:45'),(39,7,28,'2018-02-12 14:29:00','2018-02-12 19:59:00','2018-02-12','2018-02-12','16:29:00','21:59:00',7,'2018-02-15 13:50:43'),(40,7,27,'2018-02-11 03:00:00','2018-02-11 12:30:00','2018-02-11','2018-02-11',NULL,NULL,7,'2018-02-15 10:27:39'),(41,7,27,'2018-02-11 13:00:00','2018-02-11 16:02:00','2018-02-11','2018-02-11',NULL,NULL,7,'2018-02-15 10:27:56'),(42,7,27,'2018-02-20 06:55:00','2018-02-20 15:05:00','2018-02-20','2018-02-20','09:00:00','17:00:00',7,'2018-02-15 14:00:55'),(43,7,27,'2018-02-20 06:05:00','2018-02-20 14:30:00','2018-02-20','2018-02-20','08:05:00','16:30:00',7,'2018-02-15 14:01:12'),(44,5,27,'2018-02-12 09:55:00','2018-02-12 14:00:00','2018-02-12','2018-02-12','11:55:00','16:00:00',7,'2018-02-15 14:03:54'),(45,5,27,'2018-02-13 09:55:00','2018-02-13 14:00:00','2018-02-13','2018-02-13','12:00:00','16:00:00',7,'2018-02-15 14:06:03');
 /*!40000 ALTER TABLE `work_time` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -526,4 +557,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-12 14:29:04
+-- Dump completed on 2018-02-15 16:07:53
