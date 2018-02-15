@@ -3009,8 +3009,8 @@ var ManagerView=(function(){
 		$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
 		$(row).append(_getActualTimeCell(wt.stampIn,'in'));
 		$(row).append(_getActualTimeCell(wt.stampOut,'out'));
-		$(row).append('<td class="cell-worktime-rounded-time"></td>');
-		$(row).append('<td class="cell-worktime-rounded-time"></td>');
+		$(row).append(_getRoundedTimeCell(wt.roundedInTime));
+		$(row).append(_getRoundedTimeCell(wt.roundedOutTime));
 		$(row).append(_getOrgUnitCell(wt.orgUnit));
 		$(row).append('<td class="cell-worktime-changed">'+wt.changedByText+'</td>');
 
@@ -3035,8 +3035,8 @@ var ManagerView=(function(){
 		$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
 		$(row).append(_getActualTimeCell(null,'in'));
 		$(row).append(_getActualTimeCell(null,'out'));
-		$(row).append('<td class="cell-worktime-rounded-time"></td>');
-		$(row).append('<td class="cell-worktime-rounded-time"></td>');
+		$(row).append(_getRoundedTimeCell(null));
+		$(row).append(_getRoundedTimeCell(null));
 		$(row).append(_getOrgUnitCell(null));
 		$(row).append('<td class="cell-worktime-changed"></td>');
 		return row;
@@ -3051,6 +3051,17 @@ var ManagerView=(function(){
 	function _getRowAddCell(){
 		var td=$('<td class="cell-worktime-add"></td>');
 		$(td).click(_rowAddListener);
+		return td;
+	}
+	
+	function _getRoundedTimeCell(time){
+		var td;
+		if(time){
+			td=$('<td class="cell-worktime-rounded-time">'+Util.getTimeHHmm(time)+'</td>');
+		}
+		else{
+			td=$('<td class="cell-worktime-rounded-time"></td>');
+		}
 		return td;
 	}
 	
@@ -3134,6 +3145,16 @@ var ManagerView=(function(){
 				cell=$(tr).find('td').eq(5);
 				$(cell).attr('data-ts',wt.stampOut);
 				$(cell).find('input').val(Util.getTimeFromDate(new Date(wt.stampOut)));
+			}
+			
+			if(wt.roundedInTime){
+				cell=$(tr).find('td').eq(6);
+				$(cell).text(Util.getTimeHHmm(wt.roundedInTime));
+			}
+			
+			if(wt.roundedOutTime){
+				cell=$(tr).find('td').eq(7);
+				$(cell).text(Util.getTimeHHmm(wt.roundedOutTime));
 			}
 			
 			cell=$(tr).find('td').eq(8);

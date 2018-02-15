@@ -1,11 +1,13 @@
 package com.tim.db.schedule;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import com.tim.entities.Schedule;
@@ -40,6 +42,48 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 			//error handling
 		}
 		return schedules;
+	}
+
+	@Override
+	public Schedule findScheduleByStampIn(int userId, Timestamp in, int secondsBefore, int secondsAfter) {
+		String sql="select * " 
+				+"from schedule "
+				+"where user_id=:userId " 
+				+"and timestampdiff(second,timestamp(schedule_date,start),:tsIn) between :secondsBefore and :secondsAfter";
+		Query qry=em.createNativeQuery(sql,Schedule.class);
+		qry.setParameter("userId", userId);
+		qry.setParameter("tsIn", in);
+		qry.setParameter("secondsBefore", -secondsBefore);
+		qry.setParameter("secondsAfter", secondsAfter);
+		Schedule schedule=null;
+		try {
+			schedule=(Schedule)qry.getSingleResult();
+		}
+		catch(NoResultException nre) {
+			//no results
+		}
+		return schedule;
+	}
+
+	@Override
+	public Schedule findScheduleByStampOut(int userId, Timestamp out, int secondsBefore, int secondsAfter) {
+		String sql="select * " 
+				+"from schedule "
+				+"where user_id=:userId " 
+				+"and timestampdiff(second,timestamp(schedule_date,end),:tsOut) between :secondsBefore and :secondsAfter";
+		Query qry=em.createNativeQuery(sql,Schedule.class);
+		qry.setParameter("userId", userId);
+		qry.setParameter("tsOut", out);
+		qry.setParameter("secondsBefore", -secondsBefore);
+		qry.setParameter("secondsAfter", secondsAfter);
+		Schedule schedule=null;
+		try {
+			schedule=(Schedule)qry.getSingleResult();
+		}
+		catch(NoResultException nre) {
+			//no results
+		}
+		return schedule;
 	}
 
 }

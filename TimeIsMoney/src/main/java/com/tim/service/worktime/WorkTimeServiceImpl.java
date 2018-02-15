@@ -16,6 +16,7 @@ import com.tim.db.orgunit.OrgUnitRepository;
 import com.tim.db.worktime.WorkTimeRepository;
 import com.tim.entities.User;
 import com.tim.entities.WorkTime;
+import com.tim.service.rounding.RoundingService;
 
 @Service("workTimeService")
 public class WorkTimeServiceImpl implements WorkTimeService {
@@ -25,6 +26,9 @@ public class WorkTimeServiceImpl implements WorkTimeService {
 	
 	@Autowired
 	private OrgUnitRepository orgUnitRepository;
+	
+	@Autowired
+	private RoundingService roundingService;
 	
 	@Autowired
 	private TIMSessionInfo sessionInfo;
@@ -53,6 +57,12 @@ public class WorkTimeServiceImpl implements WorkTimeService {
 
 	@Override
 	public WorkTime saveEmployeeWorkTime(WorkTime workTime) {
+		if(workTime.getStampIn()!=null) {
+			workTime.setRoundedInTime(roundingService.roundTimestamp(workTime.getUserId(), workTime.getStampIn(), RoundingService.DIRECTION_IN));
+		}
+		if(workTime.getStampOut()!=null) {
+			workTime.setRoundedOutTime(roundingService.roundTimestamp(workTime.getUserId(), workTime.getStampOut(), RoundingService.DIRECTION_OUT));
+		}
 		User u=sessionInfo.getCurrentUser();
 		workTime.setChangedBy(u);
 		workTime.setChangeTs(new Timestamp(System.currentTimeMillis()));
