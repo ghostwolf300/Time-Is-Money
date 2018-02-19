@@ -40,9 +40,15 @@
 		</div>
 		<div id="mgrview-middle-third" class="mgrview-middle-element">
 			<div id="mgrview-details-wrapper">
-				<div th:replace="fragments/worktime :: timerecords">
-				</div>
-				<div th:replace="fragments/worktime :: schedules">
+				<div id="mgrview-details-tabs">
+					<ul>
+						<li><a href="#mgrview-details-timerecords">Work time</a></li>
+    					<li><a href="#mgrview-details-schedules">Schedules</a></li>
+					</ul>
+					<div th:replace="fragments/worktime :: timerecords">
+					</div>
+					<div th:replace="fragments/worktime :: schedules">
+					</div>
 				</div>
 			</div>
 			<div id="mgrview-time-summary">

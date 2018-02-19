@@ -43,6 +43,29 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 		}
 		return schedules;
 	}
+	
+	@Override
+	public List<Schedule> findActiveSchedules(int userId, Date startDate, Date endDate) {
+		String sql="SELECT s.id,s.plan_id,s.user_id,s.schedule_date,s.schedule_type_id,s.start,s.end,s.org_unit_id "
+				+ "FROM schedule s INNER JOIN plan p ON s.plan_id=p.id "
+				+ "WHERE s.user_id=:userId "
+				+ "AND s.schedule_date>=:startDate "
+				+ "AND s.schedule_date<=:endDate "
+				+ "AND p.active=TRUE "
+				+ "ORDER BY s.schedule_date";
+		Query qry=em.createNativeQuery(sql, Schedule.class);
+		qry.setParameter("userId", userId);
+		qry.setParameter("startDate", startDate);
+		qry.setParameter("endDate", endDate);
+		List<Schedule> schedules=null;
+		try {
+			schedules=qry.getResultList();
+		}
+		catch(NoResultException nre) {
+			//no schedules
+		}
+		return schedules;
+	}
 
 	@Override
 	public Schedule findScheduleByStampIn(int userId, Timestamp in, int secondsBefore, int secondsAfter) {

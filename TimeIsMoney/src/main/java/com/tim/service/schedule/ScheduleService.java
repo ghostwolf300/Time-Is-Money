@@ -10,6 +10,7 @@ public interface ScheduleService {
 	
 	public List<Schedule> findList(int userId,Date startDate,Date endDate);
 	public Map<String,Schedule> findMap(int userId,int planId,int orgUnitId);
+	public Map<String,Schedule> findActive(int userId,Date startDate,Date endDate);
 	public Schedule save(Schedule schedule);
 	public int remove(int id);
 

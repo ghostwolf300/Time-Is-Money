@@ -43,6 +43,18 @@ public class ScheduleRestController {
 		return new ResponseEntity<Map<String,Schedule>>(scheduleMap,HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="/findActive")
+	public ResponseEntity<Map<String,Schedule>> getActiveSchedules(
+			@RequestParam(value="userId") Integer userId,
+			@RequestParam(value="startDate") Date startDate,
+			@RequestParam(value="endDate") Date endDate){
+		Map<String,Schedule> scheduleMap=scheduleService.findActive(userId,startDate,endDate);
+		if(scheduleMap==null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<Map<String,Schedule>>(scheduleMap,HttpStatus.OK);
+	}
+	
 	@RequestMapping(value="/delete")
 	public ResponseEntity<Integer> removeSchedule(@RequestParam(value="id") Integer scheduleId){
 		scheduleService.remove(scheduleId);

@@ -920,6 +920,22 @@ var DAO = (function() {
 		});
 	}
 	
+	function loadActiveSchedules(userId,startDate,endDate,_callback){
+		var url='/schedules/findActive?userId='+userId+'&startDate='+startDate+'&endDate='+endDate;
+		var schedules;
+		
+		$.getJSON(url,function(s,statusText,jqxhr){
+			
+		}).done(function(s,statusText,jqxhr){
+			schedules=s;
+			_callback(STATUS.DONE,schedules);
+		}).fail(function(){
+			_callback(STATUS.FAIL);
+		}).always(function(){
+			
+		});
+	}
+	
 	function deleteSchedule(id,_callback){
 		
 		var url='/schedules/delete?id='+id;
@@ -1139,6 +1155,7 @@ var DAO = (function() {
 		loadPrevAssignment : loadPrevAssignment,
 		saveAssignment : saveAssignment,
 		loadSchedules : loadSchedules,
+		loadActiveSchedules : loadActiveSchedules,
 		saveSchedule : saveSchedule,
 		saveSchedules : saveSchedules,
 		deleteSchedule : deleteSchedule,
@@ -2877,6 +2894,7 @@ var ManagerView=(function(){
 	
 	function init(){
 		orgTree=new OrgTree('#mgrview-orgstructure',_orgTreeChangeListener);
+		$('#mgrview-details-tabs').tabs();
 		employeeList=new EmployeeList('#mgrview-worker-table',_employeeListClickListener);
 		$(fields.periodSelect).change(_periodSelectListener);
 		$(controls.periodShow).click(_periodShowClickListener);
@@ -3207,19 +3225,82 @@ var ManagerView=(function(){
 	
 	function _showSchedules(eeId,periodStart,periodEnd){
 		_clearSchedulesView();
-		_createSchedulesView(periodStart,periodEnd);
+		DAO.loadActiveSchedules(eeId,periodStart,periodEnd,function(status,schedules){
+			if(status==DAO.STATUS.DONE){
+				_createSchedulesView(schedules,periodStart,periodEnd);
+			}
+			else if(status==DAO.STATUS.NA){
+				
+			}
+		});
 	}
 	
 	function _clearSchedulesView(){
 		$(tables.schedules+' > tbody').empty();
 	}
 	
-	function _createSchedulesView(periodStart,periodEnd){
+	function _createSchedulesView(schedules,periodStart,periodEnd){
+		var d=new Date(periodStart);
+		var e=new Date(periodEnd);
+		e.setDate(e.getDate()+1);
+		var row;
+		var schd;
+		var tbody=$(tables.schedules+' > tbody');
 		
+		while(d < e){
+			schd=schedules[Util.getFormattedDate(d)];
+			if(schd){
+				row=_createFilledScheduleRow(d,schd);
+				tbody.append(row);
+			}
+			else{
+				row=_createEmptyScheduleRow(d);
+				tbody.append(row);
+			}
+			d.setDate(d.getDate()+1);
+		}
 	}
 	
-	function _createSchedulesRow(date){
+	function _createFilledScheduleRow(date,schedule){
 		
+		var row;
+		var weekday;
+		var rowClass;
+		
+		weekday=Util.getWeekday(date);
+		if(weekday=="Sat" || weekday=="Sun"){
+			rowClass="row-worktime-weekend";
+		}
+		else{
+			rowClass="row-worktime-normal";
+		}
+		row=$('<tr class="'+rowClass+'" data-id="'+schedule.id+'" data-userId="'+schedule.userId+'"></tr>');
+		$(row).append('<td class="cell-worktime-date" data-date="'+date+'">'+Util.getFormattedDate(date)+'</td>');
+		$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
+		$(row).append('<td>'+Util.getTimeHHmm(schedule.start)+'-'+Util.getTimeHHmm(schedule.end)+'</td>');
+
+		
+		return row;
+	}
+	
+	function _createEmptyScheduleRow(date){
+		var row;
+		var weekday;
+		var rowClass;
+		
+		weekday=Util.getWeekday(date);
+		if(weekday=="Sat" || weekday=="Sun"){
+			rowClass="row-worktime-weekend";
+		}
+		else{
+			rowClass="row-worktime-normal";
+		}
+		row=$('<tr class="'+rowClass+'"></tr>');
+		$(row).append('<td class="cell-worktime-date" data-date="'+date+'">'+Util.getFormattedDate(date)+'</td>');
+		$(row).append('<td class="cell-worktime-day">'+weekday+'</td>');
+		$(row).append('<td></td>');
+		
+		return row;
 	}
 	
 	return{
